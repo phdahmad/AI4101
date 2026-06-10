@@ -1,0 +1,2718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI4101 — Artificial Intelligence Principles</title>
+<meta name="description" content="Course content and self-assessment for AI4101 Artificial Intelligence Principles, Umm Al-Qura University.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F2;
+    --surface: #FFFFFF;
+    --surface-sunken: #F2EDE3;
+    --ink: #1A1A2E;
+    --ink-soft: #4A4A5E;
+    --muted: #8B8B9E;
+    --primary: #3D2A6B;
+    --primary-soft: #6B5499;
+    --accent: #D4A574;
+    --accent-deep: #B8895A;
+    --border: #E8E2D5;
+    --border-strong: #D4CDB8;
+    --code-bg: #1F1B2E;
+    --code-text: #E8E2D5;
+    --code-keyword: #D4A574;
+    --code-comment: #8B8B9E;
+    --success: #5C8A6B;
+    --success-soft: #E8F0EA;
+    --error: #C26B5C;
+    --error-soft: #F5E8E5;
+    --shadow-sm: 0 1px 2px rgba(26,26,46,0.04);
+    --shadow-md: 0 4px 12px rgba(26,26,46,0.06);
+    --shadow-lg: 0 12px 32px rgba(26,26,46,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ====== HEADER ====== */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250, 247, 242, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--primary);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    font-family: 'Crimson Pro', serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+  }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+  .brand-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+  .brand-name {
+    font-family: 'Crimson Pro', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .progress-summary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+  }
+  .progress-track {
+    flex: 1;
+    max-width: 360px;
+    height: 6px;
+    background: var(--surface-sunken);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+    border-radius: 999px;
+    width: 0%;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .progress-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .header-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink-soft);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: all 0.2s;
+  }
+  .icon-btn:hover { background: var(--surface); border-color: var(--border-strong); color: var(--primary); }
+  .icon-btn svg { width: 18px; height: 18px; }
+
+  /* ====== HERO ====== */
+  .hero {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 64px 24px 48px;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent-deep);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero-title {
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(36px, 6vw, 68px);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    color: var(--ink);
+    margin-bottom: 24px;
+    max-width: 900px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--primary);
+  }
+  .hero-sub {
+    font-size: 19px;
+    color: var(--ink-soft);
+    max-width: 700px;
+    line-height: 1.5;
+    margin-bottom: 40px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    margin-top: 24px;
+  }
+  .meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .meta-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .meta-value {
+    font-family: 'Crimson Pro', serif;
+    font-size: 20px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ====== LAYOUT ====== */
+  .layout {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  /* ====== SIDEBAR ====== */
+  .sidebar {
+    position: sticky;
+    top: 92px;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    padding-right: 8px;
+    scrollbar-width: thin;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+  .sidebar-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    line-height: 1.35;
+    transition: background 0.2s, color 0.2s;
+    border-left: 2px solid transparent;
+    margin-left: -2px;
+  }
+  .nav-item:hover { background: var(--surface); color: var(--ink); }
+  .nav-item.active {
+    background: var(--surface);
+    color: var(--primary);
+    font-weight: 500;
+    border-left-color: var(--accent);
+  }
+  .nav-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    background: var(--surface-sunken);
+    color: var(--muted);
+    font-weight: 500;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .nav-item.complete .nav-num {
+    background: var(--primary);
+    color: var(--accent);
+  }
+  .nav-item.complete .nav-num::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+  }
+  .nav-item.complete .nav-num span { display: none; }
+  .nav-title { flex: 1; min-width: 0; }
+  .nav-hours {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* ====== MAIN ====== */
+  .main { min-width: 0; }
+
+  /* ====== MODULE ====== */
+  .module {
+    margin-bottom: 100px;
+    scroll-margin-top: 92px;
+  }
+  .module-header {
+    padding-bottom: 32px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: end;
+  }
+  .module-number {
+    font-family: 'Crimson Pro', serif;
+    font-size: 96px;
+    font-weight: 600;
+    line-height: 0.9;
+    color: var(--primary);
+    letter-spacing: -3px;
+    position: relative;
+  }
+  .module-number::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 999px;
+    width: var(--bar-width, 0%);
+    transition: width 0.8s ease;
+  }
+  .module-title-group { padding-bottom: 12px; }
+  .module-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-deep);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .module-title {
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+  .module-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    padding-bottom: 12px;
+  }
+  .module-hours {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .module-progress-ring {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ====== CONTENT ====== */
+  .section-block {
+    margin-bottom: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+  .section-block.read {
+    border-color: var(--success);
+    border-left: 3px solid var(--success);
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-deep);
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'Crimson Pro', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .section-block h4 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 20px 0 10px;
+  }
+  .section-block p {
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .section-block strong { color: var(--ink); font-weight: 600; }
+  .section-block em { color: var(--primary); font-style: italic; }
+  .section-block ul, .section-block ol {
+    margin: 12px 0 16px 22px;
+    color: var(--ink-soft);
+  }
+  .section-block li { margin-bottom: 6px; line-height: 1.6; }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 18px 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin: 16px 0;
+  }
+  pre .kw { color: var(--code-keyword); font-weight: 500; }
+  pre .cm { color: var(--code-comment); font-style: italic; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.92em;
+    background: var(--surface-sunken);
+    color: var(--primary);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  /* Tables */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14.5px;
+  }
+  .data-table th {
+    background: var(--primary);
+    color: var(--surface);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+  .data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-soft);
+  }
+  .data-table tr:nth-child(even) td { background: var(--surface-sunken); }
+
+  /* Definition box */
+  .def-box {
+    background: var(--surface-sunken);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin: 16px 0;
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .def-box strong {
+    font-style: normal;
+    color: var(--primary);
+    display: block;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Mark read button */
+  .mark-read-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border);
+  }
+  .mark-btn {
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--ink-soft);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mark-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .mark-btn.marked {
+    background: var(--success-soft);
+    border-color: var(--success);
+    color: var(--success);
+  }
+  .mark-btn.marked::before { content: '✓ '; }
+
+  /* ====== QUIZ ====== */
+  .quiz-block {
+    background: linear-gradient(180deg, var(--surface) 0%, var(--surface-sunken) 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    padding: 36px;
+    margin-top: 48px;
+  }
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .quiz-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-deep);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .quiz-title {
+    font-family: 'Crimson Pro', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .quiz-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .quiz-intro {
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    font-size: 15px;
+  }
+  .question {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+  }
+  .question.answered.correct { border-color: var(--success); background: var(--success-soft); }
+  .question.answered.incorrect { border-color: var(--error); background: var(--error-soft); }
+  .q-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 14px;
+    font-size: 15.5px;
+    line-height: 1.5;
+  }
+  .q-text code { background: rgba(61, 42, 107, 0.08); }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--surface);
+    transition: all 0.15s;
+    font-size: 14.5px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+  .option:hover:not(.disabled) { border-color: var(--primary-soft); background: var(--bg); }
+  .option-letter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--surface-sunken);
+    color: var(--ink-soft);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .option.selected { border-color: var(--primary); background: var(--bg); }
+  .option.selected .option-letter { background: var(--primary); color: var(--accent); }
+  .option.correct {
+    border-color: var(--success);
+    background: var(--success-soft);
+    color: var(--ink);
+  }
+  .option.correct .option-letter { background: var(--success); color: white; }
+  .option.incorrect {
+    border-color: var(--error);
+    background: var(--error-soft);
+    color: var(--ink);
+  }
+  .option.incorrect .option-letter { background: var(--error); color: white; }
+  .option.disabled { cursor: default; }
+  .explanation {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong {
+    color: var(--primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .quiz-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+  .btn-primary:hover { background: #2D1F50; }
+  .btn-primary:disabled {
+    background: var(--surface-sunken);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* ====== FINAL SUMMARY ====== */
+  .summary {
+    background: var(--primary);
+    color: white;
+    border-radius: 16px;
+    padding: 48px;
+    margin-top: 40px;
+    margin-bottom: 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.15;
+  }
+  .summary-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .summary-title {
+    font-family: 'Crimson Pro', serif;
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .summary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 24px;
+    margin: 32px auto;
+    max-width: 700px;
+    position: relative;
+  }
+  .stat {
+    border: 1px solid rgba(212, 165, 116, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    background: rgba(0,0,0,0.15);
+  }
+  .stat-value {
+    font-family: 'Crimson Pro', serif;
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ====== FOOTER ====== */
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .site-footer a { color: var(--primary); text-decoration: none; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--ink);
+    color: var(--bg);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 200;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .sidebar {
+      position: relative;
+      top: 0;
+      max-height: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .module-header {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .module-number { font-size: 64px; }
+    .module-meta { align-items: flex-start; padding-bottom: 0; }
+    .section-block { padding: 20px 22px; }
+    .quiz-block { padding: 24px 20px; }
+    .header-inner { grid-template-columns: 1fr auto; gap: 12px; }
+    .progress-summary { grid-column: 1 / -1; order: 3; }
+    .hero { padding: 40px 24px 32px; }
+  }
+  @media (max-width: 500px) {
+    .brand-name { font-size: 14px; }
+    .brand-code { font-size: 10px; }
+    .hero-meta { gap: 16px; }
+    .meta-value { font-size: 16px; }
+    .summary { padding: 32px 20px; }
+    .summary-title { font-size: 26px; }
+  }
+
+  /* Print */
+  @media print {
+    .site-header, .sidebar, .header-actions, .quiz-actions, .mark-read-row { display: none; }
+    .layout { grid-template-columns: 1fr; }
+    body { background: white; }
+    .section-block, .quiz-block { break-inside: avoid; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#top" class="brand">
+      <div class="brand-mark">AI</div>
+      <div class="brand-text">
+        <span class="brand-code">AI4101 · UQU</span>
+        <span class="brand-name">Artificial Intelligence Principles</span>
+      </div>
+    </a>
+    <div class="progress-summary">
+      <div class="progress-track">
+        <div class="progress-fill" id="overall-progress"></div>
+      </div>
+      <span class="progress-label" id="overall-label">0%</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="print-btn" title="Print course">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
+      </button>
+      <button class="icon-btn" id="reset-btn" title="Reset progress">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8M3 3v5h5"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-eyebrow">Course Specification · Bachelor of Science · Computer Science</div>
+  <h1 class="hero-title">Foundations of <em>intelligent systems</em>, from search trees to logical agents.</h1>
+  <p class="hero-sub">
+    A self-paced study companion for AI4101. Seven modules covering 60 contact hours, with end-of-module checks to test what stuck. Your progress is saved locally on this device.
+  </p>
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-label">Credit Hours</span>
+      <span class="meta-value">3</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Contact Hours</span>
+      <span class="meta-value">60</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Modules</span>
+      <span class="meta-value">7</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Self-checks</span>
+      <span class="meta-value" id="total-questions-meta">—</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Reference</span>
+      <span class="meta-value">Russell &amp; Norvig</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<div class="layout">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Contents</div>
+    <ul class="nav-list" id="nav-list"></ul>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main" id="main">
+    <!-- modules will be injected here by JS for cleaner authoring -->
+  </main>
+
+</div>
+
+<footer class="site-footer">
+  AI4101 · Umm Al-Qura University · Department of Computer Science and Artificial Intelligence ·
+  Reference: Russell &amp; Norvig, <em>Artificial Intelligence: A Modern Approach</em>, 4th Edition
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==================== COURSE DATA (inlined) ==================== */
+/* ============================================================
+   AI4101 — Course Data
+   Each module: id, number, title, hours, sections[], quiz[]
+   ============================================================ */
+
+const COURSE = [
+
+/* =================================================================
+   MODULE 1 — Introduction to AI (4h)
+   ================================================================= */
+{
+  id: "m1",
+  number: 1,
+  title: "Introduction to Artificial Intelligence",
+  subtitle: "Concepts, Domains, and Applications",
+  hours: 4,
+  sections: [
+    {
+      title: "1.1 What is Artificial Intelligence?",
+      body: `
+        <p>Artificial Intelligence is the study of <strong>agents that perceive their environment and act upon it</strong> in a way we would call intelligent if a human did it. The field has resisted a single tidy definition for seventy years because intelligence itself is contested — but the working definitions cluster around four corners of a familiar 2×2: thinking vs. acting, and human-like vs. rational.</p>
+
+        <table class="data-table">
+          <thead><tr><th></th><th>Thinking</th><th>Acting</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Human-like</strong></td><td>Cognitive modeling (how do humans reason?)</td><td>Turing test (can a machine fool a human?)</td></tr>
+            <tr><td><strong>Rational</strong></td><td>Laws of thought (logic, probability)</td><td>Rational agent (do the right thing)</td></tr>
+          </tbody>
+        </table>
+
+        <p>The textbook (Russell &amp; Norvig) and most modern practice adopt the <em>rational agent</em> view: an AI is a system that, given the information available to it, takes the action that best advances its objectives. This shifts attention away from imitating human quirks and toward measurable performance.</p>
+
+        <div class="def-box">
+          <strong>Definition</strong>
+          A <strong>rational agent</strong> is one that acts to maximize its expected performance measure, given the percept sequence it has received and any built-in knowledge it has.
+        </div>
+      `
+    },
+    {
+      title: "1.2 A Short History",
+      body: `
+        <p>AI is not a single tradition. It is several waves that rose, broke against their own limits, and re-formed around new tools.</p>
+        <ul>
+          <li><strong>1943–1956 · Gestation.</strong> McCulloch &amp; Pitts model neurons as logic gates; Turing publishes "Computing Machinery and Intelligence" (1950) and proposes the imitation game; the field is named at the Dartmouth workshop in 1956.</li>
+          <li><strong>1956–1974 · Early enthusiasm.</strong> Symbolic systems (Logic Theorist, GPS) solve toy problems. Funding floods in on the assumption that scaling these methods will reach general intelligence.</li>
+          <li><strong>1974–1980 · First AI winter.</strong> Combinatorial explosion bites; promises go unmet; the Lighthill report ends UK funding.</li>
+          <li><strong>1980–1987 · Expert systems boom.</strong> Rule-based systems (MYCIN, XCON) capture domain knowledge and reach industry. Then they hit the knowledge-acquisition bottleneck.</li>
+          <li><strong>1987–1993 · Second AI winter.</strong></li>
+          <li><strong>1993–2011 · The statistical turn.</strong> AI rebases on probability theory, machine learning, and large datasets. Deep Blue beats Kasparov (1997); the field gets quietly useful.</li>
+          <li><strong>2011–present · Deep learning era.</strong> GPUs, ImageNet, transformers; perception and language tasks that had stalled for decades fall in quick succession.</li>
+        </ul>
+        <p>The pattern matters. Each wave was right about something and wrong about something. Symbolic AI captured logical structure; statistical AI captured uncertainty and scale; neural networks captured representation learning. Modern systems freely combine them.</p>
+      `
+    },
+    {
+      title: "1.3 Sub-fields and Applications",
+      body: `
+        <p>AI is a federation of sub-disciplines, each with its own methods and benchmarks:</p>
+        <ul>
+          <li><strong>Search and planning</strong> — finding sequences of actions that reach a goal.</li>
+          <li><strong>Knowledge representation and reasoning</strong> — encoding what an agent knows in a form it can act on.</li>
+          <li><strong>Machine learning</strong> — improving performance from experience or data.</li>
+          <li><strong>Natural language processing</strong> — understanding and generating human language.</li>
+          <li><strong>Computer vision</strong> — extracting meaning from images and video.</li>
+          <li><strong>Robotics</strong> — agents with physical bodies in the physical world.</li>
+          <li><strong>Multi-agent systems</strong> — cooperation, competition, and game theory among agents.</li>
+        </ul>
+        <p>Real-world applications cut across these: medical diagnosis, autonomous driving, fraud detection, recommendation systems, route planning, machine translation, scheduling, and game-playing engines that have superhuman performance in chess, Go, and poker.</p>
+      `
+    },
+    {
+      title: "1.4 Foundations and Ethics",
+      body: `
+        <p>AI borrows from philosophy (logic, theory of mind), mathematics (probability, optimization, computability), economics (utility, decision theory), neuroscience (cognition models), and linguistics (syntax, semantics). No single one of these is sufficient.</p>
+        <p>Practical AI also carries ethical responsibilities. Systems that classify loan applications, recommend criminal sentences, or moderate speech act on people's lives. The course will return to fairness, accountability, transparency, and safety as recurring themes whenever they touch the algorithms under study.</p>
+      `
+    }
+  ],
+  quiz: [
+    {
+      q: "Which of the following best characterizes the <strong>rational agent</strong> view of AI adopted by Russell &amp; Norvig?",
+      options: [
+        "A system that perfectly imitates human reasoning, including human errors.",
+        "A system that acts to maximize its expected performance given its percepts and knowledge.",
+        "A system that proves theorems using formal logic only.",
+        "A system that passes the Turing test in conversation."
+      ],
+      answer: 1,
+      explain: "The rational agent view focuses on doing the <em>right thing</em> given available information — not on imitating humans or restricting to a single formal method like logic."
+    },
+    {
+      q: "Which event is widely considered the founding moment of AI as a field?",
+      options: [
+        "Turing's 1950 paper on machine intelligence.",
+        "The Dartmouth Summer Research Project in 1956.",
+        "Deep Blue defeating Kasparov in 1997.",
+        "McCulloch &amp; Pitts's 1943 neuron model."
+      ],
+      answer: 1,
+      explain: "Although Turing's 1950 paper and the 1943 neuron model preceded it, the term <em>Artificial Intelligence</em> was coined and the field formally launched at the Dartmouth workshop organized by McCarthy in 1956."
+    },
+    {
+      q: "What primarily caused the first AI winter in the mid-1970s?",
+      options: [
+        "Lack of computing hardware capable of running any AI program.",
+        "The combinatorial explosion of search spaces in real-world problems.",
+        "Public protest against autonomous systems.",
+        "The success of neural networks made symbolic AI obsolete."
+      ],
+      answer: 1,
+      explain: "Early symbolic methods solved toy problems but scaled poorly: realistic problems had exponentially large search spaces. The Lighthill report documented these limits and triggered major funding cuts."
+    },
+    {
+      q: "Which subfield is concerned with encoding what an agent knows so it can reason and act on that knowledge?",
+      options: [
+        "Computer vision",
+        "Knowledge representation and reasoning",
+        "Robotics",
+        "Natural language processing"
+      ],
+      answer: 1,
+      explain: "Knowledge representation studies the forms (logic, semantic networks, ontologies, probabilistic models) in which knowledge can be stored and the inference procedures that operate on those forms."
+    },
+    {
+      q: "Which characterization of the current (post-2011) era of AI is most accurate?",
+      options: [
+        "Pure symbolic logic has replaced statistical methods.",
+        "Deep learning and large datasets have advanced perception and language tasks dramatically.",
+        "Expert systems have become the dominant approach again.",
+        "AI research has stopped using neural networks entirely."
+      ],
+      answer: 1,
+      explain: "The combination of deep neural networks, GPUs, and very large datasets has transformed previously stalled tasks — image recognition, machine translation, speech — into solved or near-solved benchmarks. Symbolic methods coexist but no longer dominate."
+    }
+  ]
+},
+
+/* =================================================================
+   MODULE 2 — Intelligent Agents and Agent Environment (8h)
+   ================================================================= */
+{
+  id: "m2",
+  number: 2,
+  title: "Intelligent Agents",
+  subtitle: "Architectures and Environments",
+  hours: 8,
+  sections: [
+    {
+      title: "2.1 Agents and Environments",
+      body: `
+        <p>The agent abstraction unifies everything that follows in this course. Whether we are talking about a search algorithm, a game-playing program, a robot, or a logical reasoner — we are describing an agent of some kind operating in some environment.</p>
+        <div class="def-box">
+          <strong>Agent</strong>
+          Anything that can be viewed as perceiving its environment through <strong>sensors</strong> and acting on it through <strong>actuators</strong>. Formally, an agent is a function from percept sequences to actions: <code>f : P* → A</code>.
+        </div>
+        <p>The agent's <strong>percept</strong> is its current sensory input. Its <strong>percept sequence</strong> is the full history of everything it has ever perceived. The choice the agent makes at any moment can depend on this entire history (in principle), or on a compact summary of it (in practice).</p>
+        <p>The <strong>agent program</strong> is the concrete implementation of the agent function. Different programs (lookup table, reflex rules, model-based reasoning) may implement the same function with vastly different efficiency.</p>
+      `
+    },
+    {
+      title: "2.2 Rationality and the Performance Measure",
+      body: `
+        <p>What makes an agent <em>rational</em>? Not omniscience, not always succeeding — only doing the best one can expect given the information available.</p>
+        <p>A rational agent depends on four things:</p>
+        <ol>
+          <li>The <strong>performance measure</strong> defining the criterion of success.</li>
+          <li>The agent's <strong>prior knowledge</strong> of the environment.</li>
+          <li>The <strong>actions</strong> available to the agent.</li>
+          <li>The agent's <strong>percept sequence</strong> to date.</li>
+        </ol>
+        <p>For each possible percept sequence, a rational agent should select an action that is expected to maximize its performance measure, given its prior knowledge.</p>
+        <p>Designing the performance measure well is itself an art. A vacuum-cleaning agent rewarded only for "amount of dirt collected" learns to dump dirt and re-collect it. Reward shaping is one of the recurring pitfalls of applied AI.</p>
+      `
+    },
+    {
+      title: "2.3 Task Environments: PEAS",
+      body: `
+        <p>Before designing an agent, specify the task environment. The <strong>PEAS</strong> framework names the four pieces that must be pinned down:</p>
+        <ul>
+          <li><strong>P</strong>erformance measure — how success is scored.</li>
+          <li><strong>E</strong>nvironment — what the agent operates in.</li>
+          <li><strong>A</strong>ctuators — how the agent affects the environment.</li>
+          <li><strong>S</strong>ensors — how the agent perceives the environment.</li>
+        </ul>
+        <p>Example — an automated taxi:</p>
+        <table class="data-table">
+          <thead><tr><th>P</th><th>E</th><th>A</th><th>S</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Safety, legality, comfort, speed, fuel use</td>
+              <td>Roads, other traffic, pedestrians, weather</td>
+              <td>Steering, accelerator, brake, signal, horn</td>
+              <td>Cameras, lidar, GPS, speedometer, accelerometer</td>
+            </tr>
+          </tbody>
+        </table>
+      `
+    },
+    {
+      title: "2.4 Properties of Task Environments",
+      body: `
+        <p>Environments differ along several axes. The hardness of an AI problem depends on which combination applies.</p>
+        <table class="data-table">
+          <thead><tr><th>Property</th><th>Definition</th><th>Example (hard side)</th></tr></thead>
+          <tbody>
+            <tr><td>Fully vs. partially observable</td><td>Do the sensors give complete state information?</td><td>Poker (partial — opponent's cards hidden)</td></tr>
+            <tr><td>Deterministic vs. stochastic</td><td>Is the next state uniquely fixed by the current state and action?</td><td>Self-driving car (stochastic — weather, other drivers)</td></tr>
+            <tr><td>Episodic vs. sequential</td><td>Does the current decision affect future decisions?</td><td>Chess (sequential — earlier moves shape later ones)</td></tr>
+            <tr><td>Static vs. dynamic</td><td>Does the environment change while the agent is deliberating?</td><td>Self-driving car (dynamic)</td></tr>
+            <tr><td>Discrete vs. continuous</td><td>Are percepts, actions, and time discrete or continuous?</td><td>Robot motion (continuous in both space and time)</td></tr>
+            <tr><td>Single-agent vs. multi-agent</td><td>Are other agents present? Cooperative or adversarial?</td><td>Poker (adversarial multi-agent)</td></tr>
+            <tr><td>Known vs. unknown</td><td>Does the agent know the rules of the environment?</td><td>Playing a new video game blind (unknown)</td></tr>
+          </tbody>
+        </table>
+        <p>The hardest task environments are <em>partially observable, stochastic, sequential, dynamic, continuous, multi-agent, and unknown</em>. Most real-world problems sit somewhere near that corner.</p>
+      `
+    },
+    {
+      title: "2.5 Agent Architectures",
+      body: `
+        <p>Five canonical agent types, in order of sophistication:</p>
+
+        <h4>Simple reflex agents</h4>
+        <p>Select actions based only on the <em>current</em> percept, using condition-action rules. Fast and simple, but blind to history. They fail in partially observable environments — a reflex vacuum that has just cleaned a square has no way to know that, and may oscillate.</p>
+
+        <h4>Model-based reflex agents</h4>
+        <p>Maintain an <strong>internal state</strong> that summarizes the relevant history. To update the state, the agent needs a <strong>transition model</strong> (how the world evolves) and a <strong>sensor model</strong> (how percepts depend on the state). This handles partial observability but the agent still acts purely reactively.</p>
+
+        <h4>Goal-based agents</h4>
+        <p>Add explicit goals. The agent considers how its actions will affect the future and chooses ones that move toward the goal. This is where <em>search</em> and <em>planning</em> enter the picture — much of the rest of this course is about how goal-based agents find action sequences.</p>
+
+        <h4>Utility-based agents</h4>
+        <p>Generalize goals to a <strong>utility function</strong> — a numerical score over states. This lets the agent trade off competing objectives (speed vs. safety) and handle uncertainty by maximizing <em>expected</em> utility.</p>
+
+        <h4>Learning agents</h4>
+        <p>Any of the above, augmented with a <strong>learning element</strong> that improves the agent over time, a <strong>performance element</strong> that selects actions, a <strong>critic</strong> that scores outcomes against the performance measure, and a <strong>problem generator</strong> that suggests exploratory actions.</p>
+      `
+    }
+  ],
+  quiz: [
+    {
+      q: "What does the acronym <strong>PEAS</strong> stand for in the design of a task environment?",
+      options: [
+        "Percept, Environment, Action, Sensor",
+        "Performance measure, Environment, Actuators, Sensors",
+        "Planning, Execution, Action, State",
+        "Probability, Estimation, Action, Search"
+      ],
+      answer: 1,
+      explain: "PEAS = Performance measure (how success is scored), Environment (where the agent acts), Actuators (how it affects the world), Sensors (how it perceives the world)."
+    },
+    {
+      q: "An environment in which the next state is fully determined by the current state and the action taken is called:",
+      options: [
+        "Episodic",
+        "Static",
+        "Deterministic",
+        "Fully observable"
+      ],
+      answer: 2,
+      explain: "Deterministic environments leave no room for chance: the same action in the same state always produces the same next state. Stochastic environments introduce probabilistic transitions."
+    },
+    {
+      q: "What is the fundamental limitation of a <strong>simple reflex agent</strong>?",
+      options: [
+        "It cannot perform arithmetic.",
+        "It cannot act on the current percept.",
+        "It ignores percept history, so it fails in partially observable environments.",
+        "It is too slow for real-time tasks."
+      ],
+      answer: 2,
+      explain: "Simple reflex agents map the current percept directly to an action via condition-action rules. They have no memory, so they cannot disambiguate states that look the same in the current percept but differ in their history."
+    },
+    {
+      q: "Why does a <strong>utility-based agent</strong> generalize over a goal-based agent?",
+      options: [
+        "It runs faster on modern hardware.",
+        "It assigns numerical values to states, allowing trade-offs and expected-utility maximization under uncertainty.",
+        "It does not need any model of the environment.",
+        "It avoids using sensors entirely."
+      ],
+      answer: 1,
+      explain: "A goal-based agent answers yes/no — is this a goal state? A utility function answers how good — by how much? That lets the agent rank competing outcomes and handle stochastic environments by maximizing expected utility."
+    },
+    {
+      q: "In a <strong>learning agent</strong>, what is the role of the <strong>critic</strong>?",
+      options: [
+        "It generates exploratory actions to discover new strategies.",
+        "It selects the next action to execute.",
+        "It evaluates outcomes against the performance measure and feeds that signal back to the learning element.",
+        "It builds the world model from percepts."
+      ],
+      answer: 2,
+      explain: "The critic compares the actual outcome to the performance measure and tells the learning element how the performance element is doing — providing the error signal that drives improvement."
+    },
+    {
+      q: "Which of the following environments is best described as <em>partially observable, stochastic, sequential, and multi-agent</em>?",
+      options: [
+        "Solving a Sudoku puzzle.",
+        "Playing chess.",
+        "Playing poker.",
+        "Sorting a list of numbers."
+      ],
+      answer: 2,
+      explain: "Poker hides opponents' cards (partial), shuffles randomly (stochastic), is played as a series of dependent decisions (sequential), and involves multiple competing players (multi-agent). Chess is fully observable and deterministic; Sudoku is fully observable, deterministic, and single-agent."
+    }
+  ]
+},
+
+/* =================================================================
+   MODULE 3 — Search Algorithms (16h) — biggest module
+   ================================================================= */
+{
+  id: "m3",
+  number: 3,
+  title: "Problem Solving by Search",
+  subtitle: "Uninformed and Informed Search Algorithms",
+  hours: 16,
+  sections: [
+    {
+      title: "3.1 Problem-Solving Agents",
+      body: `
+        <p>A goal-based agent that knows its environment and wants to reach a goal can <em>plan</em> in advance by searching through possible action sequences. The agent first formulates the problem, then searches for a solution, then executes it.</p>
+        <p>A search problem is defined by five elements:</p>
+        <ul>
+          <li><strong>Initial state</strong> — where the agent starts.</li>
+          <li><strong>Actions(s)</strong> — the set of actions available in state <code>s</code>.</li>
+          <li><strong>Transition model Result(s, a)</strong> — the state that results from taking action <code>a</code> in state <code>s</code>.</li>
+          <li><strong>Goal test</strong> — determines whether a given state is a goal.</li>
+          <li><strong>Path cost</strong> — a function assigning a numerical cost to each path; typically additive, with step cost <code>c(s, a, s')</code> for each edge.</li>
+        </ul>
+        <p>Together, these define the <strong>state space</strong> (the abstract graph of states and transitions) and the <strong>search tree</strong> (the unfolding of paths from the initial state during search). The state space is a property of the problem; the search tree is a property of the algorithm running on it.</p>
+      `
+    },
+    {
+      title: "3.2 Measuring Search Algorithms",
+      body: `
+        <p>Four properties matter:</p>
+        <ul>
+          <li><strong>Completeness</strong> — is the algorithm guaranteed to find a solution if one exists?</li>
+          <li><strong>Optimality</strong> — does it find the lowest-cost solution?</li>
+          <li><strong>Time complexity</strong> — how long does it take?</li>
+          <li><strong>Space complexity</strong> — how much memory does it use?</li>
+        </ul>
+        <p>Complexity is usually expressed in terms of <strong>b</strong> (branching factor — number of successors per node), <strong>d</strong> (depth of the shallowest goal), and <strong>m</strong> (maximum depth of any path).</p>
+      `
+    },
+    {
+      title: "3.3 Uninformed Search",
+      body: `
+        <p>Uninformed (or <em>blind</em>) search has no information about how close a state is to the goal — it knows only the problem definition. It expands the search tree by some structural strategy.</p>
+
+        <h4>Breadth-First Search (BFS)</h4>
+        <p>Expand the shallowest unexpanded node first, using a FIFO queue as the frontier.</p>
+        <pre><span class="cm"># BFS</span>
+<span class="kw">function</span> BFS(problem):
+    node ← Node(problem.initial_state)
+    <span class="kw">if</span> problem.goal_test(node.state): <span class="kw">return</span> node
+    frontier ← FIFO_Queue(node)
+    explored ← {}
+    <span class="kw">while</span> frontier not empty:
+        node ← frontier.pop()
+        explored.add(node.state)
+        <span class="kw">for</span> action <span class="kw">in</span> problem.actions(node.state):
+            child ← child_node(problem, node, action)
+            <span class="kw">if</span> child.state <span class="kw">not in</span> explored ∪ frontier:
+                <span class="kw">if</span> problem.goal_test(child.state): <span class="kw">return</span> child
+                frontier.push(child)
+    <span class="kw">return</span> failure</pre>
+        <p><strong>Properties:</strong> Complete (if <code>b</code> is finite). Optimal if all step costs are equal. Time and space: <em>O(b<sup>d</sup>)</em>. Space is the killer — BFS hits memory limits before time limits in practice.</p>
+
+        <h4>Uniform-Cost Search (UCS) / Dijkstra</h4>
+        <p>Expand the node with the lowest <em>path cost</em> g(n), using a priority queue. Optimal whenever step costs are non-negative. Time and space: <em>O(b<sup>1+⌊C*/ε⌋</sup>)</em>, where C* is the cost of the optimal solution and ε is the minimum step cost.</p>
+
+        <h4>Depth-First Search (DFS)</h4>
+        <p>Expand the deepest unexpanded node, using a LIFO stack.</p>
+        <p><strong>Properties:</strong> Not complete in general (infinite depths or loops). Not optimal. Time: <em>O(b<sup>m</sup>)</em> — terrible if m ≫ d. <em>But</em> space is just <em>O(bm)</em>, since only the current path needs to be stored. This is DFS's one redeeming feature.</p>
+
+        <h4>Depth-Limited Search (DLS)</h4>
+        <p>DFS with a depth cutoff ℓ. If a solution exists within depth ℓ, DLS will find it; otherwise it returns failure or cutoff. Avoids infinite paths but is incomplete if d > ℓ.</p>
+
+        <h4>Iterative Deepening Search (IDS)</h4>
+        <p>Run DLS with depth 0, then 1, then 2, … until a solution is found. Combines BFS's completeness and optimality (for uniform cost) with DFS's modest <em>O(bd)</em> space. The repeated work is asymptotically negligible — total nodes generated is still <em>O(b<sup>d</sup>)</em>, because most nodes are at the bottom level. IDS is the uninformed search of choice when the search space is large and depth is unknown.</p>
+
+        <table class="data-table">
+          <thead><tr><th>Algorithm</th><th>Complete?</th><th>Optimal?</th><th>Time</th><th>Space</th></tr></thead>
+          <tbody>
+            <tr><td>BFS</td><td>Yes (b finite)</td><td>Yes (equal costs)</td><td>O(b<sup>d</sup>)</td><td>O(b<sup>d</sup>)</td></tr>
+            <tr><td>UCS</td><td>Yes</td><td>Yes</td><td>O(b<sup>1+⌊C*/ε⌋</sup>)</td><td>O(b<sup>1+⌊C*/ε⌋</sup>)</td></tr>
+            <tr><td>DFS</td><td>No</td><td>No</td><td>O(b<sup>m</sup>)</td><td>O(bm)</td></tr>
+            <tr><td>DLS</td><td>No (if d &gt; ℓ)</td><td>No</td><td>O(b<sup>ℓ</sup>)</td><td>O(bℓ)</td></tr>
+            <tr><td>IDS</td><td>Yes</td><td>Yes (equal costs)</td><td>O(b<sup>d</sup>)</td><td>O(bd)</td></tr>
+          </tbody>
+        </table>
+      `
+    },
+    {
+      title: "3.4 Heuristics",
+      body: `
+        <p>Informed search uses a <strong>heuristic function</strong> <code>h(n)</code> — a problem-specific estimate of the cost from node <code>n</code> to the nearest goal. A good heuristic dramatically reduces the search effort.</p>
+
+        <div class="def-box">
+          <strong>Admissible</strong>
+          A heuristic <code>h</code> is admissible if it never overestimates the true remaining cost: <code>0 ≤ h(n) ≤ h*(n)</code>, where <code>h*(n)</code> is the actual optimal cost from <code>n</code> to a goal.
+        </div>
+
+        <div class="def-box">
+          <strong>Consistent (monotonic)</strong>
+          A heuristic is consistent if for every node <code>n</code> and successor <code>n'</code> reached by action <code>a</code> with step cost <code>c</code>:
+          <code>h(n) ≤ c(n, a, n') + h(n')</code>
+        </div>
+
+        <p>Consistency implies admissibility. Common admissible heuristics: straight-line distance for road navigation, number of misplaced tiles for the 8-puzzle, Manhattan distance for grid worlds.</p>
+      `
+    },
+    {
+      title: "3.5 Informed Search",
+      body: `
+        <h4>Greedy Best-First Search</h4>
+        <p>Expand the node with the lowest <code>h(n)</code> — the one estimated to be closest to the goal. Fast, often, but not optimal and not complete (it can get stuck in loops). Useful when speed matters more than guarantees.</p>
+
+        <h4>A* Search</h4>
+        <p>Combine path cost so far with estimated cost to goal:</p>
+        <div class="def-box">
+          <strong>A* evaluation</strong>
+          <code>f(n) = g(n) + h(n)</code> — where <code>g(n)</code> is the cost from start to <code>n</code>, and <code>h(n)</code> is the heuristic estimate from <code>n</code> to goal.
+        </div>
+        <pre><span class="cm"># A*</span>
+<span class="kw">function</span> A_STAR(problem, h):
+    node ← Node(problem.initial_state, g=0, f=h(initial))
+    frontier ← PriorityQueue(ordered by f)
+    frontier.push(node)
+    explored ← {}
+    <span class="kw">while</span> frontier not empty:
+        node ← frontier.pop()
+        <span class="kw">if</span> problem.goal_test(node.state): <span class="kw">return</span> node
+        explored.add(node.state)
+        <span class="kw">for</span> action <span class="kw">in</span> problem.actions(node.state):
+            child ← child_node(problem, node, action)
+            child.f ← child.g + h(child.state)
+            <span class="kw">if</span> child.state <span class="kw">not in</span> explored
+                <span class="kw">and</span> child <span class="kw">not in</span> frontier with lower f:
+                    frontier.push(child)
+    <span class="kw">return</span> failure</pre>
+
+        <p><strong>Theorem.</strong> If <code>h</code> is admissible, A* using a tree search is optimal. If <code>h</code> is consistent, A* using a graph search is optimal.</p>
+        <p>A* is the dominant algorithm in classical search because it is provably optimally efficient: no algorithm using the same heuristic can expand fewer nodes.</p>
+
+        <h4>IDA* (Iterative-Deepening A*)</h4>
+        <p>The memory-light variant of A*. Instead of using a priority queue, run a depth-first search bounded by an <em>f-cost limit</em>, increasing the limit each iteration. Space: O(bd).</p>
+
+        <h4>Dominance</h4>
+        <p>If two admissible heuristics <code>h₁</code> and <code>h₂</code> satisfy <code>h₂(n) ≥ h₁(n)</code> for every <code>n</code>, then <code>h₂</code> <em>dominates</em> <code>h₁</code>. A dominating heuristic always expands at most as many nodes — usually fewer. Composite heuristics <code>h(n) = max(h₁(n), h₂(n))</code> are still admissible and at least as informative.</p>
+      `
+    }
+  ],
+  quiz: [
+    {
+      q: "Which data structure does <strong>breadth-first search</strong> use for its frontier?",
+      options: [
+        "LIFO stack",
+        "FIFO queue",
+        "Priority queue ordered by g(n)",
+        "Priority queue ordered by h(n)"
+      ],
+      answer: 1,
+      explain: "BFS expands the shallowest node first. A FIFO queue ensures nodes added earlier (shallower) are expanded before nodes added later (deeper)."
+    },
+    {
+      q: "What is the principal disadvantage of <strong>breadth-first search</strong> in practice?",
+      options: [
+        "It is incomplete on finite branching graphs.",
+        "It is not optimal when step costs are equal.",
+        "Its space complexity O(b<sup>d</sup>) — it runs out of memory long before time becomes the problem.",
+        "It cannot use a heuristic function."
+      ],
+      answer: 2,
+      explain: "BFS stores every node at the current frontier level, which grows as <em>b<sup>d</sup></em>. With even moderate branching factor and depth (e.g., b=10, d=10), memory exhausts on commodity machines. Space, not time, is BFS's real bottleneck."
+    },
+    {
+      q: "Why is <strong>iterative deepening search</strong> often preferred over plain BFS for large search spaces with unknown depth?",
+      options: [
+        "It is asymptotically faster than BFS.",
+        "It uses O(bd) memory while remaining complete and (for equal costs) optimal.",
+        "It never requires repeating any work.",
+        "It can use heuristic information that BFS cannot."
+      ],
+      answer: 1,
+      explain: "IDS combines BFS's completeness and optimality (when step costs are uniform) with DFS's O(bd) memory. The repeated work is asymptotically negligible because most nodes lie at the deepest level."
+    },
+    {
+      q: "A heuristic <code>h</code> is called <strong>admissible</strong> if:",
+      options: [
+        "It always overestimates the cost to the goal.",
+        "It never overestimates the true cost to reach the nearest goal.",
+        "It equals the actual cost to the goal at every node.",
+        "It is computed in constant time."
+      ],
+      answer: 1,
+      explain: "Admissibility means <code>h(n) ≤ h*(n)</code> for every node n — the heuristic is optimistic. This is the property that makes A* with tree search optimal."
+    },
+    {
+      q: "Under which condition is <strong>A* search</strong> with graph search guaranteed to return an optimal solution?",
+      options: [
+        "When the heuristic is admissible.",
+        "When the heuristic is consistent.",
+        "When the branching factor is finite.",
+        "When the goal is at depth less than 10."
+      ],
+      answer: 1,
+      explain: "Graph search may re-visit states, so admissibility alone is not enough — a sub-optimal first visit could block the optimal one. Consistency (<code>h(n) ≤ c(n,a,n') + h(n')</code>) guarantees that the first time A* expands a state, it does so on the optimal path."
+    },
+    {
+      q: "Compared with A*, <strong>greedy best-first search</strong>:",
+      options: [
+        "Is always optimal but often slower.",
+        "Ignores path cost g(n) and uses only h(n), making it fast but neither complete nor optimal.",
+        "Uses f(n) = g(n) − h(n).",
+        "Is identical to A* with h(n) = 0."
+      ],
+      answer: 1,
+      explain: "Greedy best-first orders by <code>h(n)</code> alone. It charges toward states that look close to the goal but ignores how much it has spent getting there. A* with <code>h = 0</code> degenerates to uniform-cost search, not greedy."
+    },
+    {
+      q: "If <code>h₁</code> and <code>h₂</code> are both admissible and <code>h₂(n) ≥ h₁(n)</code> for every <code>n</code>, which statement holds?",
+      options: [
+        "h₂ is inadmissible.",
+        "h₂ dominates h₁ and A* using h₂ will expand no more nodes than A* using h₁.",
+        "h₂ may cause A* to miss the optimal solution.",
+        "h₁ and h₂ produce identical search trees."
+      ],
+      answer: 1,
+      explain: "A larger admissible heuristic is more informed — it gets closer to the true cost without overestimating. Such a heuristic dominates and yields at least as efficient a search. Taking <code>max(h₁, h₂)</code> at each node is a common way to build a dominating composite."
+    },
+    {
+      q: "Which informed-search algorithm trades A*'s memory cost for repeated work, using only O(bd) space?",
+      options: [
+        "Greedy best-first search",
+        "Iterative-deepening A* (IDA*)",
+        "Uniform-cost search",
+        "Bidirectional search"
+      ],
+      answer: 1,
+      explain: "IDA* runs successive depth-first searches bounded by an f-cost limit, raising the limit each iteration. It re-explores nodes but stores only the current path, like IDS."
+    },
+    {
+      q: "<strong>Uniform-cost search</strong> reduces to which other algorithm when all step costs are equal?",
+      options: [
+        "Depth-first search",
+        "A* with a perfect heuristic",
+        "Breadth-first search",
+        "Greedy best-first search"
+      ],
+      answer: 2,
+      explain: "When step costs are equal, ordering by path cost g(n) is the same as ordering by depth — exactly what BFS does. UCS generalizes BFS to non-uniform step costs."
+    },
+    {
+      q: "What is the key distinction between the <strong>state space</strong> and the <strong>search tree</strong>?",
+      options: [
+        "They are synonyms.",
+        "The state space is a property of the problem; the search tree is a property of the algorithm and may revisit the same state through different paths.",
+        "The search tree always has fewer nodes than the state space.",
+        "Only the state space can be infinite."
+      ],
+      answer: 1,
+      explain: "The state space is the abstract graph of states and transitions defined by the problem. The search tree is built by an algorithm as it explores — the same state can appear at many tree nodes when reached by different paths. Graph search uses an explored set to avoid this duplication."
+    }
+  ]
+}
+];
+
+// Continued in the next chunk — modules 4-7 will be appended below.
+/* ============================================================
+   AI4101 — Course Data Part 2 (Modules 4-7)
+   ============================================================ */
+
+const COURSE_PART2 = [
+
+/* =================================================================
+   MODULE 4 — Local Search (8h)
+   ================================================================= */
+{
+  id: "m4",
+  number: 4,
+  title: "Local Search and Optimization",
+  subtitle: "Gradient Descent, Hill Climbing, Genetic Algorithms",
+  hours: 8,
+  sections: [
+    {
+      title: "4.1 When the Path Doesn't Matter",
+      body: `
+        <p>The search algorithms so far care about the <em>path</em> from start to goal. For many problems — scheduling, layout, parameter tuning — only the <em>final configuration</em> matters. There is no goal test; instead there is a <strong>objective function</strong> we want to maximize (or a cost function we want to minimize). The state space is the set of complete configurations, and we move through it locally, keeping only the current state in memory.</p>
+        <p>This is <strong>local search</strong>. Two properties make it appealing:</p>
+        <ul>
+          <li>Memory cost is constant — only the current state (and maybe a few neighbors) is stored.</li>
+          <li>It works on continuous problems, where classical search doesn't apply.</li>
+        </ul>
+        <p>The price: local search gives up systematic exploration. It will happily settle into the first decent answer it finds and miss the better one a few hills away.</p>
+      `
+    },
+    {
+      title: "4.2 Hill Climbing",
+      body: `
+        <p>The simplest local search. At each step, look at the neighbors of the current state and move to the one that improves the objective the most. Stop when no neighbor is better.</p>
+        <pre><span class="cm"># Hill climbing</span>
+<span class="kw">function</span> HILL_CLIMBING(problem):
+    current ← problem.initial_state
+    <span class="kw">while</span> True:
+        neighbor ← highest-value successor of current
+        <span class="kw">if</span> value(neighbor) ≤ value(current):
+            <span class="kw">return</span> current
+        current ← neighbor</pre>
+        <p>The pathologies are well-known:</p>
+        <ul>
+          <li><strong>Local maxima</strong> — peaks lower than the global maximum where every neighbor is worse.</li>
+          <li><strong>Plateaus</strong> — flat regions where the algorithm has no gradient to follow.</li>
+          <li><strong>Ridges</strong> — narrow ascending paths that the move set can't follow directly.</li>
+        </ul>
+        <p>Variants chip away at these problems:</p>
+        <ul>
+          <li><strong>Stochastic hill climbing</strong> — pick randomly among uphill moves, weighted by steepness.</li>
+          <li><strong>First-choice hill climbing</strong> — generate successors randomly until a better one is found; useful when each state has thousands of neighbors.</li>
+          <li><strong>Random-restart hill climbing</strong> — run from many random starts and keep the best result. Surprisingly effective.</li>
+        </ul>
+      `
+    },
+    {
+      title: "4.3 Simulated Annealing",
+      body: `
+        <p>Inspired by metallurgy. Hot metal cools slowly; atoms find low-energy configurations they would never reach if quenched. Simulated annealing applies the metaphor to optimization: allow downhill moves with a probability that decreases as the algorithm proceeds.</p>
+        <pre><span class="cm"># Simulated annealing</span>
+<span class="kw">function</span> SIMULATED_ANNEALING(problem, schedule):
+    current ← problem.initial_state
+    <span class="kw">for</span> t = 1, 2, 3, ...:
+        T ← schedule(t)
+        <span class="kw">if</span> T = 0: <span class="kw">return</span> current
+        next ← random successor of current
+        ΔE ← value(next) − value(current)
+        <span class="kw">if</span> ΔE &gt; 0:
+            current ← next
+        <span class="kw">else</span>:
+            current ← next with probability exp(ΔE / T)</pre>
+        <p>The temperature <code>T</code> controls how willing the algorithm is to take downhill moves. Early on, <code>T</code> is high and the search wanders freely, escaping local maxima. As <code>T</code> cools, the algorithm tightens around the best basin it has found and behaves more like hill climbing. With a sufficiently slow cooling schedule, simulated annealing converges to the global optimum with probability approaching 1.</p>
+      `
+    },
+    {
+      title: "4.4 Local Beam Search",
+      body: `
+        <p>Track <em>k</em> states in parallel instead of one. At each step, generate all successors of all <em>k</em> states and keep the <em>k</em> best overall. Information flows between threads: a state that finds a promising region attracts the others, unlike independent random restarts.</p>
+        <p><strong>Stochastic beam search</strong> picks the <em>k</em> successors with probability proportional to their value — a precursor to genetic algorithms.</p>
+      `
+    },
+    {
+      title: "4.5 Genetic Algorithms",
+      body: `
+        <p>GAs maintain a population of states (<em>individuals</em> or <em>chromosomes</em>) and evolve it over generations. Inspired by biological evolution: variation, selection, inheritance.</p>
+        <ol>
+          <li><strong>Initialization.</strong> Generate a population of random states, each encoded as a string (e.g., a bit string or sequence of integers).</li>
+          <li><strong>Fitness evaluation.</strong> Score each individual with a fitness function (higher = better).</li>
+          <li><strong>Selection.</strong> Pick pairs of parents with probability proportional to fitness (roulette wheel, tournament, or rank-based selection).</li>
+          <li><strong>Crossover.</strong> Combine each pair to produce offspring. Single-point crossover picks a cut and swaps the halves; uniform crossover swaps each gene with probability ½.</li>
+          <li><strong>Mutation.</strong> Flip each gene of each offspring independently with a small probability (typically 0.001–0.01).</li>
+          <li><strong>Replacement.</strong> Form the next generation from offspring (possibly preserving the best individuals via <em>elitism</em>).</li>
+          <li>Loop until termination criterion is met.</li>
+        </ol>
+        <pre><span class="cm"># Genetic algorithm</span>
+<span class="kw">function</span> GENETIC_ALGORITHM(population, fitness):
+    <span class="kw">repeat</span>:
+        new_population ← {}
+        <span class="kw">for</span> i = 1 <span class="kw">to</span> SIZE(population):
+            x ← RANDOM_SELECTION(population, fitness)
+            y ← RANDOM_SELECTION(population, fitness)
+            child ← REPRODUCE(x, y)
+            <span class="kw">if</span> random &lt; mutation_rate:
+                child ← MUTATE(child)
+            new_population.add(child)
+        population ← new_population
+    <span class="kw">until</span> termination criterion met
+    <span class="kw">return</span> best individual in population</pre>
+        <p>GAs are useful when you can encode candidate solutions cleanly as strings and when crossover meaningfully combines partial solutions. They are not magic — for many problems they perform no better than well-tuned stochastic hill climbing.</p>
+      `
+    },
+    {
+      title: "4.6 Gradient Descent (Continuous Optimization)",
+      body: `
+        <p>When the state space is continuous and the objective <code>J(θ)</code> is differentiable, the most informative neighbor is the one in the direction of steepest descent (or ascent). Gradient descent moves opposite to the gradient:</p>
+        <div class="def-box">
+          <strong>Update rule</strong>
+          <code>θ ← θ − α · ∇J(θ)</code>
+          where <code>α</code> is the <strong>learning rate</strong>.
+        </div>
+        <p>Choosing the learning rate is the central craft. Too small and convergence crawls; too large and the iterates overshoot or diverge.</p>
+        <ul>
+          <li><strong>Batch gradient descent</strong> uses the full dataset for each gradient — stable but slow.</li>
+          <li><strong>Stochastic gradient descent (SGD)</strong> uses one example per step — noisy but fast; the noise can even help escape shallow minima.</li>
+          <li><strong>Mini-batch gradient descent</strong> uses a small batch (32–512 samples) — the practical middle ground used in essentially all modern deep learning.</li>
+        </ul>
+        <p>Adaptive variants (Momentum, RMSProp, Adam) adjust the effective step size per parameter and are now standard.</p>
+        <p>Gradient descent is the workhorse behind almost all modern machine learning. Its convergence guarantees depend on the function: convex objectives reach a global minimum; non-convex objectives reach a critical point that may be a local minimum, saddle, or rarely a true global optimum.</p>
+      `
+    }
+  ],
+  quiz: [
+    {
+      q: "What problem causes <strong>hill climbing</strong> to return a sub-optimal answer at a peak that is lower than the global maximum?",
+      options: [
+        "A plateau",
+        "A ridge",
+        "A local maximum",
+        "An infinite loop"
+      ],
+      answer: 2,
+      explain: "At a local maximum, every neighbor is worse, so hill climbing terminates — even though the global maximum lies elsewhere. Random restarts and simulated annealing are the standard remedies."
+    },
+    {
+      q: "What role does the <strong>temperature</strong> parameter play in simulated annealing?",
+      options: [
+        "It determines the size of the move set.",
+        "It controls the probability of accepting downhill (worsening) moves, decreasing over time.",
+        "It is the maximum number of iterations.",
+        "It is the fitness of the current state."
+      ],
+      answer: 1,
+      explain: "Downhill moves are accepted with probability <code>exp(ΔE / T)</code>. High temperature → most worsening moves accepted (broad exploration). Low temperature → almost no worsening moves accepted (greedy refinement)."
+    },
+    {
+      q: "Which operator in a <strong>genetic algorithm</strong> combines two parent solutions into a new offspring?",
+      options: [
+        "Mutation",
+        "Selection",
+        "Crossover",
+        "Elitism"
+      ],
+      answer: 2,
+      explain: "Crossover recombines genetic material from two parents — e.g., single-point crossover picks a cut and exchanges the halves. Mutation perturbs a single individual; selection picks which individuals reproduce."
+    },
+    {
+      q: "What is a likely consequence of setting the <strong>mutation rate</strong> too high in a genetic algorithm?",
+      options: [
+        "The population converges too quickly to one solution.",
+        "Useful genetic material is destroyed faster than it can spread, so the search degenerates toward random.",
+        "Crossover stops working.",
+        "Fitness is no longer evaluated."
+      ],
+      answer: 1,
+      explain: "With excessive mutation, good solutions are scrambled before they can be selected and recombined. The GA loses its ability to accumulate progress. Typical rates are 0.001–0.01 per gene per generation."
+    },
+    {
+      q: "In gradient descent, what is the consequence of choosing a <strong>learning rate that is too large</strong>?",
+      options: [
+        "The algorithm converges instantly to the global minimum.",
+        "The updates may overshoot the minimum and the loss can oscillate or diverge.",
+        "The gradient becomes zero.",
+        "The algorithm refuses to start."
+      ],
+      answer: 1,
+      explain: "Too large a step size means each update can leap past the minimum and end up on the opposite slope — possibly higher than where it started. Repeated overshoots cause oscillation or outright divergence."
+    },
+    {
+      q: "Which form of gradient descent updates the parameters using a small subset of training examples per step, balancing stability and speed?",
+      options: [
+        "Batch gradient descent",
+        "Stochastic gradient descent (single sample)",
+        "Mini-batch gradient descent",
+        "Genetic gradient descent"
+      ],
+      answer: 2,
+      explain: "Mini-batch GD (typically 32–512 samples per step) is the practical standard in modern deep learning. Batch GD uses the full dataset (stable but slow per step); pure SGD uses one sample (very noisy)."
+    },
+    {
+      q: "How does <strong>local beam search</strong> differ from running <em>k</em> independent random restarts of hill climbing?",
+      options: [
+        "Beam search keeps the k best successors across all current states pooled together, so information flows between threads.",
+        "Beam search uses a heuristic; random restarts do not.",
+        "Random restarts always perform better.",
+        "Beam search uses only one state at a time."
+      ],
+      answer: 0,
+      explain: "Independent restarts share nothing. Beam search pools all successors from all <em>k</em> current states and keeps the best <em>k</em> overall — so a thread that finds a promising region attracts the others, concentrating search where it pays off."
+    }
+  ]
+},
+
+/* =================================================================
+   MODULE 5 — Adversarial Search (8h)
+   ================================================================= */
+{
+  id: "m5",
+  number: 5,
+  title: "Adversarial Search",
+  subtitle: "Minimax, Alpha-Beta Pruning, Expectiminimax",
+  hours: 8,
+  sections: [
+    {
+      title: "5.1 Games as Search Problems",
+      body: `
+        <p>Two-player, turn-taking, zero-sum games with perfect information — chess, checkers, Go, tic-tac-toe — fit naturally into a search framework. The complication is the opponent: they get to pick moves too, and they will choose the ones worst for us.</p>
+        <p>A game is defined by:</p>
+        <ul>
+          <li>An <strong>initial state</strong> — the starting position.</li>
+          <li><strong>To-move(s)</strong> — whose turn it is.</li>
+          <li><strong>Actions(s)</strong> — legal moves in state <code>s</code>.</li>
+          <li><strong>Result(s, a)</strong> — the state after action <code>a</code>.</li>
+          <li><strong>Terminal-test(s)</strong> — whether the game has ended.</li>
+          <li><strong>Utility(s, p)</strong> — the final score for player <code>p</code> at a terminal state.</li>
+        </ul>
+        <p>For a zero-sum game, MAX's utility is the negative of MIN's. We adopt MAX's perspective by convention.</p>
+      `
+    },
+    {
+      title: "5.2 The Minimax Algorithm",
+      body: `
+        <p>MAX wants to maximize their utility; MIN wants to minimize it (equivalently, to maximize their own). The minimax value of a node is what each player will end up with assuming both play optimally:</p>
+        <div class="def-box">
+          <strong>Minimax value</strong>
+          <code>MINIMAX(s) = Utility(s)</code> if <code>s</code> is terminal<br>
+          <code>= max over a of MINIMAX(Result(s, a))</code> if To-move(s) = MAX<br>
+          <code>= min over a of MINIMAX(Result(s, a))</code> if To-move(s) = MIN
+        </div>
+        <pre><span class="cm"># Minimax</span>
+<span class="kw">function</span> MINIMAX(state, depth):
+    <span class="kw">if</span> terminal(state) <span class="kw">or</span> depth = 0:
+        <span class="kw">return</span> utility(state)
+    <span class="kw">if</span> to_move(state) = MAX:
+        value ← −∞
+        <span class="kw">for</span> a <span class="kw">in</span> actions(state):
+            value ← max(value, MINIMAX(result(state, a), depth − 1))
+        <span class="kw">return</span> value
+    <span class="kw">else</span>:  <span class="cm"># MIN's turn</span>
+        value ← +∞
+        <span class="kw">for</span> a <span class="kw">in</span> actions(state):
+            value ← min(value, MINIMAX(result(state, a), depth − 1))
+        <span class="kw">return</span> value</pre>
+        <p>Minimax assumes optimal play from both sides. With branching factor <em>b</em> and game depth <em>m</em>, time complexity is <em>O(b<sup>m</sup>)</em>, space is <em>O(bm)</em>. For chess, b ≈ 35 and m ≈ 100, so full minimax is hopelessly infeasible. We need to cut it down.</p>
+      `
+    },
+    {
+      title: "5.3 Alpha-Beta Pruning",
+      body: `
+        <p>The key insight: if MAX has already found a move guaranteeing value 3, and exploring an alternative move reveals a child that gives MIN the option to force value 2 or worse, we can <em>prune</em> the rest of that move's subtree. MAX will never choose it, so we don't need to know exactly how bad it gets.</p>
+        <p>Alpha-beta carries two bounds down the tree:</p>
+        <ul>
+          <li><strong>α</strong> — the best (highest) value MAX is guaranteed so far along the current path.</li>
+          <li><strong>β</strong> — the best (lowest) value MIN is guaranteed so far along the current path.</li>
+        </ul>
+        <p>A node is pruned whenever <code>α ≥ β</code>.</p>
+        <pre><span class="cm"># Alpha-Beta</span>
+<span class="kw">function</span> ALPHA_BETA(state, depth, α, β, maximizing):
+    <span class="kw">if</span> terminal(state) <span class="kw">or</span> depth = 0:
+        <span class="kw">return</span> utility(state)
+    <span class="kw">if</span> maximizing:
+        value ← −∞
+        <span class="kw">for</span> a <span class="kw">in</span> actions(state):
+            value ← max(value, ALPHA_BETA(result(s,a), depth−1, α, β, False))
+            α ← max(α, value)
+            <span class="kw">if</span> α ≥ β: <span class="kw">break</span>   <span class="cm"># β-cutoff</span>
+        <span class="kw">return</span> value
+    <span class="kw">else</span>:
+        value ← +∞
+        <span class="kw">for</span> a <span class="kw">in</span> actions(state):
+            value ← min(value, ALPHA_BETA(result(s,a), depth−1, α, β, True))
+            β ← min(β, value)
+            <span class="kw">if</span> α ≥ β: <span class="kw">break</span>   <span class="cm"># α-cutoff</span>
+        <span class="kw">return</span> value</pre>
+        <p><strong>Crucially, alpha-beta computes the same minimax value as plain minimax — it just visits fewer nodes.</strong> With perfect move ordering (best moves examined first), alpha-beta reduces the effective branching factor from <em>b</em> to <em>√b</em>, doubling the depth that can be searched in a given time budget. With random ordering, the savings are smaller but still substantial.</p>
+        <p><strong>Move ordering</strong> matters enormously. Practical engines use heuristics (capture moves first, killer-move tables, transposition tables, iterative deepening) to push best moves to the front.</p>
+      `
+    },
+    {
+      title: "5.4 Imperfect Real-Time Decisions",
+      body: `
+        <p>Even with alpha-beta, no engine searches a real game to its terminal states. Instead it searches to some depth <em>d</em> and applies an <strong>evaluation function</strong> at the leaves — a static estimate of who's winning.</p>
+        <p>A good evaluation function:</p>
+        <ul>
+          <li>Orders terminal states the same way Utility does.</li>
+          <li>Is fast to compute.</li>
+          <li>For non-terminal states, correlates with actual chances of winning from that position.</li>
+        </ul>
+        <p>For chess this is typically a weighted sum of <em>material</em> (pawns 1, knights/bishops 3, rooks 5, queens 9), <em>positional</em> features (pawn structure, king safety, mobility), and tactical motifs. Modern engines use neural networks (NNUE in Stockfish, value networks in AlphaZero) instead of hand-crafted features.</p>
+        <p><strong>Cutoff strategies:</strong> fixed depth, iterative deepening (so you always have a move ready), quiescence search (extend the search at unstable positions until things settle).</p>
+      `
+    },
+    {
+      title: "5.5 Stochastic Games — Expectiminimax",
+      body: `
+        <p>Backgammon, Monopoly, card games — many games involve chance. Insert <strong>chance nodes</strong> between MAX and MIN, representing dice rolls or shuffles. At a chance node, the value is the expected (probability-weighted) value over outcomes:</p>
+        <div class="def-box">
+          <strong>Expectiminimax</strong>
+          At MAX: <code>max over a of EXPECTIMINIMAX(Result(s, a))</code><br>
+          At MIN: <code>min over a of EXPECTIMINIMAX(Result(s, a))</code><br>
+          At CHANCE: <code>Σ over r of P(r) · EXPECTIMINIMAX(Result(s, r))</code>
+        </div>
+        <p>Two consequences:</p>
+        <ol>
+          <li><strong>Pruning is harder.</strong> A chance node's value is an expectation, so a single low child cannot prune — you need bounds on the unsampled children to bound the expectation. Some pruning is still possible if utilities are bounded.</li>
+          <li><strong>Evaluation function design changes.</strong> Linear scaling of utilities — fine for plain minimax — can change the chosen move when there are chance nodes, because expectations are linear but max/min are not. The evaluation function must be a <em>positive linear</em> transformation of the true expected utility.</li>
+        </ol>
+      `
+    }
+  ],
+  quiz: [
+    {
+      q: "What is the fundamental assumption made by the <strong>minimax</strong> algorithm about the opponent?",
+      options: [
+        "The opponent plays randomly.",
+        "The opponent plays cooperatively to help MAX win.",
+        "The opponent plays optimally to minimize MAX's utility.",
+        "The opponent ignores the state of the game."
+      ],
+      answer: 2,
+      explain: "Minimax assumes both players act optimally with full knowledge. MAX maximizes; MIN, modeled as the opponent, minimizes MAX's utility. Against a non-optimal opponent, minimax still plays soundly but may not exploit the opponent's mistakes."
+    },
+    {
+      q: "When does an <strong>alpha-beta</strong> cutoff occur?",
+      options: [
+        "When the search reaches a terminal state.",
+        "When α ≥ β at a node, indicating the remaining children cannot affect the parent's choice.",
+        "When the evaluation function returns zero.",
+        "When the search depth exceeds 10."
+      ],
+      answer: 1,
+      explain: "Once <code>α ≥ β</code>, the current node's value can no longer influence the outcome propagated upward — the parent already has a better option. The remaining children can be skipped."
+    },
+    {
+      q: "With <strong>perfect move ordering</strong>, alpha-beta pruning reduces the effective branching factor of minimax from <em>b</em> to:",
+      options: [
+        "b / 2",
+        "log b",
+        "√b",
+        "1"
+      ],
+      answer: 2,
+      explain: "Perfect ordering gives the optimal asymptotic improvement: alpha-beta examines about <em>b<sup>m/2</sup></em> nodes instead of <em>b<sup>m</sup></em>, effectively halving the exponent — equivalent to a branching factor of <em>√b</em>. This roughly doubles the depth reachable in a given time budget."
+    },
+    {
+      q: "What is the purpose of an <strong>evaluation function</strong> in real game-playing engines?",
+      options: [
+        "To enumerate all legal moves.",
+        "To estimate the utility of non-terminal positions when full search to terminal states is infeasible.",
+        "To verify the rules of the game.",
+        "To shuffle move ordering randomly."
+      ],
+      answer: 1,
+      explain: "No engine searches chess to checkmate. Search cuts off at some depth, and the evaluation function provides a static estimate of who's winning at the leaves, which propagates up by minimax."
+    },
+    {
+      q: "Which type of node does <strong>expectiminimax</strong> add to the standard minimax tree?",
+      options: [
+        "Goal nodes",
+        "Heuristic nodes",
+        "Chance nodes that combine children by expectation",
+        "Pruned nodes"
+      ],
+      answer: 2,
+      explain: "Stochastic games include chance events (dice, deal). Chance nodes sit between player nodes; their value is the probability-weighted average of children. Pruning at chance nodes is harder than at MAX/MIN nodes because expectations depend on every child."
+    },
+    {
+      q: "Why does <strong>move ordering</strong> matter so much for alpha-beta pruning?",
+      options: [
+        "It changes the final minimax value computed.",
+        "It only affects display, not computation.",
+        "Examining strong moves first causes early cutoffs, dramatically reducing how many nodes must be searched.",
+        "It is required for the algorithm to terminate."
+      ],
+      answer: 2,
+      explain: "Alpha-beta computes the same value regardless of order, but the number of nodes it expands depends entirely on whether good moves are tried early. Killer-move tables, iterative deepening, and capture-first heuristics all aim to push promising moves to the front of each move list."
+    },
+    {
+      q: "What is the time complexity of <strong>plain minimax</strong> on a game tree with branching factor <em>b</em> and maximum depth <em>m</em>?",
+      options: [
+        "O(b · m)",
+        "O(bm)",
+        "O(b<sup>m</sup>)",
+        "O(log b<sup>m</sup>)"
+      ],
+      answer: 2,
+      explain: "Minimax explores every leaf of the game tree, so time grows exponentially with depth. This is why depth cutoffs and pruning are essential for any game more complex than tic-tac-toe."
+    }
+  ]
+},
+
+/* =================================================================
+   MODULE 6 — Constraint Satisfaction Problems (8h)
+   ================================================================= */
+{
+  id: "m6",
+  number: 6,
+  title: "Constraint Satisfaction Problems",
+  subtitle: "Backtracking, Heuristics, Constraint Propagation",
+  hours: 8,
+  sections: [
+    {
+      title: "6.1 The CSP Formulation",
+      body: `
+        <p>So far, states have been opaque atoms. CSPs decompose a state into <strong>variables</strong>, each taking a value from a <strong>domain</strong>, subject to <strong>constraints</strong>. This structure lets us solve problems that would be hopeless as black-box search.</p>
+        <div class="def-box">
+          <strong>CSP</strong>
+          A triple ⟨X, D, C⟩:<br>
+          <strong>X</strong> = {X₁, …, Xₙ} — a set of variables.<br>
+          <strong>D</strong> = {D₁, …, Dₙ} — a domain for each variable.<br>
+          <strong>C</strong> = a set of constraints, each specifying allowed combinations of values for some subset of variables.
+        </div>
+        <p>A <strong>solution</strong> is an assignment to every variable such that all constraints are satisfied.</p>
+        <p>Classic examples:</p>
+        <ul>
+          <li><strong>Map coloring</strong> — variables are regions, domains are colors, constraints are "adjacent regions differ".</li>
+          <li><strong>N-Queens</strong> — variables are columns, domains are rows, constraints are no two queens attack.</li>
+          <li><strong>Sudoku</strong> — variables are cells, domains are 1–9, constraints are AllDifferent over rows, columns, boxes.</li>
+          <li><strong>Scheduling</strong> — variables are tasks, domains are time slots, constraints are precedence and resource limits.</li>
+        </ul>
+      `
+    },
+    {
+      title: "6.2 Varieties of Constraints",
+      body: `
+        <ul>
+          <li><strong>Unary</strong> — restricts one variable. <code>X₁ ≠ red</code>.</li>
+          <li><strong>Binary</strong> — relates two variables. <code>X₁ ≠ X₂</code>. Most familiar CSPs reduce to binary.</li>
+          <li><strong>Higher-order / global</strong> — relate three or more variables. <code>AllDifferent(X₁, X₂, X₃)</code> is a common global constraint that admits specialized propagation.</li>
+          <li><strong>Soft constraints</strong> — preferences with costs, rather than hard requirements. This generalizes CSPs to constraint optimization problems (COPs).</li>
+        </ul>
+        <p>The <strong>constraint graph</strong> has variables as nodes and binary constraints as edges. Its structure dictates which algorithms work well. Trees can be solved in linear time; tightly connected graphs need full search.</p>
+      `
+    },
+    {
+      title: "6.3 Backtracking Search",
+      body: `
+        <p>The basic engine for CSPs. Pick an unassigned variable, try a value, recurse. If a constraint is violated or recursion fails, undo and try the next value. If no value works, backtrack to the previous variable.</p>
+        <pre><span class="cm"># Backtracking</span>
+<span class="kw">function</span> BACKTRACK(assignment, csp):
+    <span class="kw">if</span> assignment is complete: <span class="kw">return</span> assignment
+    var ← SELECT_UNASSIGNED_VARIABLE(csp, assignment)
+    <span class="kw">for</span> value <span class="kw">in</span> ORDER_DOMAIN_VALUES(var, assignment, csp):
+        <span class="kw">if</span> value is consistent with assignment:
+            assignment[var] ← value
+            inferences ← INFERENCE(csp, var, value)
+            <span class="kw">if</span> inferences ≠ failure:
+                add inferences to assignment
+                result ← BACKTRACK(assignment, csp)
+                <span class="kw">if</span> result ≠ failure: <span class="kw">return</span> result
+            remove var and inferences from assignment
+    <span class="kw">return</span> failure</pre>
+        <p>Plain backtracking on Sudoku will eventually solve it, but smart variable and value ordering — plus constraint propagation — can speed it up by orders of magnitude.</p>
+      `
+    },
+    {
+      title: "6.4 Heuristics for Backtracking",
+      body: `
+        <h4>Choosing the next variable</h4>
+        <ul>
+          <li><strong>Minimum Remaining Values (MRV)</strong> — pick the variable with the fewest legal values left. Fails fast, prunes early. Also called the "most-constrained variable" heuristic.</li>
+          <li><strong>Degree heuristic</strong> — among ties, pick the variable involved in the most constraints with unassigned variables. A good tiebreaker for MRV; useful as the first-choice heuristic when starting.</li>
+        </ul>
+
+        <h4>Choosing the next value</h4>
+        <ul>
+          <li><strong>Least Constraining Value (LCV)</strong> — try the value that rules out the <em>fewest</em> choices for the neighboring variables. The intuition is opposite to MRV: when picking variables, fail fast; when picking values, keep options open.</li>
+        </ul>
+
+        <p>MRV + degree (variable selection) + LCV (value ordering) is the standard combination and routinely produces order-of-magnitude speedups on hard CSPs.</p>
+      `
+    },
+    {
+      title: "6.5 Constraint Propagation and Arc Consistency",
+      body: `
+        <p>Local constraints can be propagated to prune domains before search even tries a value.</p>
+        <h4>Node consistency</h4>
+        <p>A variable is node-consistent if every value in its domain satisfies its unary constraints. Trivial to enforce: drop the values that don't.</p>
+
+        <h4>Arc consistency (AC-3)</h4>
+        <p>An arc <code>X → Y</code> is consistent if, for every value <code>x</code> in <code>D(X)</code>, there is some value <code>y</code> in <code>D(Y)</code> consistent with <code>x</code>. AC-3 maintains a queue of arcs to check; whenever a domain shrinks, all arcs pointing <em>into</em> the affected variable are re-queued.</p>
+        <pre><span class="cm"># AC-3</span>
+<span class="kw">function</span> AC3(csp):
+    queue ← all arcs in csp
+    <span class="kw">while</span> queue not empty:
+        (Xi, Xj) ← queue.pop()
+        <span class="kw">if</span> REVISE(csp, Xi, Xj):
+            <span class="kw">if</span> Di is empty: <span class="kw">return</span> failure
+            <span class="kw">for</span> Xk <span class="kw">in</span> neighbors(Xi) \ {Xj}:
+                queue.add((Xk, Xi))
+    <span class="kw">return</span> success
+
+<span class="kw">function</span> REVISE(csp, Xi, Xj):
+    revised ← false
+    <span class="kw">for</span> x <span class="kw">in</span> Di:
+        <span class="kw">if</span> no value y <span class="kw">in</span> Dj satisfies constraint(Xi, Xj):
+            remove x from Di
+            revised ← true
+    <span class="kw">return</span> revised</pre>
+        <p>Running AC-3 to fixpoint before search begins, or after every variable assignment (giving <strong>Maintaining Arc Consistency</strong>, MAC), is one of the most effective optimizations for CSPs. Easy Sudokus often solve themselves via propagation alone, with no backtracking needed.</p>
+
+        <h4>Forward checking</h4>
+        <p>A lighter alternative to MAC: when a variable is assigned, prune values inconsistent with it from the domains of immediate neighbors. Less aggressive than AC-3 but cheaper per step.</p>
+      `
+    },
+    {
+      title: "6.6 Local Search for CSPs",
+      body: `
+        <p>For very large CSPs (e.g., scheduling 10,000 tasks), complete backtracking can be impractical. Local search starts with a complete (possibly violating) assignment and repeatedly changes one variable at a time.</p>
+        <p>The <strong>min-conflicts</strong> heuristic — at each step, pick a conflicted variable at random and assign it the value that minimizes the number of constraints it violates — solves the n-queens problem for n in the millions almost instantly.</p>
+      `
+    }
+  ],
+  quiz: [
+    {
+      q: "Which three components define a <strong>constraint satisfaction problem</strong>?",
+      options: [
+        "States, actions, transition model",
+        "Variables, domains, constraints",
+        "Agents, environments, performance measures",
+        "Sensors, actuators, controllers"
+      ],
+      answer: 1,
+      explain: "A CSP is a triple ⟨X, D, C⟩: variables X, their domains D, and constraints C specifying allowed combinations of values. A solution assigns each variable a value from its domain such that all constraints hold."
+    },
+    {
+      q: "The <strong>Minimum Remaining Values (MRV)</strong> heuristic for variable selection picks:",
+      options: [
+        "The variable with the smallest index.",
+        "The variable with the fewest legal values remaining.",
+        "The variable with the most legal values remaining.",
+        "A random variable to avoid bias."
+      ],
+      answer: 1,
+      explain: "MRV picks the most constrained variable — the one whose domain is closest to empty. This is the &quot;fail-fast&quot; principle: a variable that's almost out of options will trigger backtracking quickly if no value works, saving wasted exploration."
+    },
+    {
+      q: "Why does <strong>Least Constraining Value (LCV)</strong> use the opposite intuition from MRV?",
+      options: [
+        "It is a bug in textbook descriptions.",
+        "When choosing a value, we want to preserve options for neighbors so the rest of the assignment has room to succeed.",
+        "Both heuristics make the same choice.",
+        "LCV picks the value that violates the most constraints."
+      ],
+      answer: 1,
+      explain: "When picking a <em>variable</em>, we want to fail fast — discover dead ends early. When picking a <em>value</em>, we want to keep options open for the rest of the assignment, so we choose the value that rules out the fewest neighbor values."
+    },
+    {
+      q: "When is an arc <code>X → Y</code> said to be <strong>arc consistent</strong>?",
+      options: [
+        "When X and Y have the same domain.",
+        "When for every value in D(X), there is some compatible value in D(Y).",
+        "When the constraint between X and Y is unary.",
+        "When X and Y have no constraints between them."
+      ],
+      answer: 1,
+      explain: "Arc consistency requires that every value of X be defensible — i.e., it must have at least one partner in D(Y) that satisfies the constraint. Values without any partner are removed from D(X)."
+    },
+    {
+      q: "What does the <strong>AC-3 algorithm</strong> do when it removes a value from D(X<sub>i</sub>)?",
+      options: [
+        "It restarts from scratch.",
+        "It backtracks to the previous assignment.",
+        "It re-queues every arc from neighbors of X<sub>i</sub> into X<sub>i</sub>, since their consistency may now have changed.",
+        "It enlarges all other domains."
+      ],
+      answer: 2,
+      explain: "Shrinking D(X<sub>i</sub>) can break arc consistency for arcs pointing into X<sub>i</sub> from other variables — their values may no longer have a partner. AC-3 re-queues those arcs to re-check them."
+    },
+    {
+      q: "Which CSP technique is especially effective for very large problems like <em>n</em>-queens with <em>n</em> = 1,000,000?",
+      options: [
+        "Plain backtracking",
+        "Full AC-3 propagation at every step",
+        "Local search with the min-conflicts heuristic",
+        "Depth-first search with cycle checking"
+      ],
+      answer: 2,
+      explain: "Local search with min-conflicts solves million-queen instances in seconds. It starts from a complete (often heavily conflicting) assignment and repeatedly moves a queen to the column where it attacks the fewest others. The runtime is approximately constant in <em>n</em> for n-queens."
+    }
+  ]
+},
+
+/* =================================================================
+   MODULE 7 — Logical Agents (8h)
+   ================================================================= */
+{
+  id: "m7",
+  number: 7,
+  title: "Logical Agents",
+  subtitle: "Propositional Logic, First-Order Logic, Resolution",
+  hours: 8,
+  sections: [
+    {
+      title: "7.1 Knowledge-Based Agents",
+      body: `
+        <p>A <strong>knowledge-based agent</strong> reasons explicitly about its world using a <em>knowledge base</em> (KB) — a set of sentences in a formal language. The agent program has two basic operations:</p>
+        <ul>
+          <li><strong>TELL</strong>(KB, sentence) — add new information to the KB.</li>
+          <li><strong>ASK</strong>(KB, query) — return a sentence that follows from the KB.</li>
+        </ul>
+        <p>This separation of <em>what</em> the agent knows from <em>how</em> it uses that knowledge is the central methodology of the logicist tradition in AI. Add new facts via TELL; derive answers via ASK. The same inference engine works on different KBs; the same KB serves many queries.</p>
+      `
+    },
+    {
+      title: "7.2 Propositional Logic",
+      body: `
+        <p>The simplest logic. Atomic sentences are <strong>propositions</strong> — symbols denoting facts that are either true or false. Compound sentences are built with connectives:</p>
+        <table class="data-table">
+          <thead><tr><th>Connective</th><th>Symbol</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>Negation</td><td>¬P</td><td>not P</td></tr>
+            <tr><td>Conjunction</td><td>P ∧ Q</td><td>P and Q</td></tr>
+            <tr><td>Disjunction</td><td>P ∨ Q</td><td>P or Q (inclusive)</td></tr>
+            <tr><td>Implication</td><td>P ⇒ Q</td><td>if P then Q</td></tr>
+            <tr><td>Biconditional</td><td>P ⇔ Q</td><td>P iff Q</td></tr>
+          </tbody>
+        </table>
+        <p>The semantics: a <strong>model</strong> assigns true or false to each proposition. A sentence is <em>true in a model</em> if the truth values of its atoms, combined under the connectives, evaluate to true.</p>
+        <div class="def-box">
+          <strong>Entailment</strong>
+          KB ⊨ α — α is entailed by KB — means α is true in every model in which KB is true.
+        </div>
+        <p>Entailment is the bedrock of logical inference. We don't want sentences that <em>might</em> be true; we want sentences that <em>must</em> be true given everything we know.</p>
+      `
+    },
+    {
+      title: "7.3 Inference",
+      body: `
+        <p>An inference algorithm <em>derives</em> sentences from a KB. Two desiderata:</p>
+        <ul>
+          <li><strong>Sound</strong> — if it derives α, then KB ⊨ α. (No false conclusions.)</li>
+          <li><strong>Complete</strong> — if KB ⊨ α, it can derive α. (No missed conclusions.)</li>
+        </ul>
+        <p>Standard inference rules:</p>
+        <ul>
+          <li><strong>Modus Ponens:</strong> from <code>P ⇒ Q</code> and <code>P</code>, derive <code>Q</code>.</li>
+          <li><strong>And-Elimination:</strong> from <code>P ∧ Q</code>, derive <code>P</code> (or <code>Q</code>).</li>
+          <li><strong>Resolution:</strong> from <code>P ∨ Q</code> and <code>¬P ∨ R</code>, derive <code>Q ∨ R</code>. The complementary literals cancel.</li>
+        </ul>
+        <p>Truth-table enumeration is sound and complete but exponential in the number of propositions. Resolution is sound and refutation-complete (it can prove unsatisfiability), and modern SAT solvers based on its descendants handle problems with millions of variables.</p>
+      `
+    },
+    {
+      title: "7.4 Conjunctive Normal Form and Resolution",
+      body: `
+        <p>Resolution works on sentences in <strong>conjunctive normal form (CNF)</strong>: a conjunction of clauses, where each clause is a disjunction of literals (atoms or negated atoms). Every propositional formula can be converted to an equivalent CNF formula by:</p>
+        <ol>
+          <li>Eliminating ⇔ via <code>P ⇔ Q ≡ (P ⇒ Q) ∧ (Q ⇒ P)</code>.</li>
+          <li>Eliminating ⇒ via <code>P ⇒ Q ≡ ¬P ∨ Q</code>.</li>
+          <li>Pushing ¬ inward using De Morgan's laws.</li>
+          <li>Distributing ∨ over ∧.</li>
+        </ol>
+        <p><strong>Proof by resolution:</strong> to prove KB ⊨ α, add ¬α to the KB and apply resolution until either the empty clause is derived (contradiction — proves α) or no new clauses can be added (α is not entailed).</p>
+      `
+    },
+    {
+      title: "7.5 First-Order Logic",
+      body: `
+        <p>Propositional logic can only state facts about specific propositions. It cannot say "every student passes if they study" without a separate proposition for every student. <strong>First-order logic (FOL)</strong> adds:</p>
+        <ul>
+          <li><strong>Objects</strong> — things in the world: people, numbers, blocks.</li>
+          <li><strong>Predicates</strong> — properties and relations: <code>Student(x)</code>, <code>Loves(x, y)</code>.</li>
+          <li><strong>Functions</strong> — mappings from objects to objects: <code>FatherOf(x)</code>.</li>
+          <li><strong>Quantifiers</strong> — <code>∀</code> (for all) and <code>∃</code> (there exists).</li>
+        </ul>
+        <p>Examples:</p>
+        <ul>
+          <li>"All students are people." &nbsp; <code>∀x Student(x) ⇒ Person(x)</code></li>
+          <li>"Some student loves logic." &nbsp; <code>∃x Student(x) ∧ Loves(x, Logic)</code></li>
+          <li>"Everyone has a mother." &nbsp; <code>∀x ∃y Mother(y, x)</code></li>
+        </ul>
+        <p>FOL is dramatically more expressive than propositional logic — at the cost of inference complexity. Entailment in FOL is semi-decidable: if KB ⊨ α, an algorithm can prove it (eventually), but if KB ⊭ α, no algorithm in general can confirm that.</p>
+      `
+    },
+    {
+      title: "7.6 Unification and Lifted Resolution",
+      body: `
+        <p>FOL resolution requires matching expressions that look similar but use different variables. <strong>Unification</strong> finds a substitution that makes two expressions identical.</p>
+        <p>Example: <code>UNIFY(Knows(John, x), Knows(y, Mother(y)))</code> returns <code>{y/John, x/Mother(John)}</code>.</p>
+        <p>The most general unifier (MGU) is unique up to renaming. Robinson's resolution algorithm — sound and refutation-complete for FOL — uses unification to apply the resolution rule across variables:</p>
+        <div class="def-box">
+          <strong>Lifted resolution</strong>
+          From <code>P(x) ∨ Q</code> and <code>¬P(A) ∨ R</code>, with unifier <code>{x/A}</code>, derive <code>Q ∨ R</code>.
+        </div>
+        <p>This is the engine behind logic programming (Prolog) and many automated theorem provers. The conversion to clausal form for FOL adds two extra steps to the propositional procedure: <strong>standardize variables apart</strong> (rename so different clauses don't share variables) and <strong>Skolemize</strong> (replace existentially quantified variables with Skolem functions of the universally quantified variables in whose scope they appear).</p>
+      `
+    }
+  ],
+  quiz: [
+    {
+      q: "What is the meaning of <strong>KB ⊨ α</strong>?",
+      options: [
+        "KB and α are syntactically identical.",
+        "α is true in every model in which KB is true.",
+        "α can be parsed by the same grammar as KB.",
+        "α has more atomic propositions than KB."
+      ],
+      answer: 1,
+      explain: "Entailment is the central semantic relation. KB ⊨ α — read &quot;KB entails α&quot; — means that whenever the KB is satisfied, α must also be satisfied. It says nothing about how to prove α; that's the job of inference algorithms."
+    },
+    {
+      q: "Which property must a sound inference algorithm satisfy?",
+      options: [
+        "It can derive every sentence entailed by the KB.",
+        "It only derives sentences that are entailed by the KB.",
+        "It terminates in polynomial time.",
+        "It uses only modus ponens."
+      ],
+      answer: 1,
+      explain: "Soundness: every derivation is correct (no false positives). Completeness: every truth is derivable (no missed conclusions). The two are independent — an algorithm can be sound but incomplete, or vice versa."
+    },
+    {
+      q: "Apply the <strong>resolution rule</strong> to <code>(A ∨ B)</code> and <code>(¬B ∨ C)</code>. The result is:",
+      options: [
+        "A ∨ B ∨ C",
+        "A ∧ C",
+        "A ∨ C",
+        "¬A ∨ ¬C"
+      ],
+      answer: 2,
+      explain: "Resolution cancels complementary literals B and ¬B and combines the remaining disjuncts: <code>(A ∨ B)</code> and <code>(¬B ∨ C)</code> resolve to <code>(A ∨ C)</code>."
+    },
+    {
+      q: "Which step is part of converting a propositional formula to <strong>conjunctive normal form</strong>?",
+      options: [
+        "Replacing all variables with constants.",
+        "Eliminating ⇒ via P ⇒ Q ≡ ¬P ∨ Q.",
+        "Removing all negations.",
+        "Replacing ∨ with ∧."
+      ],
+      answer: 1,
+      explain: "Standard CNF conversion: (1) eliminate ⇔, (2) eliminate ⇒ as ¬P ∨ Q, (3) push ¬ inward via De Morgan, (4) distribute ∨ over ∧."
+    },
+    {
+      q: "Which sentence correctly translates &quot;Every student loves some subject&quot; in first-order logic?",
+      options: [
+        "∃x ∀y (Student(x) ∧ Loves(x, y))",
+        "∀x (Student(x) ⇒ ∃y Subject(y) ∧ Loves(x, y))",
+        "∀x ∀y (Student(x) ∧ Loves(x, y))",
+        "Student(x) ⇒ Loves(x, y)"
+      ],
+      answer: 1,
+      explain: "&quot;Every student&quot; → universal quantifier guarded by an implication: <code>∀x (Student(x) ⇒ ...)</code>. &quot;Loves some subject&quot; → existential inside: <code>∃y Subject(y) ∧ Loves(x, y)</code>. Wrapping ∀ over ⇒ is the standard idiom for restricted universals."
+    },
+    {
+      q: "What does the <strong>unification</strong> algorithm produce when applied to two FOL expressions?",
+      options: [
+        "A truth value.",
+        "A substitution that makes the two expressions syntactically identical, if one exists.",
+        "A CNF clause.",
+        "A list of all predicates in the KB."
+      ],
+      answer: 1,
+      explain: "Unification finds a substitution θ such that <code>Eθ = Fθ</code>. The most general unifier is unique up to variable renaming. It is the binding step that lets resolution apply to variable-containing clauses."
+    },
+    {
+      q: "Why is first-order logic <strong>semi-decidable</strong> rather than decidable?",
+      options: [
+        "Because it uses Greek letters.",
+        "Because if KB ⊨ α, inference can prove it; but if KB ⊭ α, no general algorithm can confirm that in finite time.",
+        "Because FOL has no inference rules.",
+        "Because propositional logic is undecidable."
+      ],
+      answer: 1,
+      explain: "Church and Turing proved that FOL is undecidable in general. A complete inference procedure (like Robinson's resolution) will eventually find any proof — but if no proof exists, the procedure may not terminate. So we can confirm entailments, just not non-entailments, in general."
+    }
+  ]
+}
+];
+
+// Concatenate the parts together. This file is loaded after course-data-part1.js
+COURSE.push(...COURSE_PART2);
+
+/* ==================== APP LOGIC (inlined) ==================== */
+/* ============================================================
+   AI4101 — Course App
+   Renders modules, tracks progress in localStorage, manages quizzes.
+   ============================================================ */
+
+const STORAGE_KEY = 'ai4101-progress-v1';
+
+/* --------- State management --------- */
+const state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) { /* fall through */ }
+  // Initial state: per-module, track which sections were marked read and per-question answer
+  const fresh = { modules: {} };
+  COURSE.forEach(m => {
+    fresh.modules[m.id] = {
+      readSections: {},  // index -> true
+      answers: {}        // question index -> chosen option index
+    };
+  });
+  return fresh;
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.warn('Could not save progress', e);
+  }
+}
+
+function resetState() {
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+/* --------- Progress calculation --------- */
+function moduleProgress(module) {
+  // Each section is one unit; the quiz contributes one unit when fully answered.
+  // Total = sections.length + 1; complete units = read sections + (1 if all questions answered)
+  const m = state.modules[module.id];
+  const readCount = Object.values(m.readSections).filter(Boolean).length;
+  const totalSections = module.sections.length;
+  const answeredCount = Object.keys(m.answers).length;
+  const quizDone = answeredCount === module.quiz.length;
+  const total = totalSections + 1;
+  const done = readCount + (quizDone ? 1 : 0);
+  return { done, total, pct: Math.round((done / total) * 100), quizDone, complete: done === total };
+}
+
+function quizScore(module) {
+  const m = state.modules[module.id];
+  let correct = 0;
+  module.quiz.forEach((q, idx) => {
+    if (m.answers[idx] === q.answer) correct++;
+  });
+  return { correct, total: module.quiz.length };
+}
+
+function overallProgress() {
+  let done = 0, total = 0;
+  COURSE.forEach(m => {
+    const p = moduleProgress(m);
+    done += p.done;
+    total += p.total;
+  });
+  return Math.round((done / total) * 100);
+}
+
+/* --------- Rendering --------- */
+function renderSidebar() {
+  const list = document.getElementById('nav-list');
+  list.innerHTML = '';
+  COURSE.forEach(m => {
+    const p = moduleProgress(m);
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <a href="#${m.id}" class="nav-item ${p.complete ? 'complete' : ''}" data-module="${m.id}">
+        <span class="nav-num"><span>${m.number}</span></span>
+        <span class="nav-title">${m.title}</span>
+        <span class="nav-hours">${p.pct}%</span>
+      </a>`;
+    list.appendChild(li);
+  });
+}
+
+function renderModule(module) {
+  const m = state.modules[module.id];
+  const sectionsHTML = module.sections.map((s, idx) => {
+    const isRead = !!m.readSections[idx];
+    return `
+      <article class="section-block ${isRead ? 'read' : ''}" data-section="${idx}">
+        <div class="section-num">Section ${module.number}.${idx + 1}</div>
+        <h3 class="section-title">${s.title.replace(/^\d+\.\d+\s+/, '')}</h3>
+        <div class="section-content">${s.body}</div>
+        <div class="mark-read-row">
+          <button class="mark-btn ${isRead ? 'marked' : ''}" data-module="${module.id}" data-section-idx="${idx}">
+            ${isRead ? 'Marked as read' : 'Mark as read'}
+          </button>
+        </div>
+      </article>`;
+  }).join('');
+
+  const quizHTML = renderQuiz(module);
+
+  const p = moduleProgress(module);
+
+  return `
+    <section class="module" id="${module.id}">
+      <header class="module-header">
+        <div class="module-number" data-module-num="${module.id}">${String(module.number).padStart(2, '0')}</div>
+        <div class="module-title-group">
+          <div class="module-eyebrow">Module ${module.number} · ${module.hours} contact hours</div>
+          <h2 class="module-title">${module.title}</h2>
+          ${module.subtitle ? `<div style="color:var(--muted); margin-top:6px; font-size:14px; font-style:italic;">${module.subtitle}</div>` : ''}
+        </div>
+        <div class="module-meta">
+          <span class="module-hours">${module.hours}h</span>
+          <span class="module-progress-ring" data-progress-ring="${module.id}">${p.pct}% complete</span>
+        </div>
+      </header>
+      ${sectionsHTML}
+      ${quizHTML}
+    </section>`;
+}
+
+function renderQuiz(module) {
+  const m = state.modules[module.id];
+  const score = quizScore(module);
+  const allAnswered = Object.keys(m.answers).length === module.quiz.length;
+
+  const questionsHTML = module.quiz.map((q, qIdx) => {
+    const chosen = m.answers[qIdx];
+    const answered = chosen !== undefined;
+    const isCorrect = answered && chosen === q.answer;
+    const optionsHTML = q.options.map((opt, oIdx) => {
+      let cls = 'option';
+      if (answered) {
+        cls += ' disabled';
+        if (oIdx === q.answer) cls += ' correct';
+        else if (oIdx === chosen) cls += ' incorrect';
+      } else if (chosen === oIdx) {
+        cls += ' selected';
+      }
+      const letter = String.fromCharCode(65 + oIdx);
+      return `
+        <div class="${cls}" data-module="${module.id}" data-q="${qIdx}" data-opt="${oIdx}">
+          <span class="option-letter">${letter}</span>
+          <span class="option-text">${opt}</span>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="question ${answered ? (isCorrect ? 'answered correct' : 'answered incorrect') : ''}" data-question="${qIdx}">
+        <div class="q-num">Question ${qIdx + 1} of ${module.quiz.length}</div>
+        <div class="q-text">${q.q}</div>
+        <div class="options">${optionsHTML}</div>
+        <div class="explanation ${answered ? 'show' : ''}">
+          <strong>${isCorrect ? 'Correct' : answered ? 'Not quite' : ''}</strong>
+          ${q.explain}
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="quiz-block">
+      <div class="quiz-header">
+        <div>
+          <div class="quiz-eyebrow">Self-check · Module ${module.number}</div>
+          <h3 class="quiz-title">Test your understanding</h3>
+        </div>
+        <div class="quiz-score" data-score="${module.id}">
+          ${allAnswered ? `Score: ${score.correct} / ${score.total}` : `Answered: ${Object.keys(m.answers).length} / ${module.quiz.length}`}
+        </div>
+      </div>
+      <p class="quiz-intro">Choose an answer; the correct option and an explanation will appear immediately. Your responses are saved on this device.</p>
+      ${questionsHTML}
+      <div class="quiz-actions">
+        <button class="btn btn-ghost" data-clear-quiz="${module.id}">Clear answers</button>
+      </div>
+    </div>`;
+}
+
+function renderSummary() {
+  const totalQuestions = COURSE.reduce((sum, m) => sum + m.quiz.length, 0);
+  const answered = COURSE.reduce((sum, m) => sum + Object.keys(state.modules[m.id].answers).length, 0);
+  let correctTotal = 0;
+  COURSE.forEach(m => { correctTotal += quizScore(m).correct; });
+  const completeModules = COURSE.filter(m => moduleProgress(m).complete).length;
+
+  return `
+    <section class="summary" id="summary">
+      <div class="summary-eyebrow">Your Progress</div>
+      <h2 class="summary-title">Where you stand in the course</h2>
+      <div class="summary-stats">
+        <div class="stat">
+          <div class="stat-value" data-stat="overall">${overallProgress()}%</div>
+          <div class="stat-label">Overall progress</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" data-stat="modules">${completeModules}/7</div>
+          <div class="stat-label">Modules complete</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" data-stat="answered">${answered}/${totalQuestions}</div>
+          <div class="stat-label">Questions answered</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" data-stat="correct">${correctTotal}</div>
+          <div class="stat-label">Correct answers</div>
+        </div>
+      </div>
+      <p style="opacity:0.85; max-width:540px; margin: 16px auto 0; font-size:14.5px; position:relative;">
+        Progress is stored only in your browser — clearing site data or using a different device will reset it.
+      </p>
+    </section>`;
+}
+
+function renderAll() {
+  // Render modules
+  const main = document.getElementById('main');
+  main.innerHTML = COURSE.map(renderModule).join('') + renderSummary();
+
+  // Render sidebar
+  renderSidebar();
+
+  // Set total questions in hero meta
+  const totalQuestions = COURSE.reduce((sum, m) => sum + m.quiz.length, 0);
+  document.getElementById('total-questions-meta').textContent = totalQuestions;
+
+  // Update progress bars
+  updateAllProgressDisplays();
+}
+
+/* --------- Progress display updates (incremental) --------- */
+function updateAllProgressDisplays() {
+  const overall = overallProgress();
+  document.getElementById('overall-progress').style.width = overall + '%';
+  document.getElementById('overall-label').textContent = overall + '%';
+
+  COURSE.forEach(m => {
+    const p = moduleProgress(m);
+    // Sidebar
+    const navItem = document.querySelector(`.nav-item[data-module="${m.id}"]`);
+    if (navItem) {
+      const hours = navItem.querySelector('.nav-hours');
+      if (hours) hours.textContent = p.pct + '%';
+      navItem.classList.toggle('complete', p.complete);
+    }
+    // Module header
+    const ring = document.querySelector(`[data-progress-ring="${m.id}"]`);
+    if (ring) ring.textContent = p.pct + '% complete';
+    // Module number bar
+    const numEl = document.querySelector(`[data-module-num="${m.id}"]`);
+    if (numEl) {
+      const after = numEl;
+      // We use ::after; control via CSS custom property
+      numEl.style.setProperty('--bar-width', p.pct + '%');
+      // Direct style override on pseudo isn't possible; we set width via inline ::after using CSS var
+    }
+  });
+
+  // Summary stats (if rendered)
+  const totalQ = COURSE.reduce((sum, m) => sum + m.quiz.length, 0);
+  const answered = COURSE.reduce((sum, m) => sum + Object.keys(state.modules[m.id].answers).length, 0);
+  let correctTotal = 0;
+  COURSE.forEach(m => { correctTotal += quizScore(m).correct; });
+  const completeModules = COURSE.filter(m => moduleProgress(m).complete).length;
+
+  const setStat = (key, val) => {
+    const el = document.querySelector(`[data-stat="${key}"]`);
+    if (el) el.textContent = val;
+  };
+  setStat('overall', overall + '%');
+  setStat('modules', completeModules + '/7');
+  setStat('answered', answered + '/' + totalQ);
+  setStat('correct', correctTotal);
+}
+
+/* --------- Event handling --------- */
+function handleClick(e) {
+  // Mark section as read
+  const markBtn = e.target.closest('.mark-btn');
+  if (markBtn) {
+    const moduleId = markBtn.dataset.module;
+    const sectionIdx = parseInt(markBtn.dataset.sectionIdx, 10);
+    const m = state.modules[moduleId];
+    m.readSections[sectionIdx] = !m.readSections[sectionIdx];
+    saveState();
+    const isRead = m.readSections[sectionIdx];
+    markBtn.classList.toggle('marked', isRead);
+    markBtn.textContent = isRead ? 'Marked as read' : 'Mark as read';
+    const block = markBtn.closest('.section-block');
+    if (block) block.classList.toggle('read', isRead);
+    updateAllProgressDisplays();
+    if (isRead) showToast('Section marked as read');
+    return;
+  }
+
+  // Answer a quiz option
+  const option = e.target.closest('.option');
+  if (option && !option.classList.contains('disabled')) {
+    const moduleId = option.dataset.module;
+    const qIdx = parseInt(option.dataset.q, 10);
+    const oIdx = parseInt(option.dataset.opt, 10);
+    answerQuestion(moduleId, qIdx, oIdx);
+    return;
+  }
+
+  // Clear a quiz
+  const clearBtn = e.target.closest('[data-clear-quiz]');
+  if (clearBtn) {
+    const moduleId = clearBtn.dataset.clearQuiz;
+    if (confirm('Clear all answers for this module\'s self-check?')) {
+      state.modules[moduleId].answers = {};
+      saveState();
+      // Re-render just this module's quiz
+      const moduleEl = document.getElementById(moduleId);
+      const oldQuiz = moduleEl.querySelector('.quiz-block');
+      const module = COURSE.find(m => m.id === moduleId);
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = renderQuiz(module);
+      oldQuiz.replaceWith(tempDiv.firstElementChild);
+      updateAllProgressDisplays();
+      showToast('Answers cleared');
+    }
+    return;
+  }
+}
+
+function answerQuestion(moduleId, qIdx, oIdx) {
+  const m = state.modules[moduleId];
+  // Don't allow re-answering once answered
+  if (m.answers[qIdx] !== undefined) return;
+  m.answers[qIdx] = oIdx;
+  saveState();
+
+  const module = COURSE.find(mm => mm.id === moduleId);
+  const q = module.quiz[qIdx];
+  const isCorrect = oIdx === q.answer;
+
+  // Update the DOM for this question only
+  const questionEl = document.querySelector(`#${moduleId} .question[data-question="${qIdx}"]`);
+  if (!questionEl) return;
+
+  questionEl.classList.add('answered', isCorrect ? 'correct' : 'incorrect');
+  const options = questionEl.querySelectorAll('.option');
+  options.forEach((opt, idx) => {
+    opt.classList.add('disabled');
+    opt.classList.remove('selected');
+    if (idx === q.answer) opt.classList.add('correct');
+    else if (idx === oIdx) opt.classList.add('incorrect');
+  });
+  const explanation = questionEl.querySelector('.explanation');
+  if (explanation) {
+    explanation.classList.add('show');
+    const head = isCorrect ? 'Correct' : 'Not quite';
+    explanation.innerHTML = `<strong>${head}</strong>${q.explain}`;
+  }
+
+  // Update quiz header score
+  const scoreEl = document.querySelector(`[data-score="${moduleId}"]`);
+  if (scoreEl) {
+    const answered = Object.keys(m.answers).length;
+    const score = quizScore(module);
+    scoreEl.textContent = answered === module.quiz.length
+      ? `Score: ${score.correct} / ${score.total}`
+      : `Answered: ${answered} / ${module.quiz.length}`;
+  }
+
+  updateAllProgressDisplays();
+  if (isCorrect) showToast('Correct!');
+}
+
+/* --------- Active sidebar item on scroll --------- */
+function setupScrollSpy() {
+  const sections = COURSE.map(m => document.getElementById(m.id));
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(item => {
+          item.classList.toggle('active', item.dataset.module === entry.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-100px 0px -60% 0px' });
+
+  sections.forEach(s => { if (s) observer.observe(s); });
+}
+
+/* --------- Toast --------- */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* --------- Header buttons --------- */
+function setupHeaderButtons() {
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    if (confirm('Reset all progress? This will clear marked sections and quiz answers across all modules.')) {
+      resetState();
+    }
+  });
+  document.getElementById('print-btn').addEventListener('click', () => {
+    window.print();
+  });
+}
+
+/* --------- Init --------- */
+document.addEventListener('DOMContentLoaded', () => {
+  // Handle case where saved state has fewer modules than current (e.g., schema change)
+  COURSE.forEach(m => {
+    if (!state.modules[m.id]) {
+      state.modules[m.id] = { readSections: {}, answers: {} };
+    }
+  });
+
+  renderAll();
+  document.body.addEventListener('click', handleClick);
+  setupHeaderButtons();
+  // Slight delay for scroll spy to attach after layout settles
+  setTimeout(setupScrollSpy, 100);
+});
+</script>
+</body>
+</html>
