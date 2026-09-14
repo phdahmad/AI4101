@@ -2544,3 +2544,27 @@ body.is-landing .stats-strip { display: block; }
   .landing-bg img { object-position: 52% 62%; }
   .landing { padding-bottom: 3rem; }
 }
+
+/* =========================================================
+   PRIMARY CALL TO ACTION
+   No glow, no shimmer: a lifted resting state, and motion only
+   when the reader actually touches it.
+   ========================================================= */
+.landing .btn-primary {
+  position: relative;
+  box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: transform .18s ease, box-shadow .22s ease;
+}
+.landing .btn-primary svg {
+  transition: transform .22s cubic-bezier(.3,0,.2,1);
+}
+.landing .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -8px color-mix(in srgb, var(--accent) 65%, transparent);
+}
+.landing .btn-primary:hover svg { transform: translateX(4px); }
+.landing .btn-primary:active { transform: translateY(0); }
+
+[data-theme="dark"] .landing .btn-primary {
+  box-shadow: 0 6px 20px -8px color-mix(in srgb, var(--accent) 70%, transparent);
+}
