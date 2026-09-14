@@ -16,6 +16,26 @@
   const COURSE_CONTENT = window.COURSE_CONTENT || [];
   const QUIZ_BANK = window.QUIZ_BANK || {};
 
+  // Guard: if the data files did not load, say so instead of showing a blank page.
+  const MISSING = [];
+  if (!window.COURSE_CONTENT) MISSING.push('content.js');
+  if (!window.QUIZ_BANK) MISSING.push('quizzes.js');
+  if (MISSING.length) {
+    $app.innerHTML = `
+      <section class="section">
+        <div class="callout warning">
+          <div class="callout-icon">!</div>
+          <div class="callout-body">
+            <div class="callout-title">Course data did not load</div>
+            <p>These files are missing or failed to load: <strong>${MISSING.join(', ')}</strong>.</p>
+            <p>They must sit in the same folder as <code>index.html</code>, with exactly these
+               lowercase names. On GitHub Pages, file names are case-sensitive.</p>
+          </div>
+        </div>
+      </section>`;
+    return;
+  }
+
   // ===== PROGRESS =====
   function loadProgress() {
     try {
