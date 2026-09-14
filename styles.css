@@ -2132,3 +2132,45 @@ a.cc-badge:hover { border-color: var(--accent); color: var(--accent); }
     left: 0;
   }
 }
+
+/* =========================================================
+   MOBILE SIDEBAR: backdrop + close button
+   ========================================================= */
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(10, 8, 20, 0.45);
+  backdrop-filter: blur(2px);
+  animation: fadeIn .2s ease;
+}
+[data-theme="dark"] .sidebar-backdrop { background: rgba(0, 0, 0, 0.6); }
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+.sidebar-close {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1.2rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 99px;
+  background: var(--bg-soft);
+  color: var(--ink-soft);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.sidebar-close svg { width: 16px; height: 16px; }
+.sidebar-close:hover { color: var(--accent); border-color: var(--accent); }
+
+body.sidebar-locked { overflow: hidden; }
+
+@media (min-width: 1001px) {
+  .sidebar-backdrop { display: none; }
+}
+@media (max-width: 1000px) {
+  .sidebar { z-index: 80; }
+  .sidebar-close { display: inline-flex; }
+}
