@@ -75,11 +75,23 @@
       render();
     }
   });
+  const $backdrop = document.getElementById('sidebarBackdrop');
+
+  function setSidebar(open) {
+    $sidebar.classList.toggle('open', open);
+    $backdrop.hidden = !open;
+    document.body.classList.toggle('sidebar-locked', open);
+  }
   document.getElementById('sidebarToggle').addEventListener('click', () => {
-    $sidebar.classList.toggle('open');
+    setSidebar(!$sidebar.classList.contains('open'));
+  });
+  document.getElementById('sidebarClose').addEventListener('click', () => setSidebar(false));
+  $backdrop.addEventListener('click', () => setSidebar(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && $sidebar.classList.contains('open')) setSidebar(false);
   });
   $sidebar.addEventListener('click', (e) => {
-    if (e.target.closest('a')) $sidebar.classList.remove('open');
+    if (e.target.closest('a')) setSidebar(false);
   });
 
   // ===== SIDEBAR CONTENTS =====
@@ -128,9 +140,13 @@
           algorithms that beat you at chess, and to agents that reason with logic.
           Plain language, local examples, diagrams, and a self-check at the end of every module.
         </p>
-        <a href="#module/1" class="btn btn-primary">Start with Module 1
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
+        <div class="hero-cta">
+          <a href="#module/1" class="btn btn-primary">Start with Module 1
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="#about" class="btn btn-ghost">About this course</a>
+        </div>
+        <p class="hero-meta">7 modules · 60 contact hours · self-checks with explanations · progress saved in this browser</p>
       </section>
 
       <section class="section">
