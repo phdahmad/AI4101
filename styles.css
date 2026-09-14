@@ -2085,3 +2085,45 @@ a.cc-badge:hover { border-color: var(--accent); color: var(--accent); }
   color: var(--ink-mute);
   font-style: italic;
 }
+
+/* =========================================================
+   MOBILE FIXES FOUND IN DEVICE TESTING
+   ========================================================= */
+
+/* 1. Domain tags must wrap instead of spilling out of the pill */
+@media (max-width: 620px) {
+  .q-tag {
+    white-space: normal;
+    display: inline-block;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    margin-inline-start: 0;
+    margin-block-start: 0.35rem;
+  }
+  .steps > li > strong:first-child { margin-bottom: 0.2rem; }
+}
+
+/* 2. SVG diagrams keep a legible size on a phone and scroll inside their own
+      box, so the page itself never scrolls sideways */
+@media (max-width: 700px) {
+  .diagram {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+  .diagram svg {
+    min-width: 560px;
+  }
+  .diagram::after {
+    content: "swipe to see the whole diagram →";
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-mute);
+    text-align: center;
+    padding-top: 0.4rem;
+    position: sticky;
+    left: 0;
+  }
+}
