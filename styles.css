@@ -1808,8 +1808,13 @@ body { display: block; }
    ACCESSIBILITY + MOBILE-FIRST REFINEMENTS
    ========================================================= */
 
-/* Never allow sideways scrolling on a phone */
-html, body { max-width: 100%; overflow-x: hidden; }
+/* Never allow sideways scrolling on a phone.
+   NOTE: overflow-x must be `clip`, not `hidden` — `hidden` creates a scroll
+   container and silently breaks position:sticky on the top bar. */
+html, body { max-width: 100%; overflow-x: clip; }
+@supports not (overflow-x: clip) {
+  html, body { overflow-x: visible; }
+}
 .module-view, .section, .hero, .content-card, .cheatsheet, .terms-box { overflow-wrap: break-word; }
 
 /* Diagrams and code must shrink, never push the page wider */
