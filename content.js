@@ -24,7 +24,7 @@ const COURSE_CONTENT = [
     ],
     collapseTerms: true,
     terms: [
-      { term: "Artificial Intelligence (AI)", meaning: "A field of Computer Science concerned with the study and design of intelligent agents — systems that perceive their environment, make decisions, and take actions to achieve goals." },
+      { term: "Artificial Intelligence (AI)", meaning: "A branch of Computer Science concerned with building systems that perform tasks associated with intelligence. This course emphasises the rational-agent view: systems that perceive their environment, make decisions, and act to achieve goals." },
       { term: "Agent", meaning: "A system that perceives its environment and acts upon that environment. A thermostat, an automatic door, a robot, or a piece of software can all be agents." },
       { term: "Intelligent agent", meaning: "An agent that perceives its environment, makes decisions, and takes actions to achieve goals." },
       { term: "Rational", meaning: "Choosing the action expected to produce the best outcome, given the information available to the agent. Rational does not mean perfect, and it does not mean always successful." },
@@ -42,7 +42,7 @@ const COURSE_CONTENT = [
     ],
     sections: [
       {
-        title: "What do we mean by \"intelligent\"?",
+        title: "What is Artificial Intelligence?",
         body: `
 <p>Ask ten researchers to define artificial intelligence and you will get ten answers. This is not because the field is confused. It is because <em>intelligence</em> itself is hard to define.</p>
 
@@ -54,12 +54,20 @@ const COURSE_CONTENT = [
 
 <p>So the difference is not speed, and it is not the amount of calculation. The calculator wins on both. The difference is what the map app <em>does</em> with the situation it finds itself in.</p>
 
+<div class="definition">
+  <p><strong>Artificial Intelligence (AI)</strong> is a branch of <strong>Computer Science</strong> concerned with building systems that perform tasks associated with intelligence: perceiving, reasoning, solving problems, understanding language, making decisions, and acting in an environment.</p>
+</div>
+
+<p>There is no single agreed definition. Russell and Norvig organise the main ones around two questions: does the system <em>think</em> or <em>act</em>? And does it do so <em>like a human</em> or <em>rationally</em>? (Section 1.7 lays the four out, for those who want them.)</p>
+
+<p>In this course we place particular emphasis on the <strong>rational-agent view</strong>: intelligent systems perceive their environment, make decisions, and act to achieve goals. It is the foundation of most of what you will study here — search, optimization, games, constraint solving, and logical reasoning — and it remains the frame for modern AI agents too.</p>
+
 <div class="aha">
   <div class="aha-label">The idea behind everything in this course</div>
   <p>An intelligent system can <strong>perceive</strong> a situation, <strong>consider what to do</strong>, and <strong>take action</strong> towards a goal. Hold on to those three words. The next section turns them into the one technical term this whole course is built on.</p>
 </div>
 
-<p class="reading-time">3 min read</p>
+<p class="reading-time">5 min read</p>
         `
       },
 
@@ -210,6 +218,15 @@ const COURSE_CONTENT = [
       <strong>LLM-based agent</strong>
       <p>Uses a language model to read a request, decide which steps and which tools or APIs are needed, and carry them out — searching, writing a file, sending a message.</p>
     </div>
+  </div>
+</div>
+
+<div class="callout intuition">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">From classical agents to AI agents today</div>
+    <p>The idea of an agent is not new. What has changed is how one can be built. Classical agents relied on rules, search, planning, and logic. A modern AI agent may combine a language model with memory, tools, retrieval, planning, and feedback.</p>
+    <p>The technology changed; the question did not: <strong>given what the agent knows, what should it do next to reach its goal?</strong> That question is what this course is about.</p>
   </div>
 </div>
 
@@ -496,7 +513,8 @@ const COURSE_CONTENT = [
         items: [
           "An <strong>agent</strong> perceives and acts",
           "An <strong>intelligent agent</strong> chooses its actions towards a <strong>goal</strong>",
-          "<strong>AI</strong> is the field of Computer Science that studies and designs intelligent agents",
+          "<strong>AI</strong> is the branch of Computer Science that builds systems doing tasks associated with intelligence",
+          "Several definitions exist; this course emphasises the <strong>rational-agent view</strong>",
           "Quick test: does the system <strong>choose between options in order to reach a goal?</strong>",
           "How to judge whether it chooses <em>well</em> — that is rationality, in Module 2",
           "<strong>Learning</strong> is a capability some agents have — not part of the definition of an agent"
