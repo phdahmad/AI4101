@@ -171,13 +171,15 @@ const COURSE_CONTENT = [
   </div>
 </div>
 
-<h3>Now we can define the field</h3>
+<h3>Back to our definition</h3>
+
+<p>In section 1.1 we said that this course places particular emphasis on the <strong>rational-agent view</strong>. At that point the words were not yet available. Now that <em>agent</em>, <em>intelligent agent</em>, and <em>goal</em> each have a precise meaning, we can state it properly:</p>
 
 <div class="definition">
   <p><strong>Artificial Intelligence (AI)</strong> is a field of <strong>Computer Science</strong> concerned with the study and design of <strong>intelligent agents</strong> &mdash; systems that <strong>perceive</strong> their environment, <strong>make decisions</strong>, and <strong>take actions</strong> to achieve <strong>goals</strong>.</p>
 </div>
 
-<p>Read that definition again and notice that every word in it was defined before you reached it. That is the whole point of the order we took.</p>
+<p>This is the same field described in section 1.1, said in the language of this course. Every word in it is now a term you know — which is exactly why we took this order.</p>
 
 <div class="callout note">
   <div class="callout-icon">!</div>
