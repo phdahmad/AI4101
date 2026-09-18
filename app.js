@@ -8,6 +8,7 @@
 
   const STORAGE_KEY = 'ai4101_progress_v2';
   const THEME_KEY   = 'ai4101_theme';
+  const SIDEBAR_KEY = 'ai4101_sidebar';   // 'docked' | 'hidden' — the reader's own choice
 
   const $app = document.getElementById('app');
   const $toc = document.getElementById('toc');
@@ -102,8 +103,34 @@
     $backdrop.hidden = !open;
     document.body.classList.toggle('sidebar-locked', open);
   }
+  const isWide = () => window.matchMedia('(min-width: 1001px)').matches;
+
+  function setCollapsed(collapsed, remember) {
+    document.body.classList.toggle('sidebar-collapsed', collapsed);
+    if (collapsed) setSidebar(false);
+    if (remember) { try { localStorage.setItem(SIDEBAR_KEY, collapsed ? 'hidden' : 'docked'); } catch (e) {} }
+  }
+
+  /* Default per page: hidden on the landing page for a first-time visitor,
+     docked everywhere else. An explicit choice by the reader always wins. */
+  function applySidebarDefault(routeName) {
+    if (!isWide()) { document.body.classList.remove('sidebar-collapsed'); return; }
+    let pref = null;
+    try { pref = localStorage.getItem(SIDEBAR_KEY); } catch (e) {}
+    if (pref) return setCollapsed(pref === 'hidden', false);
+    const firstVisit = Object.keys(loadProgress()).length === 0;
+    setCollapsed(routeName === 'home' && firstVisit, false);
+  }
+
   document.getElementById('sidebarToggle').addEventListener('click', () => {
-    setSidebar(!$sidebar.classList.contains('open'));
+    const collapsed = document.body.classList.contains('sidebar-collapsed');
+    if (isWide()) {
+      // on a wide screen the button docks / hides the panel, and the choice sticks
+      if (collapsed && $sidebar.classList.contains('open')) return setSidebar(false);
+      if (collapsed) return setCollapsed(false, true);
+      return setCollapsed(true, true);
+    }
+    setSidebar(!$sidebar.classList.contains('open'));   // phones keep the overlay
   });
   document.getElementById('sidebarClose').addEventListener('click', () => setSidebar(false));
   $backdrop.addEventListener('click', () => setSidebar(false));
@@ -111,8 +138,17 @@
     if (e.key === 'Escape' && $sidebar.classList.contains('open')) setSidebar(false);
   });
   $sidebar.addEventListener('click', (e) => {
-    if (e.target.closest('a')) setSidebar(false);
+    if (!e.target.closest('a')) return;
+    if (!isWide() || document.body.classList.contains('sidebar-collapsed')) setSidebar(false);
   });
+
+  // Give the sticky bar a visible edge once the page scrolls under it
+  (function stickyEdge() {
+    const bar = document.querySelector('.topbar');
+    const onScroll = () => bar.classList.toggle('scrolled', window.scrollY > 4);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
 
   // ===== SIDEBAR CONTENTS =====
   function renderTOC(activeId, activeSection) {
@@ -134,7 +170,10 @@
         <li class="toc-item ${active ? 'active' : ''}">
           <a href="#module/${m.id}" class="toc-link">
             <span class="toc-num">${m.id}</span>
-            <span class="toc-title">${m.title}</span>
+            <span class="toc-body">
+              <span class="toc-title">${m.title}</span>
+              <span class="toc-bar"><span style="width:${pct}%"></span></span>
+            </span>
             <span class="toc-pct">${pct}%</span>
           </a>
           ${subList}
@@ -150,7 +189,35 @@
   }
 
   // ===== VIEWS =====
+  // Where did the reader stop? Used by the landing page.
+  function resumePoint() {
+    const p = loadProgress();
+    let best = null;
+    Object.keys(p).forEach(id => {
+      const mod = COURSE_CONTENT.find(m => m.id === Number(id));
+      if (!mod || !mod.sections.length) return;
+      if (!best || (p[id].lastVisited || 0) > (p[best.id].lastVisited || 0)) best = { id: id, mod: mod };
+    });
+    if (!best) return { isNew: true, pct: 0 };
+    const read = readSet(best.mod.id);
+    const next = best.mod.sections.findIndex((s, i) => !s.optional && !read.has(i));
+    return {
+      isNew: false,
+      moduleId: best.mod.id,
+      title: best.mod.title,
+      sectionIndex: next === -1 ? null : next,
+      pct: globalPct()
+    };
+  }
+
   function renderHome() {
+    if (typeof window.renderLanding === 'function') {
+      return window.renderLanding({ resume: resumePoint(), modules: COURSE_CONTENT });
+    }
+    return renderHomeFallback();
+  }
+
+  function renderHomeFallback() {
     return `
       <section class="hero fade-up">
         <span class="hero-eyebrow">BSc Computer Science · Level 5 · Required</span>
@@ -622,13 +689,16 @@
   function parseRoute() {
     const hash = window.location.hash.slice(1) || 'home';
     const parts = hash.split('/');
-    return { name: parts[0], param: parts[1] };
+    return { name: parts[0], param: parts[1], sub: parts[2] };
   }
 
   function render() {
     const route = parseRoute();
     document.querySelectorAll('.side-link').forEach(l =>
       l.classList.toggle('active', l.dataset.route === route.name));
+
+    applySidebarDefault(route.name);
+    document.body.classList.toggle('is-landing', route.name === 'home');
 
     let html, activeModule = null;
     switch (route.name) {
@@ -644,6 +714,10 @@
     refreshGlobalProgress();
 
     if (route.name === 'module' && route.param) {
+      if (route.sub && route.sub[0] === 's') {
+        const target = document.getElementById(`sec-${route.param}-${route.sub.slice(1)}`);
+        if (target) setTimeout(() => target.scrollIntoView({ behavior: 'auto', block: 'start' }), 60);
+      }
       attachReadButtons(Number(route.param));
       attachQuizHandlers(Number(route.param));
       attachScrollSpy(Number(route.param));
