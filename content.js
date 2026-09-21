@@ -74,7 +74,7 @@ const COURSE_CONTENT = [
       {
         title: "Agents, and intelligent agents",
         body: `
-<p>Before we can define artificial intelligence, we need the thing it studies.</p>
+<p>To understand AI from the agent perspective, we first need to understand what an agent is.</p>
 
 <div class="definition">
   <p>An <strong>agent</strong> is a system that <strong>perceives</strong> its environment and <strong>acts</strong> upon that environment.</p>
