@@ -26,6 +26,7 @@ const COURSE_CONTENT = [
     terms: [
       { term: "Artificial Intelligence (AI)", meaning: "A branch of Computer Science concerned with building systems that perform tasks associated with intelligence. This course emphasises the rational-agent view: systems that perceive their environment, make decisions, and act to achieve goals." },
       { term: "Agent", meaning: "A system that perceives its environment and acts upon that environment. A thermostat, an automatic door, a robot, or a piece of software can all be agents." },
+      { term: "Environment", meaning: "What lies outside the agent and can affect it or be affected by its actions: a room or a road for a robot; websites, files, databases, other programs, or people for a software agent." },
       { term: "Intelligent agent", meaning: "An agent that perceives its environment, makes decisions, and takes actions to achieve goals." },
       { term: "Rational", meaning: "Choosing the action expected to produce the best outcome, given the information available to the agent. Rational does not mean perfect, and it does not mean always successful." },
       { term: "Turing test", say: "TOO-ring", meaning: "A test proposed by Alan Turing in 1950: a judge exchanges written messages with a hidden human and a hidden machine. If the judge cannot reliably tell which is which, the machine passes." },
@@ -78,6 +79,17 @@ const COURSE_CONTENT = [
 
 <div class="definition">
   <p>An <strong>agent</strong> is a system that <strong>perceives</strong> its environment and <strong>acts</strong> upon that environment.</p>
+</div>
+
+<p>The <strong>environment</strong> is what lies outside the agent and can affect it or be affected by its actions. For a robot, this may be a room or a road. For a software agent, it may be websites, files, databases, other programs, or people.</p>
+
+<div class="callout note">
+  <div class="callout-icon">!</div>
+  <div class="callout-body">
+    <div class="callout-title">Where is the line?</div>
+    <p>A spreadsheet formula that only recalculates values inside its own sheet is better viewed here as a <strong>computation</strong>, not an agent. If the same spreadsheet watches for new data and sends an email when a condition is met, we can view it as an agent interacting with an external environment.</p>
+    <p>Calling a system an agent is a way of looking at it — a useful perspective for understanding what the system does.</p>
+  </div>
 </div>
 
 <div class="diagram">
