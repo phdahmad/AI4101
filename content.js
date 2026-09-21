@@ -25,7 +25,7 @@ const COURSE_CONTENT = [
     collapseTerms: true,
     terms: [
       { term: "Artificial Intelligence (AI)", meaning: "A branch of Computer Science concerned with building systems that perform tasks associated with intelligence. This course emphasises the rational-agent view: systems that perceive their environment, make decisions, and act to achieve goals." },
-      { term: "Agent", meaning: "A system that perceives its environment and acts upon that environment. A thermostat, an automatic door, a robot, or a piece of software can all be agents." },
+      { term: "Agent", meaning: "A system that perceives its environment and acts upon that environment. A thermostat, an automatic door, a robot, or a program that acts on websites, files, or people can all be agents." },
       { term: "Environment", meaning: "What lies outside the agent and can affect it or be affected by its actions: a room or a road for a robot; websites, files, databases, other programs, or people for a software agent." },
       { term: "Intelligent agent", meaning: "An agent that perceives its environment, makes decisions, and takes actions to achieve goals." },
       { term: "Rational", meaning: "Choosing the action expected to produce the best outcome, given the information available to the agent. Rational does not mean perfect, and it does not mean always successful." },
@@ -526,6 +526,7 @@ const COURSE_CONTENT = [
         group: "The mental model to memorise",
         items: [
           "An <strong>agent</strong> perceives and acts",
+          "<strong>Environment</strong> — what lies outside the agent and can affect it or be affected by its actions",
           "An <strong>intelligent agent</strong> chooses its actions towards a <strong>goal</strong>",
           "<strong>AI</strong> is the branch of Computer Science that builds systems doing tasks associated with intelligence",
           "Several definitions exist; this course emphasises the <strong>rational-agent view</strong>",
@@ -580,7 +581,8 @@ const COURSE_CONTENT = [
           "Saying AI and machine learning are the same thing — ML is one part of AI",
           "Saying deep learning replaced classical AI — search and logic still run everywhere",
           "Calling bias a coding bug — it can come from the data, the design, or how the system is used",
-          "Saying every agent is intelligent, or that an agent must be a robot"
+          "Saying every agent is intelligent, or that an agent must be a robot",
+          "Calling every program that turns input into output an agent — a formula that only recalculates its own sheet is a <strong>computation</strong>"
         ]
       }
     ],
@@ -615,6 +617,7 @@ const COURSE_CONTENT = [
       { term: "Agent program", meaning: "The actual code that runs inside the machine and produces that behaviour." },
       { term: "Actuator", say: "AK-choo-ay-tor", meaning: "The part that carries out an action: a motor, a valve, a screen message, an API call." },
       { term: "Performance measure", meaning: "The number we use to judge success. The agent will optimise exactly this, so write it carefully." },
+      { term: "Environment", meaning: "The same idea as in Module 1 — what lies outside the agent and can affect it or be affected by its actions." },
       { term: "PEAS", meaning: "A checklist for describing a task: Performance measure, Environment, Actuators, Sensors." },
       { term: "Fully observable", meaning: "The sensors show the agent everything it needs to know at each step. Otherwise the environment is partially observable." },
       { term: "Deterministic", say: "de-TER-min-istic", meaning: "The next state is decided completely by the current state and the action. Otherwise it is stochastic (has randomness)." },
@@ -704,6 +707,14 @@ const COURSE_CONTENT = [
 
 <p>Why keep them separate? Because the same behaviour can be produced by very different programs. A lookup table and a clever algorithm may act identically, while one needs a warehouse of memory and the other fits on a small chip.</p>
 
+<div class="callout note">
+  <div class="callout-icon">!</div>
+  <div class="callout-body">
+    <div class="callout-title">Not every function is an agent function</div>
+    <p>A spreadsheet formula such as AVERAGE() also maps inputs to an output, but that does not make it an agent function. Here, the inputs are <strong>percepts</strong> from an environment, and the outputs are <strong>actions</strong> of an agent in that environment.</p>
+  </div>
+</div>
+
 <p class="reading-time">6 min read</p>
         `
       },
@@ -762,6 +773,8 @@ const COURSE_CONTENT = [
         body: `
 <p>Before you build anything, describe the job. PEAS is the standard checklist, and it takes four lines.</p>
 
+<p>The <strong>E</strong> in PEAS is the same environment introduced in Module 1. Now we describe it as part of the agent's task.</p>
+
 <div class="definition">
   <p><strong>P</strong>erformance measure — how success is judged. <strong>E</strong>nvironment — where the agent operates. <strong>A</strong>ctuators — what it can do. <strong>S</strong>ensors — what it can perceive.</p>
 </div>
@@ -814,7 +827,7 @@ const COURSE_CONTENT = [
       {
         title: "Reading the environment: six questions",
         body: `
-<p>The environment decides which techniques can work. Ask six questions about every task.</p>
+<p>This is the same environment you met in Module 1; now we describe it more precisely. The environment decides which techniques can work. Ask six questions about every task.</p>
 
 <ol class="steps">
   <li><strong>Fully or partially observable?</strong><p>Can the sensors see everything that matters? A chess board is fully observable. A taxi is partially observable — you cannot see what the driver beside you intends to do.</p></li>
