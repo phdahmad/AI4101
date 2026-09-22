@@ -257,7 +257,7 @@ const COURSE_CONTENT = [
   <p>Which of these are agents, and which of those deserve to be called intelligent? (a) A washing machine that weighs the clothes and picks a water level. (b) A spreadsheet of student grades. (c) A map app rerouting around traffic.</p>
   <details>
     <summary>Show answer</summary>
-    <p><strong>(a)</strong> An agent: it perceives weight and acts on the water valve. Barely intelligent — it reads one number off a fixed table and never weighs alternatives. <strong>(b)</strong> Not an agent at all: it stores data and never acts on any environment. <strong>(c)</strong> An agent, and clearly an intelligent one: it perceives changing traffic, decides between routes whose outcomes it cannot fully predict, and acts towards the goal of getting you home.</p>
+    <p><strong>(a)</strong> An agent, but not an intelligent one: it perceives weight and acts on the water valve, yet it reads one number off a fixed table and never weighs alternatives. <strong>(b)</strong> Not an agent at all: it stores data and never acts on any environment. <strong>(c)</strong> An agent, and clearly an intelligent one: it perceives changing traffic, decides between routes whose outcomes it cannot fully predict, and acts towards the goal of getting you home.</p>
     <p>A useful habit with borderline cases: ask what the system would do if the situation changed. If the answer is "exactly the same thing", there was no decision in it.</p>
   </details>
 </div>
@@ -472,7 +472,7 @@ const COURSE_CONTENT = [
   </div>
 </div>
 
-<p>The definition you met in section 1.2 — an agent that perceives, decides, and acts towards a goal — is one of several. The many definitions in textbooks fall into a 2×2 box, and the two questions are: do we care about <em>thinking</em> or about <em>acting</em>? And do we compare the system to <em>a human</em> or to <em>the ideal answer</em>?</p>
+<p>The rational-agent view you met in sections 1.1 and 1.2 — AI as the study of intelligent agents that perceive, decide, and act towards goals — is one of several. The many definitions in textbooks fall into a 2×2 box, and the two questions are: do we care about <em>thinking</em> or about <em>acting</em>? And do we compare the system to <em>a human</em> or to <em>the ideal answer</em>?</p>
 
 <div class="diagram">
   <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
@@ -611,11 +611,14 @@ const COURSE_CONTENT = [
     ],
     terms: [
       { term: "Agent", meaning: "A system that perceives its environment through sensors and acts upon it through actuators. Same definition as Module 1, now with the machinery named." },
-      { term: "Percept", meaning: "One piece of input the agent receives at one moment — a camera frame, a temperature reading, a click." },
-      { term: "Percept sequence", meaning: "Everything the agent has sensed since it was switched on." },
+      { term: "Percept", meaning: "What the agent perceives from its environment at one moment — a camera frame, a temperature reading, a click." },
+      { term: "Percept sequence", meaning: "Everything the agent has perceived since it was switched on." },
       { term: "Agent function", meaning: "The rule that maps any percept sequence to an action. It is the description of behaviour, on paper." },
       { term: "Agent program", meaning: "The actual code that runs inside the machine and produces that behaviour." },
+      { term: "Sensor", meaning: "The part through which the agent perceives its environment: a camera, a thermometer, a microphone — or, for a software agent, an incoming message or a web page it reads." },
+      { term: "Action", meaning: "What the agent does to its environment through its actuators: opening a valve, turning a wheel, sending a message, booking a room." },
       { term: "Actuator", say: "AK-choo-ay-tor", meaning: "The part that carries out an action: a motor, a valve, a screen message, an API call." },
+      { term: "Rational agent", meaning: "An agent that chooses, for each percept sequence, the action expected to maximise its performance measure, given what it has perceived and what it knows. Rational does not mean perfect or always successful." },
       { term: "Performance measure", meaning: "The number we use to judge success. The agent will optimise exactly this, so write it carefully." },
       { term: "Environment", meaning: "The same idea as in Module 1 — what lies outside the agent and can affect it or be affected by its actions." },
       { term: "PEAS", meaning: "A checklist for describing a task: Performance measure, Environment, Actuators, Sensors." },
@@ -655,7 +658,7 @@ const COURSE_CONTENT = [
     <rect x="95" y="105" width="170" height="38" rx="6" fill="var(--bg-elev)" stroke="var(--rule)"/>
     <text x="180" y="129" text-anchor="middle" font-size="12" fill="var(--ink)">agent program</text>
     <text x="180" y="170" text-anchor="middle" font-size="11" fill="var(--ink-soft)">decides: what do I do now,</text>
-    <text x="180" y="188" text-anchor="middle" font-size="11" fill="var(--ink-soft)">given everything I have sensed?</text>
+    <text x="180" y="188" text-anchor="middle" font-size="11" fill="var(--ink-soft)">given everything I have perceived?</text>
 
     <rect x="400" y="55" width="240" height="160" rx="10" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="2"/>
     <text x="520" y="85" text-anchor="middle" font-size="14" fill="var(--ink)" font-weight="700">ENVIRONMENT</text>
@@ -967,6 +970,15 @@ const COURSE_CONTENT = [
   </div>
 </div>
 
+<div class="callout intuition">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">How this connects to Module 1</div>
+    <p>In Module 1, we used a simple distinction: an agent perceives and acts; an intelligent agent also makes choices toward a goal. The five designs in this module classify agents in a different way — by <strong>how they select actions</strong>. Simple and model-based reflex agents mainly follow condition–action rules. Goal-based and utility-based agents explicitly evaluate actions in relation to goals or preferences. A learning agent can improve the way any of these designs behaves.</p>
+    <p>Rationality is a separate idea: it asks <strong>how well</strong> an agent chooses its actions according to its performance measure. In a simple enough environment, even a simple reflex agent can be rational.</p>
+  </div>
+</div>
+
 <div class="callout note">
   <div class="callout-icon">!</div>
   <div class="callout-body">
@@ -993,8 +1005,8 @@ const COURSE_CONTENT = [
       {
         group: "Core definitions",
         items: [
-          "<strong>Agent</strong> = senses through sensors, acts through actuators",
-          "<strong>Percept</strong> = one input · <strong>percept sequence</strong> = everything sensed so far",
+          "<strong>Agent</strong> = perceives through sensors, acts through actuators",
+          "<strong>Percept</strong> = one input · <strong>percept sequence</strong> = everything perceived so far",
           "<strong>Agent function</strong> = percept sequence → action (on paper)",
           "<strong>Agent program</strong> = the code that produces it (in the machine)"
         ]
