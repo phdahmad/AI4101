@@ -197,7 +197,7 @@ const QUIZ_BANK = {
         "It cannot use sensors."
       ],
       correct: 1,
-      explanation: "A goal is binary: reached or not. A utility function puts a number on each outcome, so the agent can weigh speed against comfort, or safety against cost, and handle uncertainty by expected utility."
+      explanation: "A goal tells the agent what it wants to achieve, but not which of several successful outcomes is better. A utility function gives each outcome a value, so the agent can weigh speed against comfort, or safety against cost, and handle uncertainty by expected utility."
     },
     {
       q: "A task is episodic when:",

@@ -197,7 +197,7 @@ const COURSE_CONTENT = [
   <div class="callout-icon">!</div>
   <div class="callout-body">
     <div class="callout-title">What about learning?</div>
-    <p>Some intelligent agents also <strong>learn</strong> — they improve their own decisions from experience. Learning is a powerful capability an agent may have; it is not part of what makes it an agent. Most of the systems in this course decide very well and never learn anything: the route planner in Module 3, the game player in Module 5, the timetable solver in Module 6. Module 2 shows exactly where learning fits, as one of the five agent designs.</p>
+    <p>Some intelligent agents also <strong>learn</strong> — they improve their own decisions from experience. Learning is a powerful capability an agent may have; it is not part of what makes it an agent. Most of the systems in this course decide very well and never learn anything: the route planner in Module 3, the game player in Module 5, the timetable solver in Module 6. Module 2 shows exactly where learning fits: not as a separate way of choosing actions, but as an ability that can be added to any agent design.</p>
   </div>
 </div>
 
@@ -598,7 +598,7 @@ const COURSE_CONTENT = [
   {
     id: 2,
     title: "Intelligent Agents and Their Environments",
-    subtitle: "Architectures and Environments",
+    subtitle: "Agent Designs and Task Environments",
     shortDesc: "The one idea the whole course is built on: something that perceives, decides, and acts.",
     hours: 8,
     story: "Everything in AI is an agent inside an environment. Once you can say \"this is what the agent sees, this is what it can do, and this is how we measure success\", you can choose the right technique for the job. This module gives you that vocabulary, and you will use it in every module after it.",
@@ -633,11 +633,11 @@ const COURSE_CONTENT = [
       { term: "Condition–action rule", meaning: "A rule that links a situation to an action: if the soil is dry, then open the valve." },
       { term: "Simple reflex agent", meaning: "Chooses an action from the current percept only, using condition–action rules." },
       { term: "Model-based reflex agent", meaning: "Keeps an internal state — a picture of the parts of the world it cannot perceive right now — and uses it with condition–action rules." },
-      { term: "Goal-based agent", meaning: "Chooses actions by asking which ones lead towards a goal. This is where search begins." },
+      { term: "Goal-based agent", meaning: "Chooses actions by asking which ones lead towards a goal. This is where search and planning become useful." },
       { term: "Utility-based agent", say: "yoo-TIL-ity", meaning: "Uses a utility function to compare outcomes, so it can weigh goals against each other and trade them off." },
-      { term: "Utility function", meaning: "A function that gives each outcome a number saying how good it is. Under uncertainty, the agent chooses the action with the best expected utility." },
-      { term: "Learning agent", meaning: "Improves its own behaviour over time from experience and feedback." },
-      { term: "Agentic AI", meaning: "A recent industry label, not a sixth design: a goal-based agent — usually built on a large language model (LLM), like the LLM-based agent of Module 1 — that plans its own steps and uses tools to carry them out." }
+      { term: "Utility function", meaning: "A function that gives each outcome a value saying how good it is — the agent's internal version of the performance measure. Under uncertainty, the agent chooses the action with the best expected utility." },
+      { term: "Learning agent", meaning: "Improves its own behaviour over time from experience and feedback. Learning is not a separate way of choosing actions: it can be added to any of the other designs." },
+      { term: "Agentic AI", meaning: "A recent industry label, not a sixth design: AI systems that pursue goals with little step-by-step human direction — deciding steps, using tools, observing results, and deciding again. The LLM-based agent of Module 1 is one example." }
     ],
     sections: [
       {
@@ -837,7 +837,7 @@ const COURSE_CONTENT = [
   <li><strong>An Arabic customer-service assistant</strong><p><em>P:</em> questions answered correctly from the knowledge base, in as few turns as possible. Escalating to a human when unsure counts as a correct answer, not a failure &mdash; and a confident wrong answer is the most expensive outcome of all. <em>E:</em> the chat window, the customer, the company's knowledge base. <em>A:</em> send a message, open a ticket, transfer to an agent. <em>S:</em> the text the customer types, and the account history.</p></li>
 </ol>
 
-<p>Notice that the parts of a <strong>P</strong> are not all the same kind. Some are <strong>hard requirements</strong> that must hold &mdash; no student sitting two exams at once. Others are things to <strong>improve as far as possible</strong> &mdash; the fewest rooms, the shortest trip. And some <strong>pull against each other</strong>: a faster trip is a less comfortable one. Section 2.5 shows how a utility-based agent weighs them against one another.</p>
+<p>Notice that the parts of a <strong>P</strong> are not all the same kind. Some are <strong>hard requirements</strong> that must hold &mdash; no student sitting two exams at once. Others are things to <strong>improve as far as possible</strong> &mdash; the fewest rooms, the shortest trip. And some <strong>pull against each other</strong>: a faster trip is a less comfortable one. Section 2.5 shows how a utility-based agent weighs the ones that pull against each other.</p>
 
 <p>One more rule &mdash; easy to state, and easy to break. Write <strong>P</strong> in terms of what you want to be true <em>in the world</em>, not in terms of how you imagine the agent should behave. &ldquo;The floor is clean&rdquo; is a state of the world. &ldquo;The robot moves in a spiral pattern&rdquo; is a guess at a method &mdash; and if you write it into the measure, a spiral is exactly what you will get, clean floor or not.</p>
 
@@ -899,70 +899,74 @@ const COURSE_CONTENT = [
       },
 
       {
-        title: "Five ways to build an agent, from simple to smart",
+        title: "Five agent designs",
         body: `
-<p>All agents take percepts and produce actions. What differs is how much they keep inside, and how far ahead they look. Here they are. Each of the first four fixes a weakness of the one before it. The fifth, learning, is not a further step: it is an ability that can be added to any of the four.</p>
+<p>All agents receive percepts and produce actions. What differs is how they choose those actions. Some <strong>react</strong> directly, some <strong>remember</strong> what has happened, some <strong>plan</strong> towards goals, some <strong>compare</strong> possible outcomes, and some can <strong>learn</strong> from experience. In the language of section 2.1, these are five ways to write the agent program.</p>
 
 <h3>1. Simple reflex agent</h3>
 
 <p>Looks at the current percept only, and matches it against condition&ndash;action rules: <em>if soil is dry, then open the valve</em>.</p>
-<p><strong>Good:</strong> tiny, fast, easy to test. <strong>Bad:</strong> blind to anything it cannot perceive right now. If the moisture sensor breaks and reads "dry" forever, the agent floods the field and never notices.</p>
+<p><strong>Good:</strong> tiny, fast, easy to test. <strong>Bad:</strong> blind to anything it cannot perceive right now. If the moisture sensor breaks and reads "dry" forever, the agent floods the field and never notices. It works well only when the current percept is enough to choose the right action &mdash; for example, in a fully observable environment.</p>
 
 <h3>2. Model-based reflex agent</h3>
 
-<p>Keeps an <strong>internal state</strong>: a picture of the parts of the world it cannot currently see, updated with each percept and with knowledge of how the world changes.</p>
-<p>Our irrigation agent now remembers that line 3 was watered twenty minutes ago, so a "dry" reading is suspicious. That memory is the model.</p>
+<p>Keeps an <strong>internal state</strong>: a picture of the parts of the world it cannot currently perceive, updated with each percept and with knowledge of how the world changes. This is how an agent copes with a partially observable environment.</p>
+<p>Our irrigation agent now remembers that line 3 was watered twenty minutes ago, so a "dry" reading is suspicious. That internal state, together with its knowledge of how the world changes and how its own actions change it, is its model.</p>
 
 <h3>3. Goal-based agent</h3>
 
-<p>Knows what it is trying to achieve, and asks which action sequence leads there. This is where <strong>search</strong> begins — and it is exactly Module 3.</p>
+<p>Knows what it is trying to achieve, and asks which action sequence leads there. This is where <strong>search</strong> and planning become useful &mdash; Module 3 studies search in detail.</p>
 <p>A reflex taxi turns right because the rule says so. A goal-based taxi turns right because it has worked out that this road leads to the passenger's destination. Give it a new destination and it plans a new route, with no new rules written.</p>
 
 <h3>4. Utility-based agent</h3>
 
-<p>Goals only say "done" or "not done". Real life needs comparison. A <strong>utility function</strong> gives each outcome a number, so the agent can trade one thing against another: faster but less comfortable, cheaper but slower, safer but longer.</p>
+<p>A goal tells the agent what it wants to achieve, but it may not tell it which of several successful outcomes is better. A <strong>utility function</strong> gives outcomes values, allowing the agent to compare them and trade one thing against another: faster but less comfortable, cheaper but slower, safer but longer.</p>
 <p>It also handles uncertainty: when an action might succeed or fail, the agent can choose the one with the best <em>expected</em> utility.</p>
+<p>The utility function is the agent's own, internal version of the <strong>performance measure</strong>. The designer judges the agent by the performance measure; the agent uses its utility function to choose. When the two agree, choosing the highest expected utility is rational.</p>
 
 <h3>5. Learning agent</h3>
 
-<p>Any of the four above, plus the ability to improve itself. It has a part that criticises its own results against a standard, a part that changes the behaviour, and a part that suggests new things to try so it does not stay stuck in familiar habits.</p>
+<p>A learning agent improves its behaviour from experience. Learning is not a completely separate way of choosing actions: it can be added to the designs above.</p>
+<p>For example, a goal-based route planner may learn from previous journeys and improve its estimates of travel time. It still plans towards a goal, but now its behaviour can improve with experience.</p>
 
 <div class="diagram">
-  <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <text x="350" y="22" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">EACH DESIGN ADDS ONE THING</text>
+  <svg viewBox="0 0 700 330" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
+    <text x="350" y="22" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">FIVE WAYS AN AGENT CAN SELECT AND IMPROVE ITS ACTIONS</text>
 
-    <rect x="30" y="45" width="125" height="200" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
-    <text x="92" y="70" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="700">1 · Simple reflex</text>
-    <text x="92" y="100" text-anchor="middle" font-size="10" fill="var(--ink-soft)">if percept</text>
-    <text x="92" y="116" text-anchor="middle" font-size="10" fill="var(--ink-soft)">then action</text>
-    <text x="92" y="150" text-anchor="middle" font-size="10" fill="var(--accent)">✗ no memory</text>
+    <rect x="30" y="45" width="150" height="150" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
+    <text x="105" y="70" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="700">1 · Simple reflex</text>
+    <text x="105" y="88" text-anchor="middle" font-size="10" fill="var(--teal)" font-weight="600">react</text>
+    <text x="105" y="115" text-anchor="middle" font-size="10" fill="var(--ink-soft)">if percept</text>
+    <text x="105" y="131" text-anchor="middle" font-size="10" fill="var(--ink-soft)">then action</text>
+    <text x="105" y="162" text-anchor="middle" font-size="10" fill="var(--accent)">✗ no memory</text>
+    <rect x="193" y="45" width="150" height="150" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
+    <text x="268" y="70" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="700">2 · Model-based</text>
+    <text x="268" y="88" text-anchor="middle" font-size="10" fill="var(--teal)" font-weight="600">remember</text>
+    <text x="268" y="115" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ internal state</text>
+    <text x="268" y="131" text-anchor="middle" font-size="10" fill="var(--ink-soft)">of the world</text>
+    <text x="268" y="162" text-anchor="middle" font-size="10" fill="var(--accent)">✗ no goal</text>
+    <rect x="356" y="45" width="150" height="150" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
+    <text x="431" y="70" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="700">3 · Goal-based</text>
+    <text x="431" y="88" text-anchor="middle" font-size="10" fill="var(--teal)" font-weight="600">plan</text>
+    <text x="431" y="115" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ what I want</text>
+    <text x="431" y="131" text-anchor="middle" font-size="10" fill="var(--ink-soft)">→ search, planning</text>
+    <text x="431" y="162" text-anchor="middle" font-size="10" fill="var(--accent)">✗ cannot compare</text>
+    <text x="431" y="178" text-anchor="middle" font-size="10" fill="var(--accent)">two good options</text>
+    <rect x="519" y="45" width="150" height="150" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
+    <text x="594" y="70" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="700">4 · Utility-based</text>
+    <text x="594" y="88" text-anchor="middle" font-size="10" fill="var(--teal)" font-weight="600">compare</text>
+    <text x="594" y="115" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ how good is</text>
+    <text x="594" y="131" text-anchor="middle" font-size="10" fill="var(--ink-soft)">each outcome</text>
 
-    <rect x="168" y="45" width="125" height="200" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
-    <text x="230" y="70" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="700">2 · Model-based</text>
-    <text x="230" y="100" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ internal state</text>
-    <text x="230" y="116" text-anchor="middle" font-size="10" fill="var(--ink-soft)">of the world</text>
-    <text x="230" y="150" text-anchor="middle" font-size="10" fill="var(--accent)">✗ no goal</text>
+    <line x1="105" y1="195" x2="105" y2="222" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <line x1="268" y1="195" x2="268" y2="222" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <line x1="431" y1="195" x2="431" y2="222" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <line x1="594" y1="195" x2="594" y2="222" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <rect x="30" y="222" width="639" height="56" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="350" y="245" text-anchor="middle" font-size="12" fill="var(--accent)" font-weight="700">5 · Learning  ·  learn</text>
+    <text x="350" y="265" text-anchor="middle" font-size="11" fill="var(--ink-soft)">not a fifth step: it can improve any of the four designs from experience</text>
 
-    <rect x="306" y="45" width="125" height="200" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
-    <text x="368" y="70" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="700">3 · Goal-based</text>
-    <text x="368" y="100" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ what I want</text>
-    <text x="368" y="116" text-anchor="middle" font-size="10" fill="var(--ink-soft)">→ search, planning</text>
-    <text x="368" y="150" text-anchor="middle" font-size="10" fill="var(--accent)">✗ cannot compare</text>
-    <text x="368" y="166" text-anchor="middle" font-size="10" fill="var(--accent)">two good options</text>
-
-    <rect x="444" y="45" width="125" height="200" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
-    <text x="506" y="70" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="700">4 · Utility-based</text>
-    <text x="506" y="100" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ how good is</text>
-    <text x="506" y="116" text-anchor="middle" font-size="10" fill="var(--ink-soft)">each outcome</text>
-    <text x="506" y="150" text-anchor="middle" font-size="10" fill="var(--accent)">✗ fixed for life</text>
-
-    <rect x="582" y="45" width="90" height="200" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
-    <text x="627" y="70" text-anchor="middle" font-size="11" fill="var(--accent)" font-weight="700">5 · Learning</text>
-    <text x="627" y="100" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ improves</text>
-    <text x="627" y="116" text-anchor="middle" font-size="10" fill="var(--ink-soft)">itself from</text>
-    <text x="627" y="132" text-anchor="middle" font-size="10" fill="var(--ink-soft)">experience</text>
-
-    <text x="350" y="278" text-anchor="middle" font-size="12" fill="var(--ink-soft)">More power costs more memory, more computing, and more ways to go wrong.</text>
+    <text x="350" y="310" text-anchor="middle" font-size="12" fill="var(--ink-soft)">More power costs more memory, more computing, and more ways to go wrong.</text>
   </svg>
   <div class="diagram-caption">Choose the simplest design that solves your problem — not the most advanced one.</div>
 </div>
@@ -970,7 +974,7 @@ const COURSE_CONTENT = [
 <div class="callout intuition">
   <div class="callout-icon">i</div>
   <div class="callout-body">
-    <div class="callout-title">Simplest is usually right</div>
+    <div class="callout-title">Start with the simplest design that works</div>
     <p>If a reflex rule solves the job, use the reflex rule. A learning agent that needs thousands of examples, careful monitoring, and a retraining plan is a bad answer to a problem that two <code>if</code> statements solve correctly. Engineering judgement means matching the design to the environment, not showing off.</p>
   </div>
 </div>
@@ -979,7 +983,7 @@ const COURSE_CONTENT = [
   <div class="callout-icon">i</div>
   <div class="callout-body">
     <div class="callout-title">How this connects to Module 1</div>
-    <p>In Module 1, we used a simple distinction: an agent perceives and acts; an intelligent agent also makes choices toward a goal. The five designs in this module classify agents in a different way — by <strong>how they select actions</strong>. Simple and model-based reflex agents mainly follow condition–action rules. Goal-based and utility-based agents explicitly evaluate actions in relation to goals or preferences. A learning agent can improve the way any of these designs behaves.</p>
+    <p>In Module 1, we used a simple introductory distinction: an agent perceives and acts, while an intelligent agent selects actions in ways that help achieve a goal. The five designs here answer a different question: <strong>how is the action selected?</strong> Simple and model-based reflex agents mainly follow condition–action rules. Goal-based and utility-based agents explicitly evaluate actions in relation to goals or preferences. A learning agent can improve the way any of these designs behaves.</p>
     <p>Rationality is a separate idea: it asks <strong>how well</strong> an agent chooses its actions according to its performance measure. In a simple enough environment, even a simple reflex agent can be rational.</p>
   </div>
 </div>
@@ -988,8 +992,8 @@ const COURSE_CONTENT = [
   <div class="callout-icon">!</div>
   <div class="callout-body">
     <div class="callout-title">A word you will hear: agentic AI</div>
-    <p>Outside this course you will often hear systems described as <strong>agentic AI</strong>. You have met the idea already: it is the <em>LLM-based agent</em> from Module 1. It is not a sixth design to memorise. It usually describes a <em>goal-based agent</em> — most often with a large language model (LLM) doing the perceiving and the reasoning — that decides its own steps, uses tools as its actuators (search, files, other software, an API), looks at the result, and decides again.</p>
-    <p>So judge one exactly as you judge any agent in this module. What is its performance measure? What can it actually perceive? What can it actually do? Which of the five designs is it? The label is recent and used loosely in industry; those four questions are not.</p>
+    <p>Outside this course you will often hear systems described as <strong>agentic AI</strong>. Agentic AI is not a sixth agent design. The term is commonly used today for AI systems that can pursue goals with little step-by-step human direction &mdash; deciding steps, using tools, observing results, and deciding what to do next. One example is the <em>LLM-based agent</em> from Module 1: a large language model (LLM) does the perceiving and the reasoning, and tools act as its actuators (search, files, other software, an API).</p>
+    <p>So judge one exactly as you judge any agent in this module. What is its performance measure? What can it actually perceive? What can it actually do? How does it select actions &mdash; does it use goals, a model, utility, learning, or some combination of them? The label is recent and used loosely in industry; those questions are not.</p>
   </div>
 </div>
 
@@ -998,7 +1002,7 @@ const COURSE_CONTENT = [
   <p>A robot vacuum in a flat in Jeddah. Which design does each behaviour need? (a) "If I hit a wall, turn." (b) "Do not clean the kitchen twice before cleaning the bedroom." (c) "Finish before the family comes home, but stay quiet during nap time."</p>
   <details>
     <summary>Show answer</summary>
-    <p><strong>(a)</strong> Simple reflex — it uses only the current percept. <strong>(b)</strong> Model-based — it must remember which rooms it already cleaned, which it cannot perceive right now. <strong>(c)</strong> Utility-based — "finish in time" and "be quiet now" are two goals that can conflict, so the agent needs numbers to weigh them against each other.</p>
+    <p><strong>(a)</strong> Simple reflex — it uses only the current percept. <strong>(b)</strong> Model-based — it must remember which rooms it already cleaned, which it cannot perceive right now. <strong>(c)</strong> Utility-based — finishing on time and staying quiet are competing preferences. The agent needs a way to compare the value of different outcomes and choose the best trade-off.</p>
   </details>
 </div>
 
@@ -1055,10 +1059,11 @@ const COURSE_CONTENT = [
         items: [
           "<strong>Simple reflex</strong> — current percept only, condition–action rules",
           "<strong>Model-based reflex</strong> — adds internal state of the unseen world",
-          "<strong>Goal-based</strong> — adds a goal → this is where search starts",
-          "<strong>Utility-based</strong> — adds numbers so goals can be compared and traded",
+          "<strong>Goal-based</strong> — adds a goal → this is where search and planning become useful",
+          "<strong>Utility-based</strong> — adds values so outcomes can be compared and traded",
+          "<strong>Utility function</strong> = the agent's internal version of the performance measure",
           "<strong>Learning</strong> — improves itself from experience; can be added to any of the four",
-          "<strong>Agentic AI</strong> — an industry label, not a sixth design: usually a goal-based agent built on an LLM"
+          "<strong>Agentic AI</strong> — an industry label, not a sixth design: systems that pursue goals with little step-by-step human direction"
         ]
       },
       {
@@ -2032,7 +2037,7 @@ def a_star(problem, h):
     <div class="app-card">
       <span class="app-icon">🧠</span>
       <strong>Assistants that plan their own steps</strong>
-      <p>The systems industry calls <em>agentic AI</em> (Module 2) decide a sequence of actions to reach a goal — and that sequence is found by search.</p>
+      <p>The systems industry calls <em>agentic AI</em> (Module 2) decide a sequence of steps towards a goal — and finding that sequence is a search problem.</p>
     </div>
     <div class="app-card">
       <span class="app-icon">🧩</span>
