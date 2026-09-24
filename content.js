@@ -344,7 +344,7 @@ const COURSE_CONTENT = [
     <div class="app-card">
       <span class="app-icon">🤖</span>
       <strong>Robotics</strong>
-      <p>Agents with a body: warehouse robots, inspection drones, autonomous vehicles.</p>
+      <p>Agents with a body: warehouse robots, inspection drones, self-driving vehicles.</p>
     </div>
     <div class="app-card">
       <span class="app-icon">✨</span>
@@ -983,7 +983,7 @@ const COURSE_CONTENT = [
   <div class="callout-icon">i</div>
   <div class="callout-body">
     <div class="callout-title">How this connects to Module 1</div>
-    <p>In Module 1, we used a simple introductory distinction: an agent perceives and acts, while an intelligent agent selects actions in ways that help achieve a goal. The five designs here answer a different question: <strong>how is the action selected?</strong> Simple and model-based reflex agents mainly follow condition–action rules. Goal-based and utility-based agents explicitly evaluate actions in relation to goals or preferences. A learning agent can improve the way any of these designs behaves.</p>
+    <p>In Module 1, we used a simple introductory distinction: an agent perceives and acts, while an intelligent agent perceives, decides, and acts towards a goal. The five designs here answer a different question: <strong>how is the action selected?</strong> Simple and model-based reflex agents mainly follow condition–action rules. Goal-based and utility-based agents explicitly evaluate actions in relation to goals or preferences. A learning agent can improve the way any of these designs behaves.</p>
     <p>Rationality is a separate idea: it asks <strong>how well</strong> an agent chooses its actions according to its performance measure. In a simple enough environment, even a simple reflex agent can be rational.</p>
   </div>
 </div>
@@ -1141,7 +1141,7 @@ const COURSE_CONTENT = [
 
 <p>An agent uses search when it knows <strong>what it wants</strong> but not <strong>how to get there</strong>. It is not learning, and it is not guessing. It is trying possibilities in a smart order, and remembering what it already tried.</p>
 
-<p>In Module 2 this agent had a name: a <strong>goal-based agent</strong>. This module also works in the easiest task environment from section 2.4 &mdash; fully observable, deterministic, static, discrete, single-agent &mdash; so the agent can plan the whole route before it takes the first step.</p>
+<p>In Module 2 this agent had a name: a <strong>goal-based agent</strong>. This module works in the setting described in section 2.4 &mdash; fully observable, deterministic, static, discrete, single-agent &mdash; so the agent can plan the whole route before it takes the first step.</p>
 
 <h3>Five things define any search problem</h3>
 
@@ -1152,7 +1152,7 @@ const COURSE_CONTENT = [
   <li><strong>Actions</strong><p>What the agent can do from that state. From Makkah: take Highway 40, take Highway 80, and so on.</p></li>
   <li><strong>Transition model</strong><p>Where each action takes you: RESULT(In(Makkah), Highway 80) = In(Jeddah). These first three parts together form the <strong>state space</strong>: every state you can reach from the start.</p></li>
   <li><strong>Goal test</strong><p>A check that answers "am I done?" Sometimes it is one state (<em>In(Jeddah)</em>). Sometimes it is a condition ("no student has two exams at the same time").</p></li>
-  <li><strong>Action cost</strong><p>What one step costs: kilometres, minutes, or riyals. Add the costs along a path and you get the <strong>path cost</strong>. A <strong>solution</strong> is any path from start to goal. An <strong>optimal solution</strong> is the cheapest one.</p></li>
+  <li><strong>Action cost</strong><p>What one step costs: kilometres, minutes, or riyals. Add the costs along a path and you get the <strong>path cost</strong>. A <strong>solution</strong> is any path from start to goal. An <strong>optimal solution</strong> is the cheapest one. The action cost is where the performance measure from Module 2 enters a search problem.</p></li>
 </ol>
 
 <div class="diagram">
@@ -2022,7 +2022,7 @@ def a_star(problem, h):
     <div class="app-card">
       <span class="app-icon">🤖</span>
       <strong>Robots and self-driving</strong>
-      <p>Warehouse robots and autonomous cars search for a path that reaches the target without collisions.</p>
+      <p>Warehouse robots and self-driving cars search for a path that reaches the target without collisions.</p>
     </div>
     <div class="app-card">
       <span class="app-icon">🚚</span>
@@ -2174,7 +2174,7 @@ def a_star(problem, h):
     terms: [
       { term: "Local search", meaning: "Search that keeps only the current state and tries to improve it, instead of building a tree of paths." },
       { term: "State space landscape", meaning: "A picture of the problem as hills and valleys: position = a state, height = how good that state is." },
-      { term: "Objective function", meaning: "The number we are trying to make as large (or as small) as possible. Height on the landscape." },
+      { term: "Objective function", meaning: "The number we are trying to make as large (or as small) as possible. Height on the landscape. It plays the role of Module 2's utility function: a value for each state." },
       { term: "Global maximum", meaning: "The best state in the whole problem — the highest peak." },
       { term: "Local maximum", meaning: "A state better than all its neighbours, but not the best overall. A small hill next to a mountain." },
       { term: "Plateau", say: "pla-TOH", meaning: "A flat area where all neighbours have the same value, so the search has no direction to follow." },
@@ -2322,7 +2322,7 @@ def a_star(problem, h):
     <div class="app-card">
       <span class="app-icon">🎯</span>
       <strong>Stochastic hill climbing</strong>
-      <p>Pick randomly among the uphill moves instead of always the steepest. Slower per step, but it explores more.</p>
+      <p>Pick randomly among the uphill moves instead of always the steepest. Slower per step, but it explores more. Here <em>stochastic</em> describes the algorithm's own random choices, not the environment (section 2.4).</p>
     </div>
   </div>
 </div>
@@ -2625,7 +2625,7 @@ def simulated_annealing(problem, schedule):
       { term: "MIN", meaning: "The opponent. MIN wants the smallest final value." },
       { term: "Ply", say: "rhymes with 'fly'", meaning: "One move by one player. Two plies (one move each) make a full round." },
       { term: "Terminal state", meaning: "A finished position: win, lose, or draw. Its value comes from the rules." },
-      { term: "Utility / payoff", meaning: "The number given to a terminal state, e.g. +1 win, 0 draw, −1 loss." },
+      { term: "Utility / payoff", meaning: "The number given to a terminal state, e.g. +1 win, 0 draw, −1 loss. It is Module 2's utility function, applied to finished games." },
       { term: "Minimax value", meaning: "The value of a position assuming both players play their best from there on." },
       { term: "Alpha-beta pruning", say: "AL-fa BAY-ta", meaning: "Skipping branches that cannot change the final decision. Same answer as minimax, far less work." },
       { term: "Alpha (α)", meaning: "The best value MAX can already guarantee on the path so far." },
@@ -2640,6 +2640,8 @@ def simulated_annealing(problem, schedule):
         title: "A game is a search problem with an enemy",
         body: `
 <p>You can describe a game with the same five parts from Module 3 — with two changes that make everything harder.</p>
+
+<p>In the terms of section 2.4, a game is a <strong>competitive multi-agent</strong> task environment: another agent acts, and it wants the opposite of what you want.</p>
 
 <div class="before-after">
   <div class="ba-col before">
@@ -2850,6 +2852,8 @@ def simulated_annealing(problem, schedule):
         body: `
 <p>Even with alpha-beta, chess cannot be searched to the end. So we stop early and <em>guess</em> the value of the position we stopped at.</p>
 
+<p>This is the <strong>semi-dynamic</strong> environment of section 2.4: the board waits while you think, but the clock does not.</p>
+
 <ol class="steps">
   <li><strong>Replace the terminal test with a cutoff test</strong><p>Stop at a fixed depth, or when the clock says stop.</p></li>
   <li><strong>Replace utility with an evaluation function</strong><p>A quick formula that estimates how good this position is for MAX.</p></li>
@@ -2903,7 +2907,7 @@ def simulated_annealing(problem, schedule):
       {
         title: "When luck joins the game: expectiminimax",
         body: `
-<p>Backgammon has dice. Card games have a shuffle. The opponent is still against you, but now a third thing decides part of the outcome: chance.</p>
+<p>Backgammon has dice. Card games have a shuffle. The opponent is still against you, but now a third thing decides part of the outcome: chance. This is the <strong>stochastic</strong> case from section 2.4: the same move can lead to different results.</p>
 
 <div class="definition">
   <p><strong>Expectiminimax</strong> adds a third kind of node. MAX nodes take the maximum, MIN nodes take the minimum, and <strong>chance nodes</strong> take the <em>average of their children, weighted by probability</em>.</p>
@@ -3044,6 +3048,7 @@ def simulated_annealing(problem, schedule):
       { term: "Variable", meaning: "Something that needs a value: a region on a map, an exam, a Sudoku square." },
       { term: "Domain", meaning: "The set of values a variable is allowed to take." },
       { term: "Constraint", meaning: "A rule restricting the values that some variables can take together, e.g. \"these two exams must not be in the same slot\"." },
+      { term: "Hard constraint", meaning: "A rule every solution must satisfy — the hard requirements of a performance measure (section 2.3). Preferences that can only be improved are handled by optimization instead (Module 4)." },
       { term: "Assignment", meaning: "A choice of values for some or all variables. Complete = every variable has a value. Consistent = no constraint is broken." },
       { term: "Backtracking search", meaning: "Assign one variable at a time; when a variable has no legal value left, undo the last choice and try another." },
       { term: "MRV", say: "Minimum Remaining Values", meaning: "Choose next the variable with the fewest legal values left. Also called the most-constrained-variable heuristic." },
@@ -3107,6 +3112,8 @@ def simulated_annealing(problem, schedule):
   <li><strong>University exam timetable</strong><p><em>Variables:</em> the exams. <em>Domains:</em> the available (room, time slot) pairs. <em>Constraints:</em> two exams sharing a student cannot share a slot; room capacity must be enough; some courses need a specific lab.</p></li>
   <li><strong>Staff shifts in a hospital</strong><p><em>Variables:</em> the shifts. <em>Domains:</em> the qualified staff. <em>Constraints:</em> nobody works two shifts in a row; each shift needs at least one senior nurse; weekly hour limits.</p></li>
 </ol>
+
+<p>The hard requirements in a performance measure (section 2.3) become the constraints here: a solution must satisfy every one, which is why they are also called <strong>hard constraints</strong>. Preferences such as spreading exams evenly are not constraints; improving them is an optimization job (Module 4).</p>
 
 <div class="aha">
   <div class="aha-label">Why the path is irrelevant here</div>
@@ -3421,11 +3428,13 @@ def simulated_annealing(problem, schedule):
       {
         title: "An agent that knows things",
         body: `
-<p>Every agent so far reacted to what it sensed, or searched for a path. A <strong>knowledge-based agent</strong> does something different: it stores facts, and it reasons about what those facts imply.</p>
+<p>Every agent so far reacted to what it perceived, or searched for a path. A <strong>knowledge-based agent</strong> does something different: it stores facts, and it reasons about what those facts imply.</p>
 
 <div class="definition">
   <p>The agent keeps a <strong>knowledge base (KB)</strong>: a set of sentences it believes. Two operations run it. <strong>TELL</strong> adds a new sentence. <strong>ASK</strong> asks what follows from everything in the KB. The reasoning happens inside ASK.</p>
 </div>
+
+<p>In the terms of Module 2, the knowledge base plays the role of the agent's <strong>internal state</strong>, written in logic.</p>
 
 <div class="analogy">
   <span class="analogy-label">A safety monitor in a factory</span>

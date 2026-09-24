@@ -116,7 +116,7 @@ const QUIZ_BANK = {
         "A folder of training images."
       ],
       correct: 1,
-      explanation: "An agent perceives its environment and acts upon it. The thermostat perceives the temperature and acts by switching the cooling. The thermostat is the clearest agent here: it senses the temperature of its environment and acts on that environment by switching the cooling. A spreadsheet that only stores or recalculates values is better viewed here as computation rather than an agent; the timetable and the image folder hold data and act on nothing. Note that being an agent is not the same as being an intelligent one: the thermostat follows one fixed rule and decides nothing."
+      explanation: "An agent perceives its environment and acts upon it. The thermostat is the clearest agent here: it perceives the temperature of its environment and acts on that environment by switching the cooling. A spreadsheet that only stores or recalculates values is better viewed here as computation rather than an agent; the timetable and the image folder hold data and act on nothing. Note that being an agent is not the same as being an intelligent one: the thermostat follows one fixed rule and decides nothing."
     }
   ],
 
