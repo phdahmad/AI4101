@@ -153,7 +153,7 @@ const QUIZ_BANK = {
         "Percept, Episode, Agent, Sequence"
       ],
       correct: 1,
-      explanation: "PEAS is the standard four-line checklist for describing a task before building anything. Most failed projects fail in the P or the S, not in the algorithm."
+      explanation: "PEAS is the standard four-line checklist for describing a task before building anything. Projects more often fail in the P or the S than in the algorithm."
     },
     {
       q: "Driving a taxi in a busy city is partially observable mainly because:",

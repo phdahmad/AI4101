@@ -772,15 +772,18 @@ const COURSE_CONTENT = [
       },
 
       {
-        title: "PEAS: how to describe any task in four lines",
+        title: "PEAS: describing an agent's task environment",
         body: `
-<p>Before you build anything, describe the job. PEAS is the standard checklist, and it takes four lines.</p>
-
-<p>The <strong>E</strong> in PEAS is the same environment introduced in Module 1. Now we describe it as part of the agent's task.</p>
+<p>Before designing an agent, we need to describe the task it will perform and the environment in which it will operate. <strong>PEAS</strong> gives us four parts to specify: Performance measure, Environment, Actuators, and Sensors.</p>
 
 <div class="definition">
-  <p><strong>P</strong>erformance measure — how success is judged. <strong>E</strong>nvironment — where the agent operates. <strong>A</strong>ctuators — what it can do. <strong>S</strong>ensors — what it can perceive.</p>
+  <p><strong>P</strong>erformance measure &mdash; how the agent's success is evaluated.</p>
+  <p><strong>E</strong>nvironment &mdash; what lies outside the agent: everything it can affect or be affected by.</p>
+  <p><strong>A</strong>ctuators &mdash; how the agent acts on its environment.</p>
+  <p><strong>S</strong>ensors &mdash; how the agent perceives its environment.</p>
 </div>
+
+<p>The <strong>E</strong> is the same environment you met in Module 1; here we describe it as part of the agent's task. Watch the two uses of the word: the whole PEAS description is the agent's <strong>task environment</strong>, and the <strong>E</strong> inside it is one of its four parts.</p>
 
 <h3>Example: a self-driving taxi in Riyadh</h3>
 
@@ -814,13 +817,17 @@ const COURSE_CONTENT = [
 <h3>Two more, quickly</h3>
 
 <ol class="steps">
-  <li><strong>An exam timetabling agent at the university</strong><p><em>P:</em> no student has two exams at once, rooms not over capacity, exams spread across days. <em>E:</em> the list of courses, students, rooms, and the exam period. <em>A:</em> write an exam into a room and a time slot. <em>S:</em> the registration database.</p></li>
-  <li><strong>An Arabic customer-service assistant</strong><p><em>P:</em> question answered correctly, short conversation, customer satisfied, correct escalation to a human when unsure. <em>E:</em> the chat window, the customer, the company's knowledge base. <em>A:</em> send a message, open a ticket, transfer to an agent. <em>S:</em> the text the customer types, and the account history.</p></li>
+  <li><strong>An exam timetabling agent at the university</strong><p><em>P:</em> zero student clashes and no room over capacity &mdash; these are hard requirements, not preferences; then exams spread as evenly as possible across the period. <em>E:</em> the list of courses, students, rooms, and the exam period. <em>A:</em> write an exam into a room and a time slot. <em>S:</em> the registration database.</p></li>
+  <li><strong>An Arabic customer-service assistant</strong><p><em>P:</em> questions answered correctly from the knowledge base, in as few turns as possible. Escalating to a human when unsure counts as a correct answer, not a failure &mdash; and a confident wrong answer is the most expensive outcome of all. <em>E:</em> the chat window, the customer, the company's knowledge base. <em>A:</em> send a message, open a ticket, transfer to an agent. <em>S:</em> the text the customer types, and the account history.</p></li>
 </ol>
+
+<p>Notice that the parts of a <strong>P</strong> are not all the same kind. Some are <strong>hard requirements</strong> that must hold &mdash; no student sitting two exams at once. Others are things to <strong>improve as far as possible</strong> &mdash; the fewest rooms, the shortest trip. And some <strong>pull against each other</strong>: a faster trip is a less comfortable one. Section 2.5 shows how a utility-based agent weighs them against one another.</p>
+
+<p>One more rule, and it is the one students most often break. Write <strong>P</strong> in terms of what you want to be true <em>in the world</em>, not in terms of how you imagine the agent should behave. &ldquo;The floor is clean&rdquo; is a state of the world. &ldquo;The robot moves in a spiral pattern&rdquo; is a guess at a method &mdash; and if you write it into the measure, a spiral is exactly what you will get, clean floor or not.</p>
 
 <div class="aha">
   <div class="aha-label">PEAS is where projects are won or lost</div>
-  <p>Most failed AI projects are not failures of algorithm. They are failures of PEAS: a performance measure that rewarded the wrong thing, or sensors that could not see what the decision actually needed. Write the PEAS before you write any code — and show it to the person who asked for the system, because they will correct the P immediately.</p>
+  <p>When a project fails, the cause is often not the algorithm but the PEAS: a performance measure that rewarded the wrong thing, or sensors that could not see what the decision actually needed. Write the PEAS before you write any code — and show it to the person who asked for the system, because they will correct the P immediately.</p>
 </div>
 
 <p class="reading-time">6 min read</p>
@@ -1023,10 +1030,12 @@ const COURSE_CONTENT = [
       {
         group: "PEAS",
         items: [
-          "<strong>P</strong>erformance measure — how success is judged",
-          "<strong>E</strong>nvironment — where it operates",
-          "<strong>A</strong>ctuators — what it can do",
-          "<strong>S</strong>ensors — what it can perceive",
+          "<strong>P</strong>erformance measure — how success is evaluated",
+          "<strong>E</strong>nvironment — what lies outside the agent",
+          "<strong>A</strong>ctuators — how it acts on the environment",
+          "<strong>S</strong>ensors — how it perceives the environment",
+          "The parts of P are not one kind: hard requirements, things to improve, and things that pull against each other",
+          "Write P about the <strong>world</strong>, not about the agent's method",
           "Write PEAS before writing code"
         ]
       },
