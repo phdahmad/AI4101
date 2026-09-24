@@ -635,7 +635,7 @@ const COURSE_CONTENT = [
       { term: "Model-based reflex agent", meaning: "Keeps an internal state — a picture of the parts of the world it cannot perceive right now — and uses it with condition–action rules." },
       { term: "Goal-based agent", meaning: "Chooses actions by asking which ones lead towards a goal. This is where search and planning become useful." },
       { term: "Utility-based agent", say: "yoo-TIL-ity", meaning: "Uses a utility function to compare outcomes, so it can weigh goals against each other and trade them off." },
-      { term: "Utility function", meaning: "A function that gives each outcome a value saying how good it is — the agent's internal version of the performance measure. Under uncertainty, the agent chooses the action with the best expected utility." },
+      { term: "Utility function", meaning: "A function that assigns values to outcomes so the agent can compare them. It should agree with the performance measure, but it is not the same thing. Under uncertainty, the agent chooses the action with the best expected utility." },
       { term: "Learning agent", meaning: "Improves its own behaviour over time from experience and feedback. Learning is not a separate way of choosing actions: it can be added to any of the other designs." },
       { term: "Agentic AI", meaning: "A recent industry label, not a sixth design: AI systems that pursue goals with little step-by-step human direction — deciding steps, using tools, observing results, and deciding again. The LLM-based agent of Module 1 is one example." }
     ],
@@ -1015,15 +1015,18 @@ const COURSE_CONTENT = [
         group: "Core definitions",
         items: [
           "<strong>Agent</strong> = perceives through sensors, acts through actuators",
+          "<strong>Environment</strong> = what lies outside the agent and can affect it or be affected by its actions",
           "<strong>Percept</strong> = one input · <strong>percept sequence</strong> = everything perceived so far",
           "<strong>Agent function</strong> = percept sequence → action (on paper)",
           "<strong>Agent program</strong> = the code that produces it (in the machine)"
         ]
       },
       {
-        group: "Rationality",
+        group: "Rationality — three terms not to mix",
         items: [
-          "Rational = the action <em>expected</em> to maximise the performance measure",
+          "<strong>Performance measure</strong> = how the agent's success is evaluated — it defines success",
+          "<strong>Utility function</strong> = assigns values to outcomes so the agent can compare them — it helps the agent choose",
+          "<strong>Rational action</strong> = the action expected to maximise the performance measure, given what the agent has perceived and knows",
           "Judged on the <strong>decision</strong>, not on the luck of the outcome",
           "Depends on four things: the measure, built-in knowledge, available actions, percepts so far",
           "Rational ≠ all-knowing, and rational ≠ perfect",
@@ -1033,46 +1036,48 @@ const COURSE_CONTENT = [
       {
         group: "PEAS",
         items: [
-          "<strong>P</strong>erformance measure — how success is evaluated",
-          "<strong>E</strong>nvironment — what lies outside the agent",
-          "<strong>A</strong>ctuators — how it acts on the environment",
-          "<strong>S</strong>ensors — how it perceives the environment",
-          "The parts of P are not one kind: hard requirements, things to improve, and things that pull against each other",
-          "Write P about the <strong>world</strong>, not about the agent's method",
+          "<strong>P</strong>erformance measure · <strong>E</strong>nvironment · <strong>A</strong>ctuators · <strong>S</strong>ensors",
+          "<strong>Task environment</strong> = P + E + A + S · <strong>Environment</strong> = E only",
+          "P usually has several parts: some must hold, some should improve, some pull against each other (e.g. safety, time, cost)",
+          "P describes <strong>what counts as success</strong>, not how the agent achieves it",
           "Write PEAS before writing code"
         ]
       },
       {
         group: "Six properties of a task environment",
         items: [
-          "Fully / partially observable",
-          "Deterministic / stochastic",
-          "Episodic / sequential",
-          "Static / dynamic — <strong>semi-dynamic</strong> when the world waits but the clock does not",
-          "Discrete / continuous",
-          "Single-agent / multi-agent",
-          "Easiest case = fully observable, deterministic, static, discrete, single-agent"
+          "Properties of the <strong>task environment</strong>, not of E alone — observability depends on the sensors",
+          "<strong>Fully / partially observable</strong> — can the agent perceive everything it needs?",
+          "<strong>Deterministic / stochastic</strong> — same action, same state, always the same result?",
+          "<strong>Episodic / sequential</strong> — does this decision affect the next ones?",
+          "<strong>Static / dynamic</strong> — does the world change while the agent decides? (<strong>semi-dynamic</strong>: the world waits, the clock does not)",
+          "<strong>Discrete / continuous</strong> — countable choices, or a continuous range?",
+          "<strong>Single-agent / multi-agent</strong> — do other agents' actions matter? cooperating, competing, or both",
+          "Module 3 search assumes: fully observable, deterministic, static, discrete, single-agent — and sequential, because a plan is a sequence of actions",
+          "Continuous → Module 4 · an opponent → Module 5"
         ]
       },
       {
-        group: "Five agent designs",
+        group: "Five agent designs — react → remember → plan → compare → learn",
         items: [
-          "<strong>Simple reflex</strong> — current percept only, condition–action rules",
-          "<strong>Model-based reflex</strong> — adds internal state of the unseen world",
-          "<strong>Goal-based</strong> — adds a goal → this is where search and planning become useful",
-          "<strong>Utility-based</strong> — adds values so outcomes can be compared and traded",
-          "<strong>Utility function</strong> = the agent's internal version of the performance measure",
+          "<strong>Simple reflex</strong> — current percept only; works when that percept is enough (fully observable)",
+          "<strong>Model-based reflex</strong> — maintains an internal state of aspects of the world it cannot currently perceive (partially observable)",
+          "<strong>Goal-based</strong> — plans towards a goal → search and planning become useful",
+          "<strong>Utility-based</strong> — uses utility to compare outcomes and choose among alternatives",
           "<strong>Learning</strong> — improves itself from experience; can be added to any of the four",
-          "<strong>Agentic AI</strong> — an industry label, not a sixth design: systems that pursue goals with little step-by-step human direction"
+          "<strong>Agentic AI</strong> — a commonly used modern term, not a sixth agent design: AI systems that pursue goals with little step-by-step human direction, often by planning steps and using tools"
         ]
       },
       {
         group: "Mistakes that cost marks",
         items: [
           "Saying an agent was irrational because the outcome was bad",
-          "Putting the performance measure inside the agent — it belongs to the designer and the world",
+          "Confusing the performance measure with the agent's internal decision mechanism — the measure defines success; it does not tell the agent how to act",
           "Mixing up agent function (behaviour) and agent program (code)",
-          "Calling chess \"dynamic\" — with a clock it is <em>semi-dynamic</em>: the board waits, the clock does not",
+          "Treating the six properties as properties of E alone",
+          "Calling chess with a clock \"dynamic\" — it is <em>semi-dynamic</em>",
+          "Calling learning the fifth, \"smartest\" design — it can improve any design",
+          "Saying a simple reflex agent can never be rational",
           "Choosing a learning agent when two <code>if</code> statements would do the job"
         ]
       }
