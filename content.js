@@ -619,15 +619,16 @@ const COURSE_CONTENT = [
       { term: "Action", meaning: "What the agent does to its environment through its actuators: opening a valve, turning a wheel, sending a message, booking a room." },
       { term: "Actuator", say: "AK-choo-ay-tor", meaning: "The part that carries out an action: a motor, a valve, a screen message, an API call." },
       { term: "Rational agent", meaning: "An agent that chooses, for each percept sequence, the action expected to maximise its performance measure, given what it has perceived and what it knows. Rational does not mean perfect or always successful." },
-      { term: "Performance measure", meaning: "The number we use to judge success. The agent will optimise exactly this, so write it carefully." },
+      { term: "Performance measure", meaning: "How the agent's success is evaluated. It is rarely a single number: some parts are hard requirements, some are things to improve, and some pull against each other. The agent optimises exactly what you write." },
       { term: "Environment", meaning: "The same idea as in Module 1 — what lies outside the agent and can affect it or be affected by its actions." },
-      { term: "PEAS", meaning: "A checklist for describing a task: Performance measure, Environment, Actuators, Sensors." },
+      { term: "PEAS", meaning: "The four-part checklist for describing an agent's task environment: Performance measure, Environment, Actuators, Sensors." },
+      { term: "Task environment", meaning: "The whole PEAS description of a task — the performance measure, the environment, the actuators and the sensors taken together. The environment alone is one of its four parts." },
       { term: "Fully observable", meaning: "The sensors show the agent everything it needs to know at each step. Otherwise the environment is partially observable." },
       { term: "Deterministic", say: "de-TER-min-istic", meaning: "The next state is decided completely by the current state and the action. Otherwise it is stochastic (has randomness)." },
       { term: "Episodic", say: "eppi-SOD-ic", meaning: "Each decision stands alone and does not affect the next one. Otherwise the task is sequential." },
       { term: "Static", meaning: "The environment does not change while the agent is thinking. Otherwise it is dynamic." },
       { term: "Simple reflex agent", meaning: "Chooses an action from the current percept only, using condition–action rules." },
-      { term: "Model-based agent", meaning: "Keeps an internal picture of the parts of the world it cannot see right now." },
+      { term: "Model-based reflex agent", meaning: "Keeps an internal picture of the parts of the world it cannot see right now, and uses it with condition-action rules." },
       { term: "Goal-based agent", meaning: "Chooses actions by asking which ones lead towards a goal. This is where search begins." },
       { term: "Utility-based agent", say: "yoo-TIL-ity", meaning: "Uses a number that says how good each outcome is, so it can compare goals and trade them off." },
       { term: "Learning agent", meaning: "Improves its own behaviour over time from experience and feedback." },
@@ -3398,7 +3399,7 @@ def simulated_annealing(problem, schedule):
       { term: "Inference rule", meaning: "A pattern that lets you derive a new sentence from existing ones, e.g. modus ponens." },
       { term: "Modus ponens", say: "MOH-dus POH-nens", meaning: "From \"A implies B\" and \"A\", conclude \"B\"." },
       { term: "Sound", meaning: "An inference procedure is sound if everything it derives is actually entailed — it never invents falsehoods." },
-      { term: "Complete", meaning: "An inference procedure is complete if it can derive everything that is entailed — it never misses a conclusion." },
+      { term: "Complete", meaning: "An inference procedure is complete if it can derive everything that is entailed — it never misses a conclusion. This is a different sense from Module 3, where a complete search algorithm is one that finds a solution whenever one exists." },
       { term: "CNF", say: "Conjunctive Normal Form", meaning: "A sentence written as a set of clauses joined by AND, where each clause is a set of literals joined by OR." },
       { term: "Clause", meaning: "An OR of literals, e.g. (¬A ∨ B ∨ C). A literal is a proposition or its negation." },
       { term: "Resolution", meaning: "One inference rule that is complete for propositional logic: from two clauses containing P and ¬P, derive the clause made of everything else." },
@@ -3587,6 +3588,8 @@ def simulated_annealing(problem, schedule):
   <li><strong>Resolve pairs repeatedly</strong><p>Each step produces a new clause; add it and continue.</p></li>
   <li><strong>Look for the empty clause</strong><p>If two clauses <code>P</code> and <code>¬P</code> resolve, the result contains nothing: a contradiction. That proves α must be true, because assuming it was false broke the world. If no new clauses can be produced and no contradiction appeared, α does not follow.</p></li>
 </ol>
+
+<p>That procedure has a name worth knowing. A set of sentences is <strong>satisfiable</strong> if there is at least one model in which all of them are true, and <strong>unsatisfiable</strong> if there is none. So proving <code>KB ⊨ α</code> by contradiction is exactly proving that <code>KB ∧ ¬α</code> is <strong>unsatisfiable</strong> — no possible world makes the knowledge base and the denial of α true together. The mirror idea is <strong>validity</strong>: a sentence is <strong>valid</strong> when it is true in <em>every</em> model, such as <code>P ∨ ¬P</code>.</p>
 
 <div class="callout intuition">
   <div class="callout-icon">i</div>
