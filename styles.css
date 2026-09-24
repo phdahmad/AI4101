@@ -2593,3 +2593,36 @@ body.is-landing .stats-strip { display: block; }
   margin-bottom: 0.6rem;
 }
 @media (max-width: 620px) { .formula p { font-size: 0.78rem; } }
+
+/* Data table inside a section (e.g. 2.4 environment properties).
+   Scrolls inside its own box on narrow screens; the page never scrolls sideways. */
+.table-figure {
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 2rem 0;
+}
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+.env-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.env-table th, .env-table td { padding: 0.55rem 0.7rem; text-align: left; border-bottom: 1px solid var(--rule); }
+.env-table thead th { font-weight: 700; color: var(--ink-soft); font-size: 0.78rem; letter-spacing: 0.03em; }
+.env-table tbody th { font-weight: 600; }
+.env-table tbody tr:last-child th, .env-table tbody tr:last-child td { border-bottom: none; }
+.table-figure .diagram-caption { margin-top: 0.75rem; text-align: center; }
+.env-table thead th:first-child, .env-table tbody th { position: sticky; left: 0; background: var(--bg-elev); z-index: 1; }
+.table-hint { display: none; margin: 0 0 0.5rem; font-size: 0.78rem; color: var(--ink-mute); font-family: 'Inter', sans-serif; }
+@media (max-width: 760px) {
+  .table-hint { display: block; }
+  .table-figure { padding: 0.75rem; }
+  .env-table th, .env-table td { padding: 0.5rem 0.55rem; }
+  .env-table tbody th { box-shadow: 1px 0 0 var(--rule); }
+}

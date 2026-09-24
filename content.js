@@ -562,7 +562,7 @@ const COURSE_CONTENT = [
           "Machine learning · natural language processing",
           "Computer vision · robotics",
           "Areas overlap — generative AI cuts across NLP, vision, and speech",
-          "Everything in use today is <strong>narrow AI</strong> — built for one job"
+          "Every application in this module is <strong>narrow AI</strong> — each built for one job"
         ]
       },
       {
@@ -599,14 +599,14 @@ const COURSE_CONTENT = [
     id: 2,
     title: "Intelligent Agents and Their Environments",
     subtitle: "Architectures and Environments",
-    shortDesc: "The one idea the whole course is built on: something that senses, decides, and acts.",
+    shortDesc: "The one idea the whole course is built on: something that perceives, decides, and acts.",
     hours: 8,
     story: "Everything in AI is an agent inside an environment. Once you can say \"this is what the agent sees, this is what it can do, and this is how we measure success\", you can choose the right technique for the job. This module gives you that vocabulary, and you will use it in every module after it.",
     objectives: [
       "Define an agent, its percepts, and its agent function.",
       "Explain rationality, and why it depends on the performance measure and not on luck.",
       "Describe a task using PEAS.",
-      "Classify an environment along six properties, and say why each one matters.",
+      "Classify a task environment along six properties, and say why each one matters.",
       "Compare the five agent designs and choose one for a given task."
     ],
     terms: [
@@ -619,20 +619,25 @@ const COURSE_CONTENT = [
       { term: "Action", meaning: "What the agent does to its environment through its actuators: opening a valve, turning a wheel, sending a message, booking a room." },
       { term: "Actuator", say: "AK-choo-ay-tor", meaning: "The part that carries out an action: a motor, a valve, a screen message, an API call." },
       { term: "Rational agent", meaning: "An agent that chooses, for each percept sequence, the action expected to maximise its performance measure, given what it has perceived and what it knows. Rational does not mean perfect or always successful." },
+      { term: "Autonomy", meaning: "How far an agent relies on its own percepts and experience, rather than only on the knowledge its designer built in. Learning is what makes it possible." },
       { term: "Performance measure", meaning: "How the agent's success is evaluated. It is rarely a single number: some parts are hard requirements, some are things to improve, and some pull against each other. The agent optimises exactly what you write." },
       { term: "Environment", meaning: "The same idea as in Module 1 — what lies outside the agent and can affect it or be affected by its actions." },
       { term: "PEAS", meaning: "The four-part checklist for describing an agent's task environment: Performance measure, Environment, Actuators, Sensors." },
       { term: "Task environment", meaning: "The whole PEAS description of a task — the performance measure, the environment, the actuators and the sensors taken together. The environment alone is one of its four parts." },
-      { term: "Fully observable", meaning: "The sensors show the agent everything it needs to know at each step. Otherwise the environment is partially observable." },
+      { term: "Fully observable", meaning: "The agent can perceive, at each step, everything it needs to make a decision. Otherwise the environment is partially observable." },
       { term: "Deterministic", say: "de-TER-min-istic", meaning: "The next state is decided completely by the current state and the action. Otherwise it is stochastic (has randomness)." },
       { term: "Episodic", say: "eppi-SOD-ic", meaning: "Each decision stands alone and does not affect the next one. Otherwise the task is sequential." },
-      { term: "Static", meaning: "The environment does not change while the agent is thinking. Otherwise it is dynamic." },
+      { term: "Static", meaning: "The environment does not change while the agent is thinking. Otherwise it is dynamic. If the world waits but the clock does not — chess with a clock — it is semi-dynamic." },
+      { term: "Discrete", meaning: "States and actions come in countable steps, as in chess. Otherwise the environment is continuous, as with steering angle and speed." },
+      { term: "Single-agent", meaning: "No other agent's actions affect what happens. Otherwise it is multi-agent, and the other agents may cooperate, compete, or both — as other drivers do in traffic." },
+      { term: "Condition–action rule", meaning: "A rule that links a situation to an action: if the soil is dry, then open the valve." },
       { term: "Simple reflex agent", meaning: "Chooses an action from the current percept only, using condition–action rules." },
-      { term: "Model-based reflex agent", meaning: "Keeps an internal picture of the parts of the world it cannot see right now, and uses it with condition-action rules." },
+      { term: "Model-based reflex agent", meaning: "Keeps an internal state — a picture of the parts of the world it cannot perceive right now — and uses it with condition–action rules." },
       { term: "Goal-based agent", meaning: "Chooses actions by asking which ones lead towards a goal. This is where search begins." },
-      { term: "Utility-based agent", say: "yoo-TIL-ity", meaning: "Uses a number that says how good each outcome is, so it can compare goals and trade them off." },
+      { term: "Utility-based agent", say: "yoo-TIL-ity", meaning: "Uses a utility function to compare outcomes, so it can weigh goals against each other and trade them off." },
+      { term: "Utility function", meaning: "A function that gives each outcome a number saying how good it is. Under uncertainty, the agent chooses the action with the best expected utility." },
       { term: "Learning agent", meaning: "Improves its own behaviour over time from experience and feedback." },
-      { term: "Agentic AI", meaning: "A recent industry label, not a sixth design: a goal-based agent — usually built on a language model — that plans its own steps and uses tools to carry them out." }
+      { term: "Agentic AI", meaning: "A recent industry label, not a sixth design: a goal-based agent — usually built on a large language model (LLM), like the LLM-based agent of Module 1 — that plans its own steps and uses tools to carry them out." }
     ],
     sections: [
       {
@@ -681,7 +686,7 @@ const COURSE_CONTENT = [
       <marker id="ag2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--gold)"/></marker>
     </defs>
   </svg>
-  <div class="diagram-caption">Sense, decide, act. Then do it again.</div>
+  <div class="diagram-caption">Perceive, decide, act. Then do it again.</div>
 </div>
 
 <h3>Function on paper, program in the machine</h3>
@@ -735,7 +740,7 @@ const COURSE_CONTENT = [
 <div class="analogy">
   <span class="analogy-label">Crossing the street</span>
   <p>You look both ways, see nothing coming, and cross. A piece of metal falls from a passing plane and hits you. Were you irrational?</p>
-  <p>No. You made the best decision available from what you could sense. Rationality is judged on the <em>decision</em>, not on the <em>luck</em>. Expecting an agent to be right every time is expecting it to be all-knowing, which no agent is.</p>
+  <p>No. You made the best decision available from what you could perceive. Rationality is judged on the <em>decision</em>, not on the <em>luck</em>. Expecting an agent to be right every time is expecting it to be all-knowing, which no agent is.</p>
 </div>
 
 <h3>The performance measure is a design decision — yours</h3>
@@ -782,7 +787,7 @@ const COURSE_CONTENT = [
 <div class="definition">
   <p class="def-lead">PEAS stands for:</p>
   <p><strong>P</strong> &mdash; Performance measure: how the agent's success is evaluated.</p>
-  <p><strong>E</strong> &mdash; Environment: what lies outside the agent &mdash; everything it can affect or be affected by.</p>
+  <p><strong>E</strong> &mdash; Environment: what lies outside the agent and can affect it or be affected by its actions.</p>
   <p><strong>A</strong> &mdash; Actuators: how the agent acts on its environment.</p>
   <p><strong>S</strong> &mdash; Sensors: how the agent perceives its environment.</p>
 </div>
@@ -822,7 +827,7 @@ const COURSE_CONTENT = [
     <text x="230" y="251" font-size="12" fill="var(--ink-soft)">engine sensors</text>
     <line x1="40" y1="262" x2="660" y2="262" stroke="var(--rule)"/>
   </svg>
-  <div class="diagram-caption">Notice how many things sit in P. A real performance measure is almost never one number.</div>
+  <div class="diagram-caption">Notice how many things sit in P. A real performance measure is rarely one number.</div>
 </div>
 
 <h3>Two more, quickly</h3>
@@ -834,11 +839,11 @@ const COURSE_CONTENT = [
 
 <p>Notice that the parts of a <strong>P</strong> are not all the same kind. Some are <strong>hard requirements</strong> that must hold &mdash; no student sitting two exams at once. Others are things to <strong>improve as far as possible</strong> &mdash; the fewest rooms, the shortest trip. And some <strong>pull against each other</strong>: a faster trip is a less comfortable one. Section 2.5 shows how a utility-based agent weighs them against one another.</p>
 
-<p>One more rule, and it is the one students most often break. Write <strong>P</strong> in terms of what you want to be true <em>in the world</em>, not in terms of how you imagine the agent should behave. &ldquo;The floor is clean&rdquo; is a state of the world. &ldquo;The robot moves in a spiral pattern&rdquo; is a guess at a method &mdash; and if you write it into the measure, a spiral is exactly what you will get, clean floor or not.</p>
+<p>One more rule &mdash; easy to state, and easy to break. Write <strong>P</strong> in terms of what you want to be true <em>in the world</em>, not in terms of how you imagine the agent should behave. &ldquo;The floor is clean&rdquo; is a state of the world. &ldquo;The robot moves in a spiral pattern&rdquo; is a guess at a method &mdash; and if you write it into the measure, a spiral is exactly what you will get, clean floor or not.</p>
 
 <div class="aha">
   <div class="aha-label">PEAS is where projects are won or lost</div>
-  <p>When a project fails, the cause is often not the algorithm but the PEAS: a performance measure that rewarded the wrong thing, or sensors that could not see what the decision actually needed. Write the PEAS before you write any code — and show it to the person who asked for the system, because they will correct the P immediately.</p>
+  <p>A perfect algorithm cannot rescue a wrong PEAS. A performance measure that rewards the wrong thing, or sensors that cannot see what the decision actually needs, will defeat any algorithm you put behind them. Write the PEAS before you write any code — and show it to the person who asked for the system, because they will correct the P immediately.</p>
 </div>
 
 <p class="reading-time">6 min read</p>
@@ -846,65 +851,47 @@ const COURSE_CONTENT = [
       },
 
       {
-        title: "Reading the environment: six questions",
+        title: "Six properties of a task environment",
         body: `
-<p>This is the same environment you met in Module 1; now we describe it more precisely. The environment decides which techniques can work. Ask six questions about every task.</p>
+<p><strong>What kind of world is my agent operating in?</strong> PEAS gave us a description of the agent's task environment. Now we classify that task environment along six properties.</p>
+
+<p>Some of these properties depend on the agent itself &mdash; especially what its sensors allow it to perceive &mdash; not only on the world around it. That is why we call them properties of the <strong>task environment</strong>, not just of the Environment (E) in PEAS.</p>
+
+<p>These properties help determine which AI techniques are suitable for the task. Ask six questions about every task.</p>
 
 <ol class="steps">
-  <li><strong>Fully or partially observable?</strong><p>Can the sensors see everything that matters? A chess board is fully observable. A taxi is partially observable — you cannot see what the driver beside you intends to do.</p></li>
-  <li><strong>Deterministic or stochastic?</strong><p>Does the same action in the same state always give the same result? Moving a chess piece, yes. Braking on a wet road, no.</p></li>
-  <li><strong>Episodic or sequential?</strong><p>Does this decision affect the next ones? Sorting parcels by their label is episodic — each parcel stands alone. Driving is sequential: a turn now changes every choice later.</p></li>
-  <li><strong>Static or dynamic?</strong><p>Does the world change while the agent is thinking? A crossword waits for you. Traffic does not. In a dynamic environment, a slow perfect answer is a wrong answer.</p></li>
-  <li><strong>Discrete or continuous?</strong><p>Are the states and actions countable steps, or smooth ranges? Chess is discrete. Steering angle and speed are continuous.</p></li>
-  <li><strong>Single-agent or multi-agent?</strong><p>Is anyone else acting, and do they compete with you? Driving is multi-agent and partly competitive. This question is the whole of Module 5.</p></li>
+  <li><strong>Fully or partially observable?</strong><p>Can the agent perceive everything it needs to make a decision? A chess board is fully observable. A taxi is partially observable &mdash; it cannot know everything about the road, or what another driver intends to do.</p></li>
+  <li><strong>Deterministic or stochastic?</strong><p>Does the same action in the same state always give the same result? Moving a chess piece, yes. Braking on a wet road, not necessarily.</p></li>
+  <li><strong>Episodic or sequential?</strong><p>Does this decision affect the next ones? Sorting parcels by their labels is episodic &mdash; each parcel can be handled on its own. Driving is sequential: what you do now changes the choices available later.</p></li>
+  <li><strong>Static or dynamic?</strong><p>Does the environment change while the agent is deciding? A crossword waits for you. Traffic does not. In a dynamic environment, taking too long to decide can make a good answer useless. There is also a middle case, <strong>semi-dynamic</strong>: the world waits, but your score does not. In chess with a clock, the board stays still while you think, yet every second you spend is counted against you.</p></li>
+  <li><strong>Discrete or continuous?</strong><p>Are the states and actions separate, countable choices, or do they vary over a continuous range? Chess is discrete. Steering angle and speed are continuous.</p></li>
+  <li><strong>Single-agent or multi-agent?</strong><p>Are there other agents whose actions affect what happens? Are they cooperating, competing, or both? Driving is multi-agent: other drivers affect what your agent should do. Competitive multi-agent environments lead us to adversarial search, which we study in Module 5.</p></li>
 </ol>
 
-<div class="diagram">
-  <svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <line x1="20" y1="42" x2="680" y2="42" stroke="var(--rule)"/>
-    <text x="30" y="30" font-size="11" fill="var(--ink-soft)" font-weight="700">Task</text>
-    <text x="200" y="30" font-size="11" fill="var(--ink-soft)" font-weight="700">Observable</text>
-    <text x="330" y="30" font-size="11" fill="var(--ink-soft)" font-weight="700">Deterministic</text>
-    <text x="470" y="30" font-size="11" fill="var(--ink-soft)" font-weight="700">Static</text>
-    <text x="580" y="30" font-size="11" fill="var(--ink-soft)" font-weight="700">Agents</text>
-
-    <text x="30" y="75" font-size="11" fill="var(--ink)">Crossword puzzle</text>
-    <text x="200" y="75" font-size="11" fill="var(--teal)">Fully</text>
-    <text x="330" y="75" font-size="11" fill="var(--teal)">Yes</text>
-    <text x="470" y="75" font-size="11" fill="var(--teal)">Static</text>
-    <text x="580" y="75" font-size="11" fill="var(--teal)">Single</text>
-
-    <text x="30" y="110" font-size="11" fill="var(--ink)">Chess with a clock</text>
-    <text x="200" y="110" font-size="11" fill="var(--teal)">Fully</text>
-    <text x="330" y="110" font-size="11" fill="var(--teal)">Yes</text>
-    <text x="470" y="110" font-size="11" fill="var(--gold)">Semi-dynamic</text>
-    <text x="580" y="110" font-size="11" fill="var(--gold)">Multi</text>
-
-    <text x="30" y="145" font-size="11" fill="var(--ink)">Exam timetabling</text>
-    <text x="200" y="145" font-size="11" fill="var(--teal)">Fully</text>
-    <text x="330" y="145" font-size="11" fill="var(--teal)">Yes</text>
-    <text x="470" y="145" font-size="11" fill="var(--teal)">Static</text>
-    <text x="580" y="145" font-size="11" fill="var(--teal)">Single</text>
-
-    <text x="30" y="180" font-size="11" fill="var(--ink)">Driving in Riyadh</text>
-    <text x="200" y="180" font-size="11" fill="var(--accent)">Partially</text>
-    <text x="330" y="180" font-size="11" fill="var(--accent)">Stochastic</text>
-    <text x="470" y="180" font-size="11" fill="var(--accent)">Dynamic</text>
-    <text x="580" y="180" font-size="11" fill="var(--accent)">Multi</text>
-
-    <text x="30" y="215" font-size="11" fill="var(--ink)">Arabic speech recognition</text>
-    <text x="200" y="215" font-size="11" fill="var(--accent)">Partially</text>
-    <text x="330" y="215" font-size="11" fill="var(--accent)">Stochastic</text>
-    <text x="470" y="215" font-size="11" fill="var(--gold)">Semi-dynamic</text>
-    <text x="580" y="215" font-size="11" fill="var(--teal)">Single</text>
-    <line x1="20" y1="228" x2="680" y2="228" stroke="var(--rule)"/>
-  </svg>
-  <div class="diagram-caption">The further right and the more purple the row, the harder the task.</div>
+<div class="table-figure">
+  <p class="table-hint">Swipe sideways to see all six properties &rarr;</p>
+  <div class="table-scroll">
+    <table class="env-table">
+      <thead>
+        <tr><th scope="col">Task</th><th scope="col">Observable</th><th scope="col">Deterministic</th><th scope="col">Episodic</th><th scope="col">Static</th><th scope="col">Discrete</th><th scope="col">Agents</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Crossword puzzle</th><td>Fully</td><td>Deterministic</td><td>Sequential</td><td>Static</td><td>Discrete</td><td>Single</td></tr>
+        <tr><th scope="row">Chess with a clock</th><td>Fully</td><td>Deterministic</td><td>Sequential</td><td>Semi-dynamic</td><td>Discrete</td><td>Multi</td></tr>
+        <tr><th scope="row">Exam timetabling</th><td>Fully</td><td>Deterministic</td><td>Sequential</td><td>Static</td><td>Discrete</td><td>Single</td></tr>
+        <tr><th scope="row">Parcel-sorting robot</th><td>Partially</td><td>Stochastic</td><td>Episodic</td><td>Dynamic</td><td>Continuous</td><td>Single</td></tr>
+        <tr><th scope="row">Driving in Riyadh</th><td>Partially</td><td>Stochastic</td><td>Sequential</td><td>Dynamic</td><td>Continuous</td><td>Multi</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="diagram-caption">These properties do not just describe the task &mdash; they help us choose how to solve it.</div>
 </div>
 
 <div class="aha">
-  <div class="aha-label">Why this classification is not academic</div>
-  <p>Fully observable, deterministic, static, single-agent, discrete — that is exactly the setting where the search algorithms of Module 3 work perfectly. Every property you lose forces a different tool: partial observability needs belief states, randomness needs probability, other agents need game theory, and continuous actions need optimization. The six questions tell you which module of this course to open.</p>
+  <div class="aha-label">Why these six questions matter</div>
+  <p>These properties are not just labels. They help us decide how an agent should solve its task.</p>
+  <p>When the environment is fully observable, deterministic, static, discrete and single-agent, the agent can see what matters and predict the result of each action, so it can plan a whole solution before it acts. That is the setting of Module 3. Change a property and the problem changes with it: continuous states and actions call for the optimization methods of Module 4, and an opponent calls for the adversarial search of Module 5. Missing information and uncertain outcomes need tools that go beyond this course.</p>
+  <p>That is why we describe the task environment before choosing an AI technique.</p>
 </div>
 
 <p class="reading-time">7 min read</p>
@@ -914,12 +901,12 @@ const COURSE_CONTENT = [
       {
         title: "Five ways to build an agent, from simple to smart",
         body: `
-<p>All agents take percepts and produce actions. What differs is how much they keep inside, and how far ahead they look. Here they are, each one fixing a weakness of the one before it.</p>
+<p>All agents take percepts and produce actions. What differs is how much they keep inside, and how far ahead they look. Here they are. Each of the first four fixes a weakness of the one before it. The fifth, learning, is not a further step: it is an ability that can be added to any of the four.</p>
 
 <h3>1. Simple reflex agent</h3>
 
 <p>Looks at the current percept only, and matches it against condition&ndash;action rules: <em>if soil is dry, then open the valve</em>.</p>
-<p><strong>Good:</strong> tiny, fast, easy to test. <strong>Bad:</strong> blind to anything it cannot sense right now. If the moisture sensor breaks and reads "dry" forever, the agent floods the field and never notices.</p>
+<p><strong>Good:</strong> tiny, fast, easy to test. <strong>Bad:</strong> blind to anything it cannot perceive right now. If the moisture sensor breaks and reads "dry" forever, the agent floods the field and never notices.</p>
 
 <h3>2. Model-based reflex agent</h3>
 
@@ -942,7 +929,7 @@ const COURSE_CONTENT = [
 
 <div class="diagram">
   <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <text x="350" y="22" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">EACH DESIGN FIXES THE ONE BEFORE IT</text>
+    <text x="350" y="22" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">EACH DESIGN ADDS ONE THING</text>
 
     <rect x="30" y="45" width="125" height="200" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
     <text x="92" y="70" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="700">1 · Simple reflex</text>
@@ -1001,7 +988,7 @@ const COURSE_CONTENT = [
   <div class="callout-icon">!</div>
   <div class="callout-body">
     <div class="callout-title">A word you will hear: agentic AI</div>
-    <p>Outside this course you will constantly hear systems described as <strong>agentic AI</strong>. It is not a sixth design to memorise. It usually describes a <em>goal-based agent</em> — most often with a language model doing the perceiving and the reasoning — that decides its own steps, uses tools as its actuators (search, files, other software, an API), looks at the result, and decides again.</p>
+    <p>Outside this course you will often hear systems described as <strong>agentic AI</strong>. You have met the idea already: it is the <em>LLM-based agent</em> from Module 1. It is not a sixth design to memorise. It usually describes a <em>goal-based agent</em> — most often with a large language model (LLM) doing the perceiving and the reasoning — that decides its own steps, uses tools as its actuators (search, files, other software, an API), looks at the result, and decides again.</p>
     <p>So judge one exactly as you judge any agent in this module. What is its performance measure? What can it actually perceive? What can it actually do? Which of the five designs is it? The label is recent and used loosely in industry; those four questions are not.</p>
   </div>
 </div>
@@ -1011,7 +998,7 @@ const COURSE_CONTENT = [
   <p>A robot vacuum in a flat in Jeddah. Which design does each behaviour need? (a) "If I hit a wall, turn." (b) "Do not clean the kitchen twice before cleaning the bedroom." (c) "Finish before the family comes home, but stay quiet during nap time."</p>
   <details>
     <summary>Show answer</summary>
-    <p><strong>(a)</strong> Simple reflex — it uses only the current percept. <strong>(b)</strong> Model-based — it must remember which rooms it already cleaned, which it cannot sense right now. <strong>(c)</strong> Utility-based — "finish in time" and "be quiet now" are two goals that can conflict, so the agent needs numbers to weigh them against each other.</p>
+    <p><strong>(a)</strong> Simple reflex — it uses only the current percept. <strong>(b)</strong> Model-based — it must remember which rooms it already cleaned, which it cannot perceive right now. <strong>(c)</strong> Utility-based — "finish in time" and "be quiet now" are two goals that can conflict, so the agent needs numbers to weigh them against each other.</p>
   </details>
 </div>
 
@@ -1035,7 +1022,8 @@ const COURSE_CONTENT = [
           "Rational = the action <em>expected</em> to maximise the performance measure",
           "Judged on the <strong>decision</strong>, not on the luck of the outcome",
           "Depends on four things: the measure, built-in knowledge, available actions, percepts so far",
-          "Rational ≠ all-knowing, and rational ≠ perfect"
+          "Rational ≠ all-knowing, and rational ≠ perfect",
+          "<strong>Autonomous</strong> = relies on its own experience, not only on what the designer built in"
         ]
       },
       {
@@ -1051,12 +1039,12 @@ const COURSE_CONTENT = [
         ]
       },
       {
-        group: "Six environment properties",
+        group: "Six properties of a task environment",
         items: [
           "Fully / partially observable",
           "Deterministic / stochastic",
           "Episodic / sequential",
-          "Static / dynamic (or semi-dynamic)",
+          "Static / dynamic — <strong>semi-dynamic</strong> when the world waits but the clock does not",
           "Discrete / continuous",
           "Single-agent / multi-agent",
           "Easiest case = fully observable, deterministic, static, discrete, single-agent"
@@ -1065,11 +1053,12 @@ const COURSE_CONTENT = [
       {
         group: "Five agent designs",
         items: [
-          "<strong>Simple reflex</strong> — current percept only, if–then rules",
+          "<strong>Simple reflex</strong> — current percept only, condition–action rules",
           "<strong>Model-based reflex</strong> — adds internal state of the unseen world",
           "<strong>Goal-based</strong> — adds a goal → this is where search starts",
           "<strong>Utility-based</strong> — adds numbers so goals can be compared and traded",
-          "<strong>Learning</strong> — improves itself from experience"
+          "<strong>Learning</strong> — improves itself from experience; can be added to any of the four",
+          "<strong>Agentic AI</strong> — an industry label, not a sixth design: usually a goal-based agent built on an LLM"
         ]
       },
       {
@@ -1079,7 +1068,7 @@ const COURSE_CONTENT = [
           "Putting the performance measure inside the agent — it belongs to the designer and the world",
           "Mixing up agent function (behaviour) and agent program (code)",
           "Calling chess \"dynamic\" — with a clock it is <em>semi-dynamic</em>: the board waits, the clock does not",
-          "Choosing a learning agent when two if-statements would do the job"
+          "Choosing a learning agent when two <code>if</code> statements would do the job"
         ]
       }
     ],
@@ -1141,6 +1130,8 @@ const COURSE_CONTENT = [
 </div>
 
 <p>An agent uses search when it knows <strong>what it wants</strong> but not <strong>how to get there</strong>. It is not learning, and it is not guessing. It is trying possibilities in a smart order, and remembering what it already tried.</p>
+
+<p>In Module 2 this agent had a name: a <strong>goal-based agent</strong>. This module also works in the easiest task environment from section 2.4 &mdash; fully observable, deterministic, static, discrete, single-agent &mdash; so the agent can plan the whole route before it takes the first step.</p>
 
 <h3>Five things define any search problem</h3>
 
