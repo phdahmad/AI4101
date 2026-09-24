@@ -2568,3 +2568,28 @@ body.is-landing .stats-strip { display: block; }
 [data-theme="dark"] .landing .btn-primary {
   box-shadow: 0 6px 20px -8px color-mix(in srgb, var(--accent) 70%, transparent);
 }
+
+/* Two-line identity block: shows a distinction that a paragraph only asserts */
+.formula {
+  margin: 1.1rem 0 1.4rem;
+  padding: 0.9rem 1.2rem;
+  background: var(--bg-soft);
+  border-left: 3px solid var(--gold-soft);
+  border-radius: 6px;
+}
+.formula p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.86rem;
+  line-height: 1.9;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.formula p span { color: var(--accent); font-weight: 600; }
+.definition .def-lead {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink-mute);
+  margin-bottom: 0.6rem;
+}
+@media (max-width: 620px) { .formula p { font-size: 0.78rem; } }

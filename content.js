@@ -775,16 +775,26 @@ const COURSE_CONTENT = [
       {
         title: "PEAS: describing an agent's task environment",
         body: `
-<p>Before designing an agent, we need to describe the task it will perform and the environment in which it will operate. <strong>PEAS</strong> gives us four parts to specify: Performance measure, Environment, Actuators, and Sensors.</p>
+<p>Before designing an agent, we need to describe the task it will perform and the environment in which it will operate.</p>
+
+<p><strong>PEAS</strong> is a framework for describing an agent's <strong>task environment</strong>. It helps us specify what counts as success, what the agent is dealing with, how it can act, and how it perceives.</p>
 
 <div class="definition">
-  <p><strong>P</strong>erformance measure &mdash; how the agent's success is evaluated.</p>
-  <p><strong>E</strong>nvironment &mdash; what lies outside the agent: everything it can affect or be affected by.</p>
-  <p><strong>A</strong>ctuators &mdash; how the agent acts on its environment.</p>
-  <p><strong>S</strong>ensors &mdash; how the agent perceives its environment.</p>
+  <p class="def-lead">PEAS stands for:</p>
+  <p><strong>P</strong> &mdash; Performance measure: how the agent's success is evaluated.</p>
+  <p><strong>E</strong> &mdash; Environment: what lies outside the agent &mdash; everything it can affect or be affected by.</p>
+  <p><strong>A</strong> &mdash; Actuators: how the agent acts on its environment.</p>
+  <p><strong>S</strong> &mdash; Sensors: how the agent perceives its environment.</p>
 </div>
 
-<p>The <strong>E</strong> is the same environment you met in Module 1; here we describe it as part of the agent's task. Watch the two uses of the word: the whole PEAS description is the agent's <strong>task environment</strong>, and the <strong>E</strong> inside it is one of its four parts.</p>
+<p><strong>A note about &ldquo;environment&rdquo;.</strong> You met it in Module 1, and the <strong>E</strong> line above is the same idea, now written as part of the agent's task. The complete description &mdash; P + E + A + S &mdash; is what we call the agent's <strong>task environment</strong>.</p>
+
+<div class="formula">
+  <p><span>Task environment</span> = P + E + A + S</p>
+  <p><span>Environment</span> = E only</p>
+</div>
+
+<p>You have already seen two of the four: the irrigation controller in section 2.1 listed its sensors and its actuators. PEAS adds the <strong>P</strong> and the <strong>E</strong>, and turns the description into a standard four-line form.</p>
 
 <h3>Example: a self-driving taxi in Riyadh</h3>
 
