@@ -601,7 +601,7 @@ const COURSE_CONTENT = [
     subtitle: "Agent Designs and Task Environments",
     shortDesc: "The one idea the whole course is built on: something that perceives, decides, and acts.",
     hours: 8,
-    story: "Everything in AI is an agent inside an environment. Once you can say \"this is what the agent sees, this is what it can do, and this is how we measure success\", you can choose the right technique for the job. This module gives you that vocabulary, and you will use it in every module after it.",
+    story: "In this course, every problem is an agent inside an environment. Once you can say \"this is what the agent perceives, this is what it can do, and this is how we measure success\", you can choose the right technique for the job. This module gives you that vocabulary, and you will use it in every module after it.",
     objectives: [
       "Define an agent, its percepts, and its agent function.",
       "Explain rationality, and why it depends on the performance measure and not on luck.",
@@ -620,14 +620,14 @@ const COURSE_CONTENT = [
       { term: "Actuator", say: "AK-choo-ay-tor", meaning: "The part that carries out an action: a motor, a valve, a screen message, an API call." },
       { term: "Rational agent", meaning: "An agent that chooses, for each percept sequence, the action expected to maximise its performance measure, given what it has perceived and what it knows. Rational does not mean perfect or always successful." },
       { term: "Autonomy", meaning: "How far an agent relies on its own percepts and experience, rather than only on the knowledge its designer built in. Learning is what makes it possible." },
-      { term: "Performance measure", meaning: "How the agent's success is evaluated. It is rarely a single number: some parts are hard requirements, some are things to improve, and some pull against each other. The agent optimises exactly what you write." },
+      { term: "Performance measure", meaning: "How the agent's success is evaluated. It is rarely a single number: some parts are hard requirements, some are things to improve, and some pull against each other. An agent built to maximise it will optimise exactly what you write." },
       { term: "Environment", meaning: "The same idea as in Module 1 — what lies outside the agent and can affect it or be affected by its actions." },
       { term: "PEAS", meaning: "The four-part checklist for describing an agent's task environment: Performance measure, Environment, Actuators, Sensors." },
       { term: "Task environment", meaning: "The whole PEAS description of a task — the performance measure, the environment, the actuators and the sensors taken together. The environment alone is one of its four parts." },
       { term: "Fully observable", meaning: "The agent can perceive, at each step, everything it needs to make a decision. Otherwise the environment is partially observable." },
       { term: "Deterministic", say: "de-TER-min-istic", meaning: "The next state is decided completely by the current state and the action. Otherwise it is stochastic (has randomness)." },
       { term: "Episodic", say: "eppi-SOD-ic", meaning: "Each decision stands alone and does not affect the next one. Otherwise the task is sequential." },
-      { term: "Static", meaning: "The environment does not change while the agent is thinking. Otherwise it is dynamic. If the world waits but the clock does not — chess with a clock — it is semi-dynamic." },
+      { term: "Static", meaning: "The environment does not change while the agent is deciding. Otherwise it is dynamic. If the world waits but your score does not — as in chess with a clock — it is semi-dynamic." },
       { term: "Discrete", meaning: "States and actions come in countable steps, as in chess. Otherwise the environment is continuous, as with steering angle and speed." },
       { term: "Single-agent", meaning: "No other agent's actions affect what happens. Otherwise it is multi-agent, and the other agents may cooperate, compete, or both — as other drivers do in traffic." },
       { term: "Condition–action rule", meaning: "A rule that links a situation to an action: if the soil is dry, then open the valve." },
@@ -637,7 +637,7 @@ const COURSE_CONTENT = [
       { term: "Utility-based agent", say: "yoo-TIL-ity", meaning: "Uses a utility function to compare outcomes, so it can weigh goals against each other and trade them off." },
       { term: "Utility function", meaning: "A function that assigns values to outcomes so the agent can compare them. It should agree with the performance measure, but it is not the same thing. Under uncertainty, the agent chooses the action with the best expected utility." },
       { term: "Learning agent", meaning: "Improves its own behaviour over time from experience and feedback. Learning is not a separate way of choosing actions: it can be added to any of the other designs." },
-      { term: "Agentic AI", meaning: "A recent industry label, not a sixth design: AI systems that pursue goals with little step-by-step human direction — deciding steps, using tools, observing results, and deciding again. The LLM-based agent of Module 1 is one example." }
+      { term: "Agentic AI", meaning: "A commonly used modern term, not a sixth agent design: AI systems that pursue goals with little step-by-step human direction — deciding steps, using tools, observing results, and deciding again. The LLM-based agent of Module 1 is one example." }
     ],
     sections: [
       {
@@ -734,7 +734,7 @@ const COURSE_CONTENT = [
 <p>Students often think a rational agent is one that always gets a good result. That is not the definition, and the difference matters.</p>
 
 <div class="definition">
-  <p>A <strong>rational agent</strong> chooses, for each percept sequence, the action that is <em>expected</em> to maximise its <strong>performance measure</strong>, given the evidence it has and the knowledge built into it.</p>
+  <p>A <strong>rational agent</strong> chooses, for each percept sequence, the action that is <em>expected</em> to maximise its <strong>performance measure</strong>, given what it has perceived and what it knows.</p>
 </div>
 
 <div class="analogy">
@@ -745,7 +745,7 @@ const COURSE_CONTENT = [
 
 <h3>The performance measure is a design decision — yours</h3>
 
-<p>Do not let the agent judge itself by its own internal feeling of success. Judge it by what you actually want to happen in the world.</p>
+<p>The performance measure is set by the designer, not by the agent. Judge the agent by what counts as success for the people who will use it.</p>
 
 <div class="callout warning">
   <div class="callout-icon">!</div>
@@ -834,16 +834,16 @@ const COURSE_CONTENT = [
 
 <ol class="steps">
   <li><strong>An exam timetabling agent at the university</strong><p><em>P:</em> zero student clashes and no room over capacity &mdash; these are hard requirements, not preferences; then exams spread as evenly as possible across the period. <em>E:</em> the list of courses, students, rooms, and the exam period. <em>A:</em> write an exam into a room and a time slot. <em>S:</em> the registration database.</p></li>
-  <li><strong>An Arabic customer-service assistant</strong><p><em>P:</em> questions answered correctly from the knowledge base, in as few turns as possible. Escalating to a human when unsure counts as a correct answer, not a failure &mdash; and a confident wrong answer is the most expensive outcome of all. <em>E:</em> the chat window, the customer, the company's knowledge base. <em>A:</em> send a message, open a ticket, transfer to an agent. <em>S:</em> the text the customer types, and the account history.</p></li>
+  <li><strong>An Arabic customer-service assistant</strong><p><em>P:</em> questions answered correctly from the knowledge base, in as few turns as possible. Escalating to a human when unsure counts as a correct answer, not a failure &mdash; and a confident wrong answer is the most expensive outcome of all. <em>E:</em> the chat window, the customer, the company's knowledge base. <em>A:</em> send a message, open a ticket, transfer to a human staff member. <em>S:</em> the text the customer types, and the account history.</p></li>
 </ol>
 
 <p>Notice that the parts of a <strong>P</strong> are not all the same kind. Some are <strong>hard requirements</strong> that must hold &mdash; no student sitting two exams at once. Others are things to <strong>improve as far as possible</strong> &mdash; the fewest rooms, the shortest trip. And some <strong>pull against each other</strong>: a faster trip is a less comfortable one. Section 2.5 shows how a utility-based agent weighs the ones that pull against each other.</p>
 
-<p>One more rule &mdash; easy to state, and easy to break. Write <strong>P</strong> in terms of what you want to be true <em>in the world</em>, not in terms of how you imagine the agent should behave. &ldquo;The floor is clean&rdquo; is a state of the world. &ldquo;The robot moves in a spiral pattern&rdquo; is a guess at a method &mdash; and if you write it into the measure, a spiral is exactly what you will get, clean floor or not.</p>
+<p>One more rule &mdash; easy to state, and easy to break. Write <strong>P</strong> in terms of <em>what counts as success</em> &mdash; the outcome you want &mdash; not in terms of how you imagine the agent should behave. &ldquo;The floor is clean&rdquo; is an outcome. &ldquo;The robot moves in a spiral pattern&rdquo; is a guess at a method &mdash; and if you write it into the measure, a spiral is exactly what you will get, clean floor or not.</p>
 
 <div class="aha">
   <div class="aha-label">PEAS is where projects are won or lost</div>
-  <p>A perfect algorithm cannot rescue a wrong PEAS. A performance measure that rewards the wrong thing, or sensors that cannot see what the decision actually needs, will defeat any algorithm you put behind them. Write the PEAS before you write any code — and show it to the person who asked for the system, because they will correct the P immediately.</p>
+  <p>A perfect algorithm cannot rescue a wrong PEAS. A performance measure that rewards the wrong thing, or sensors that cannot perceive what the decision actually needs, will defeat any algorithm you put behind them. Write the PEAS before you write any code — and show it to the person who asked for the system, because they will correct the P immediately.</p>
 </div>
 
 <p class="reading-time">6 min read</p>
@@ -890,7 +890,7 @@ const COURSE_CONTENT = [
 <div class="aha">
   <div class="aha-label">Why these six questions matter</div>
   <p>These properties are not just labels. They help us decide how an agent should solve its task.</p>
-  <p>When the environment is fully observable, deterministic, static, discrete and single-agent, the agent can see what matters and predict the result of each action, so it can plan a whole solution before it acts. That is the setting of Module 3. Change a property and the problem changes with it: continuous states and actions call for the optimization methods of Module 4, and an opponent calls for the adversarial search of Module 5. Missing information and uncertain outcomes need tools that go beyond this course.</p>
+  <p>When the task environment is fully observable, deterministic, static, discrete and single-agent, the agent can perceive what matters and predict the result of each action, so it can plan a whole solution before it acts. That is the setting of Module 3. Change a property and the problem changes with it: continuous states and actions call for the optimization methods of Module 4, and an opponent calls for the adversarial search of Module 5. Missing information and uncertain outcomes need tools that go beyond this course.</p>
   <p>That is why we describe the task environment before choosing an AI technique.</p>
 </div>
 
@@ -999,7 +999,7 @@ const COURSE_CONTENT = [
 
 <div class="checkpoint">
   <span class="checkpoint-label">Check yourself</span>
-  <p>A robot vacuum in a flat in Jeddah. Which design does each behaviour need? (a) "If I hit a wall, turn." (b) "Do not clean the kitchen twice before cleaning the bedroom." (c) "Finish before the family comes home, but stay quiet during nap time."</p>
+  <p>A robot vacuum in a flat in Jeddah. What is the simplest design each behaviour needs? (a) "If I hit a wall, turn." (b) "Do not clean the kitchen twice before cleaning the bedroom." (c) "Finish before the family comes home, but stay quiet during nap time."</p>
   <details>
     <summary>Show answer</summary>
     <p><strong>(a)</strong> Simple reflex — it uses only the current percept. <strong>(b)</strong> Model-based — it must remember which rooms it already cleaned, which it cannot perceive right now. <strong>(c)</strong> Utility-based — finishing on time and staying quiet are competing preferences. The agent needs a way to compare the value of different outcomes and choose the best trade-off.</p>
@@ -1050,7 +1050,7 @@ const COURSE_CONTENT = [
           "<strong>Fully / partially observable</strong> — can the agent perceive everything it needs?",
           "<strong>Deterministic / stochastic</strong> — same action, same state, always the same result?",
           "<strong>Episodic / sequential</strong> — does this decision affect the next ones?",
-          "<strong>Static / dynamic</strong> — does the world change while the agent decides? (<strong>semi-dynamic</strong>: the world waits, the clock does not)",
+          "<strong>Static / dynamic</strong> — does the world change while the agent decides? (<strong>semi-dynamic</strong>: the world waits, but your score does not — as in chess with a clock)",
           "<strong>Discrete / continuous</strong> — countable choices, or a continuous range?",
           "<strong>Single-agent / multi-agent</strong> — do other agents' actions matter? cooperating, competing, or both",
           "Module 3 search assumes: fully observable, deterministic, static, discrete, single-agent — and sequential, because a plan is a sequence of actions",
@@ -1085,7 +1085,7 @@ const COURSE_CONTENT = [
     resources: [
       { type: "video", title: "Introduction and Scope — Lecture 1, MIT 6.034", author: "Patrick Winston, MIT — agents and what counts as intelligent behaviour", url: "https://www.youtube.com/watch?v=TjZBTDzGeGg" },
       { type: "video", title: "Search — Lecture 0, CS50's Introduction to AI with Python", author: "Brian Yu, Harvard — agents, then straight into Module 3 material", url: "https://www.youtube.com/watch?v=WbzNRTTrX0g" },
-      { type: "docs", title: "Artificial Intelligence: A Modern Approach, 4th ed. — Chapter 2", author: "Russell & Norvig — PEAS, rationality, and the five agent types", url: "https://aima.cs.berkeley.edu/" },
+      { type: "docs", title: "Artificial Intelligence: A Modern Approach, 4th ed. — Chapter 2", author: "Russell & Norvig — PEAS, rationality, task-environment properties, and agent designs", url: "https://aima.cs.berkeley.edu/" },
       { type: "docs", title: "aima-python — agent and environment code you can run", author: "AIMA code repository, GitHub", url: "https://github.com/aimacode/aima-python" }
     ]
   },
