@@ -125,41 +125,41 @@ const QUIZ_BANK = {
     {
       q: "What is the difference between an agent function and an agent program?",
       choices: [
-        "There is no difference; they are two names for the same thing.",
-        "The agent function is the mapping from percept sequence to action; the agent program is the code that produces it.",
         "The agent function is the code; the agent program is the hardware.",
+        "There is no difference; they are two names for the same thing.",
+        "The agent function maps any percept sequence to an action; the agent program is the code that produces that behaviour.",
         "The agent function works only in static environments."
       ],
-      correct: 1,
+      correct: 2,
       explanation: "The function describes the behaviour, possibly as a huge table. The program is the real implementation. Very different programs can produce the same function, with very different memory and speed."
     },
     {
-      q: "The performance measure of an agent should be:",
+      q: "The performance measure of an agent should:",
       choices: [
-        "Chosen by the agent itself as it learns.",
-        "Designed to describe what we actually want to happen in the environment.",
-        "Always a single number, never a combination.",
-        "Kept secret from the designers."
+        "Be chosen by the agent as it learns.",
+        "Always be a single number.",
+        "Describe exactly how the agent should act.",
+        "Define what counts as success for the agent's task."
       ],
-      correct: 1,
-      explanation: "The agent optimises exactly the measure you write. Reward a cleaning robot for dust collected and it may dump dust to collect it again — scoring well while cleaning nothing."
+      correct: 3,
+      explanation: "The performance measure defines success; it does not tell the agent how to act. Reward a cleaning robot for dust collected and it may dump dust to collect it again — scoring well while cleaning nothing."
     },
     {
-      q: "What does PEAS stand for?",
+      q: "PEAS is the checklist for describing an agent's task environment. What do the four letters stand for?",
       choices: [
-        "Perception, Environment, Action, State",
         "Performance measure, Environment, Actuators, Sensors",
+        "Perception, Environment, Action, State",
         "Planning, Execution, Analysis, Sensing",
         "Percept, Episode, Agent, Sequence"
       ],
-      correct: 1,
-      explanation: "PEAS is the standard four-line checklist for describing a task before building anything. A wrong P or S defeats even a perfect algorithm."
+      correct: 0,
+      explanation: "Together the four parts are the task environment: Task environment = P + E + A + S. The Environment (E) is only one of them. A wrong P or S defeats even a perfect algorithm."
     },
     {
       q: "Driving a taxi in a busy city is partially observable mainly because:",
       choices: [
         "The cameras have a limited resolution.",
-        "The agent cannot sense everything that matters, such as what other drivers intend to do.",
+        "The agent cannot perceive everything it needs to make a decision, such as what other drivers intend to do.",
         "GPS signals are sometimes lost.",
         "The road map may be out of date."
       ],
@@ -169,68 +169,90 @@ const QUIZ_BANK = {
     {
       q: "Chess played with a clock is best described as:",
       choices: [
-        "Fully observable, deterministic, semi-dynamic, multi-agent",
         "Partially observable, stochastic, dynamic, single-agent",
         "Fully observable, stochastic, static, multi-agent",
+        "Fully observable, deterministic, semi-dynamic, multi-agent",
         "Partially observable, deterministic, static, multi-agent"
       ],
-      correct: 0,
+      correct: 2,
       explanation: "The board is fully visible and moves are deterministic. It is semi-dynamic because the board waits while you think, but your clock does not. And the opponent makes it multi-agent."
     },
     {
-      q: "Which agent design is needed for the rule \"do not clean the kitchen twice before cleaning the bedroom\"?",
+      q: "A robot vacuum follows the rule \"do not clean the kitchen twice before cleaning the bedroom\". What does it need, and what is the simplest design that provides it?",
       choices: [
-        "Simple reflex agent",
-        "Model-based reflex agent",
-        "Utility-based agent",
-        "No agent design can express this rule."
+        "Only its current percept — a simple reflex agent.",
+        "An internal state recording which rooms it has already cleaned — a model-based reflex agent.",
+        "A value for each possible outcome — a utility-based agent.",
+        "Experience collected over many days — a learning agent."
       ],
       correct: 1,
-      explanation: "The agent must remember which rooms it already cleaned — information it cannot sense right now. Keeping that internal state is exactly what a model-based agent adds."
+      explanation: "The rooms it already cleaned are not in its current percept, so it must keep them in an internal state — that is what a model-based reflex agent adds. Goal-based and utility-based agents keep a model too, but they add more than this rule needs."
     },
     {
-      q: "The main limitation of a goal-based agent, which utility-based agents fix, is:",
+      q: "What does a utility-based agent add beyond simply having a goal?",
       choices: [
-        "It cannot remember the past.",
-        "It cannot compare two different ways of reaching a goal, or trade one goal against another.",
-        "It cannot act in a deterministic environment.",
-        "It cannot use sensors."
+        "The ability to perceive the environment.",
+        "The ability to remember previous percepts.",
+        "A way to assign values to outcomes and compare the trade-offs between them.",
+        "The ability to use condition–action rules."
       ],
-      correct: 1,
-      explanation: "A goal tells the agent what it wants to achieve, but not which of several successful outcomes is better. A utility function gives each outcome a value, so the agent can weigh speed against comfort, or safety against cost, and handle uncertainty by expected utility."
+      correct: 2,
+      explanation: "A goal tells the agent what it wants to achieve, but not how desirable each outcome is. A utility function assigns values to outcomes, so the agent can weigh speed against comfort, or safety against cost, and handle uncertainty by expected utility."
     },
     {
       q: "A task is episodic when:",
       choices: [
         "It happens repeatedly at fixed times.",
-        "Each decision is independent and does not affect later decisions.",
         "The environment changes while the agent thinks.",
-        "There is more than one agent."
+        "There is more than one agent.",
+        "Each decision is independent and does not affect later decisions."
       ],
-      correct: 1,
-      explanation: "Sorting parcels by label is episodic — each parcel stands alone. Driving is sequential, because a turn now changes every choice that follows."
+      correct: 3,
+      explanation: "Sorting parcels by label is episodic — each parcel stands alone. Driving is sequential: what you do now changes the choices available later."
     },
     {
       q: "An agent is more autonomous when:",
       choices: [
-        "It has more sensors.",
         "It relies on its own experience to correct what its designer assumed.",
+        "It has more sensors.",
         "It runs without an internet connection.",
         "It has a larger lookup table."
       ],
-      correct: 1,
+      correct: 0,
       explanation: "Autonomy is about the source of the agent's knowledge. A system that can only follow built-in assumptions fails when reality differs from what the designer imagined."
     },
     {
-      q: "You need an agent to open a valve whenever a tank level drops below a threshold, in a simple and fully observable setting. Which design should you choose?",
+      q: "You need an agent to open a valve whenever a tank level drops below a threshold, in a simple and fully observable setting. Which is the simplest suitable agent design?",
       choices: [
         "A learning agent, because learning is always better.",
-        "A simple reflex agent, because it solves the problem with the least complexity.",
+        "A simple reflex agent: the current percept is enough to choose the right action.",
         "A utility-based agent, so it can weigh options.",
         "A goal-based agent with full search."
       ],
       correct: 1,
-      explanation: "Match the design to the environment. A condition–action rule solves this exactly, and it is easier to test, cheaper to run, and has far fewer ways to fail than a learning system."
+      explanation: "When the current percept is enough, a condition–action rule solves the task exactly. Other designs could also work, but they add complexity the task does not need."
+    },
+    {
+      q: "An agent chooses the action expected to give the best result, given everything it has perceived and knows. The outcome is bad because of something it could not predict. Was the action necessarily irrational?",
+      choices: [
+        "No. Rationality depends on the information available when the decision was made.",
+        "Yes, because a rational action always succeeds.",
+        "Yes, because rational agents know what will happen.",
+        "No, because outcomes never matter."
+      ],
+      correct: 0,
+      explanation: "Rationality is judged on the decision, not on the luck of the outcome. Outcomes still matter — the performance measure evaluates them — but a bad outcome alone does not make a decision irrational."
+    },
+    {
+      q: "Where does learning fit among the five agent designs?",
+      choices: [
+        "It is the fifth and most advanced design, above utility-based agents.",
+        "It replaces the need for a performance measure.",
+        "It is only possible in a fully observable environment.",
+        "It is an ability that can be added to any of the other designs."
+      ],
+      correct: 3,
+      explanation: "Learning is not a separate way of choosing actions. A goal-based route planner that learns better travel-time estimates still plans towards a goal — learning improves how it does so."
     }
   ],
 

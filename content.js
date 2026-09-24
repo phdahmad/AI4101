@@ -950,8 +950,8 @@ const COURSE_CONTENT = [
     <text x="431" y="88" text-anchor="middle" font-size="10" fill="var(--teal)" font-weight="600">plan</text>
     <text x="431" y="115" text-anchor="middle" font-size="10" fill="var(--ink-soft)">+ what I want</text>
     <text x="431" y="131" text-anchor="middle" font-size="10" fill="var(--ink-soft)">→ search, planning</text>
-    <text x="431" y="162" text-anchor="middle" font-size="10" fill="var(--accent)">✗ cannot compare</text>
-    <text x="431" y="178" text-anchor="middle" font-size="10" fill="var(--accent)">two good options</text>
+    <text x="431" y="162" text-anchor="middle" font-size="10" fill="var(--accent)">✗ cannot weigh</text>
+    <text x="431" y="178" text-anchor="middle" font-size="10" fill="var(--accent)">trade-offs</text>
     <rect x="519" y="45" width="150" height="150" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
     <text x="594" y="70" text-anchor="middle" font-size="11" fill="var(--ink)" font-weight="700">4 · Utility-based</text>
     <text x="594" y="88" text-anchor="middle" font-size="10" fill="var(--teal)" font-weight="600">compare</text>
