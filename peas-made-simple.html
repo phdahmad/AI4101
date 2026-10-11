@@ -151,7 +151,7 @@ footer{margin-block-start:28px;color:var(--muted);font-size:.85rem}
   <div class="kicker">AI4101 · Module 2 · Section 2.3 · Self-study</div>
   <h1>PEAS Made Simple</h1>
   <p class="sub">Robot Agents vs. Software Agents</p>
-  <p class="meta">About 45 minutes · read each part in English, then read the Arabic note under it · the practice questions check themselves</p>
+  <p class="meta">Two sittings: Parts 1–4 (about 30 minutes), then Part 5 practice (about 30 minutes) · read each part in English, then read the Arabic note under it · the practice questions check themselves</p>
   <nav aria-label="Contents"><ul class="toc">
     <li><a href="#part1">1 · Four questions</a></li>
     <li><a href="#part2">2 · The same loop</a></li>
@@ -331,7 +331,7 @@ footer{margin-block-start:28px;color:var(--muted);font-size:.85rem}
   <span class="tag rb">Robot agent</span>
   <p>A taxi with no driver takes passengers across Riyadh.</p>
   <div class="tbl"><table class="peas"><tbody>
-    <tr><td class="l">P</td><td><strong>Hard requirements:</strong> no accident; no traffic violation. <strong>To improve:</strong> shorter trip time, comfort, less fuel.</td></tr>
+    <tr><td class="l">P</td><td><strong>Hard requirements:</strong> no accident caused by the taxi; no traffic violation. <strong>To improve:</strong> shorter trip time, comfort, less fuel.</td></tr>
     <tr><td class="l">E</td><td>Riyadh roads, other drivers, pedestrians, the weather, the passengers</td></tr>
     <tr><td class="l">A</td><td>steering, accelerator, brakes, indicators, horn</td></tr>
     <tr><td class="l">S</td><td>cameras, radar, GPS, speedometer</td></tr>
@@ -357,7 +357,7 @@ footer{margin-block-start:28px;color:var(--muted);font-size:.85rem}
   <span class="tag mx">Software agent with physical parts</span>
   <p>At the door of each lecture hall at Umm Al-Qura University, a card reader reads students' ID cards. The system records attendance in Blackboard and emails a warning to a student who misses three lectures.</p>
   <div class="tbl"><table class="peas"><tbody>
-    <tr><td class="l">P</td><td><strong>Hard requirement:</strong> never mark a student present who did not enter the hall. <strong>To improve:</strong> students recorded within the first minute; warnings sent on the same day.</td></tr>
+    <tr><td class="l">P</td><td><strong>Hard requirement:</strong> never mark a student present whose card was not read at the door of this hall during the lecture. <strong>To improve:</strong> students recorded within the first minute; warnings sent on the same day.</td></tr>
     <tr><td class="l">E</td><td>the students, the lecture hall, the lecture timetable, Blackboard, the university email service</td></tr>
     <tr><td class="l">A</td><td>Blackboard interface — writes each student's attendance · email — sends a warning to the student</td></tr>
     <tr><td class="l">S</td><td>card reader at the door — reads each student's ID card · timetable interface — reads which lecture is in the hall now</td></tr>
@@ -366,6 +366,7 @@ footer{margin-block-start:28px;color:var(--muted);font-size:.85rem}
     <li>This is the hard case. The system is software, but the card reader is a physical part. <strong>Place each part by what it does</strong>, not by what kind of agent it is: the card reader brings information in, so it is S.</li>
     <li>Blackboard is in E (a thing) and in A (the agent writes to it).</li>
     <li>The ID card is not the sensor. The card reader is the sensor; the number on the card is what it reads.</li>
+    <li>The card reader reads the card, not the person. If a friend taps another student's card, the system cannot know. <strong>P can only ask for what S can perceive.</strong></li>
   </ul></div>
   <aside class="ar" lang="ar" dir="rtl">
     <div class="ar-h">بالعربي</div>
@@ -374,6 +375,7 @@ footer{margin-block-start:28px;color:var(--muted);font-size:.85rem}
       <li>قارئ البطاقات يُدخل معلومة ← <bdi>S</bdi>.</li>
       <li>بلاك بورد في <bdi>E</bdi> لأنه شيء خارجي، وفي <bdi>A</bdi> لأن الوكيل يكتب فيه الحضور.</li>
       <li>البطاقة الجامعية نفسها ليست الحسّاس؛ الحسّاس هو القارئ، والرقم المكتوب على البطاقة هو ما يقرؤه.</li>
+      <li>لاحظ أن القارئ يقرأ <strong>البطاقة لا الشخص</strong>. لو مرّر طالب بطاقة زميله فلن يعرف النظام ذلك. لهذا كتبنا الشرط: «لا يُسجَّل حاضراً من لم تُقرأ بطاقته عند باب القاعة أثناء المحاضرة»، ولم نكتب: «لا يُسجَّل حاضراً من لم يدخل القاعة». <strong>مقياس الأداء لا يطلب إلا ما يستطيع الحسّاس أن يدركه.</strong></li>
     </ul>
   </aside>
 </article>
@@ -545,7 +547,7 @@ footer{margin-block-start:28px;color:var(--muted);font-size:.85rem}
   <h3>Q6 · Find three mistakes (robot agent)</h3>
   <p>A student wrote this PEAS for a self-driving taxi in Jeddah. Three items are in the wrong row. Find them and say where each one should go.</p>
   <div class="tbl"><table class="peas"><tbody>
-    <tr><td class="l">P</td><td>no accident; shorter trip time</td></tr>
+    <tr><td class="l">P</td><td>no accident caused by the taxi; shorter trip time</td></tr>
     <tr><td class="l">E</td><td>Jeddah roads, other drivers, pedestrians, the radar</td></tr>
     <tr><td class="l">A</td><td>steering, brakes, GPS</td></tr>
     <tr><td class="l">S</td><td>cameras, horn, speedometer</td></tr>
