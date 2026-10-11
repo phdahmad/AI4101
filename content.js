@@ -615,9 +615,9 @@ const COURSE_CONTENT = [
       { term: "Percept sequence", meaning: "Everything the agent has perceived since it was switched on." },
       { term: "Agent function", meaning: "The rule that maps any percept sequence to an action. It is the description of behaviour, on paper." },
       { term: "Agent program", meaning: "The actual code that runs inside the machine and produces that behaviour." },
-      { term: "Sensor", meaning: "The part through which the agent perceives its environment: a camera, a thermometer, a microphone — or, for a software agent, an incoming message or a web page it reads." },
+      { term: "Sensor", meaning: "The channel through which the agent perceives its environment: a camera, a thermometer, a microphone — or, for a software agent, the chat input that receives messages or the interface that reads a database. The sensor is the channel, not the information it brings in: the camera is the sensor, the image is the percept." },
       { term: "Action", meaning: "What the agent does to its environment through its actuators: opening a valve, turning a wheel, sending a message, booking a room." },
-      { term: "Actuator", say: "AK-choo-ay-tor", meaning: "The part that carries out an action: a motor, a valve, a screen message, an API call." },
+      { term: "Actuator", say: "AK-choo-ay-tor", meaning: "The channel that carries out an action: a motor, a valve, a screen — or, for a software agent, the chat window that sends a reply or the interface that writes to a database or calls an API. The actuator is the channel, not the action itself." },
       { term: "Rational agent", meaning: "An agent that chooses, for each percept sequence, the action expected to maximise its performance measure, given what it has perceived and what it knows. Rational does not mean perfect or always successful." },
       { term: "Autonomy", meaning: "How far an agent relies on its own percepts and experience, rather than only on the knowledge its designer built in. Learning is what makes it possible." },
       { term: "Performance measure", meaning: "How the agent's success is evaluated. It is rarely a single number: some parts are hard requirements, some are things to improve, and some pull against each other. An agent built to maximise it will optimise exactly what you write." },
@@ -653,7 +653,7 @@ const COURSE_CONTENT = [
 
 <div class="analogy">
   <span class="analogy-label">A smart irrigation controller on a farm in Al-Kharj</span>
-  <p><em>Sensors:</em> soil moisture probes, a temperature sensor, the weather forecast. <em>Actuators:</em> the valves that open and close each irrigation line. <em>Percept:</em> "soil at line 3 is at 18% moisture, air is 41 degrees." <em>Action:</em> "open valve 3 for twelve minutes."</p>
+  <p><em>Sensors:</em> soil moisture probes, a temperature sensor, a weather-forecast feed. <em>Actuators:</em> the valves that open and close each irrigation line. <em>Percept:</em> "soil at line 3 is at 18% moisture, air is 41 degrees." <em>Action:</em> "open valve 3 for twelve minutes."</p>
   <p>The farmer is also an agent in the same environment, with eyes as sensors and hands as actuators.</p>
 </div>
 
@@ -845,8 +845,8 @@ const COURSE_CONTENT = [
 <h3>Two more, quickly</h3>
 
 <ol class="steps">
-  <li><strong>An exam timetabling agent at the university</strong><p><em>P:</em> zero student clashes and no room over capacity &mdash; these are hard requirements, not preferences; then exams spread as evenly as possible across the period. <em>E:</em> the list of courses, students, rooms, and the exam period. <em>A:</em> write an exam into a room and a time slot. <em>S:</em> the registration database.</p></li>
-  <li><strong>An Arabic customer-service assistant</strong><p><em>P:</em> questions answered correctly from the knowledge base, in as few turns as possible. Escalating to a human when unsure counts as a correct answer, not a failure &mdash; and a confident wrong answer is the most expensive outcome of all. <em>E:</em> the chat window, the customer, the company's knowledge base. <em>A:</em> send a message, open a ticket, transfer to a human staff member. <em>S:</em> the text the customer types, and the account history.</p></li>
+  <li><strong>An exam timetabling agent at the university</strong><p><em>P:</em> zero student clashes and no room over capacity &mdash; these are hard requirements, not preferences; then exams spread as evenly as possible across the period. <em>E:</em> the courses, the students, the rooms, the exam period, the registration database, and the exam timetable system. <em>A:</em> timetable system &mdash; writes each exam into a room and a time slot. <em>S:</em> database interface &mdash; reads student enrolments from the registration database.</p></li>
+  <li><strong>An Arabic customer-service assistant</strong><p><em>P:</em> questions answered correctly from the knowledge base, in as few turns as possible. Escalating to a human when unsure counts as a correct answer, not a failure &mdash; and a confident wrong answer is the most expensive outcome of all. <em>E:</em> the customer, the company's knowledge base, the account system, and the ticket system. <em>A:</em> chat window &mdash; sends replies; ticket system &mdash; opens a ticket; transfer &mdash; passes the chat to a human staff member. <em>S:</em> chat input &mdash; reads the customer's messages; account interface &mdash; reads the account history; knowledge-base search &mdash; reads the matching answers.</p></li>
 </ol>
 
 <p>Notice that the parts of a <strong>P</strong> are not all the same kind. Some are <strong>hard requirements</strong> (rules that must always be true) &mdash; no student sitting two exams at once. Others are <strong>things to improve</strong> as far as possible &mdash; the fewest rooms, the shortest trip. And some <strong>pull against each other</strong>: a faster trip is a less comfortable one. Section 2.5 shows how a utility-based agent weighs the ones that pull against each other.</p>
@@ -855,7 +855,25 @@ const COURSE_CONTENT = [
 
 <h3>Robot or software: where do things go?</h3>
 
-<p>The rule: <strong>E</strong> is what lies outside the agent. <strong>S</strong> is how the agent reads it. <strong>A</strong> is how the agent changes it.</p>
+<p>Ask one question for each letter. The answer tells you where an item goes.</p>
+
+<div class="table-figure">
+  <div class="table-scroll">
+    <table class="env-table" style="white-space: normal;">
+      <thead>
+        <tr><th scope="col">PEAS</th><th scope="col">Ask</th><th scope="col">Write it as</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">P</th><td>How do we measure success?</td><td>something you can count: hard requirements first, then things to improve</td></tr>
+        <tr><th scope="row">E</th><td>What is outside the agent, affecting it or affected by it?</td><td>things: the customer, the road, the database</td></tr>
+        <tr><th scope="row">A</th><td>How does the agent act on its environment?</td><td>channel &mdash; what it does</td></tr>
+        <tr><th scope="row">S</th><td>How does the agent get information?</td><td>channel &mdash; what it reads</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<p>Information comes <strong>in</strong> through S. Action goes <strong>out</strong> through A. A sensor is the channel, not the information: the camera is the sensor, and the image is the percept. In the same way, an actuator is the channel, not the action.</p>
 
 <div class="table-figure">
   <div class="table-scroll">
@@ -864,18 +882,18 @@ const COURSE_CONTENT = [
         <tr><th scope="col"></th><th scope="col">Self-driving taxi (robot)</th><th scope="col">Customer-service assistant (software)</th></tr>
       </thead>
       <tbody>
-        <tr><th scope="row">S</th><td>cameras, radar, GPS</td><td>the text the customer types, the account history it reads</td></tr>
-        <tr><th scope="row">A</th><td>steering, brakes, screen</td><td>send a message, open a ticket, transfer to a human</td></tr>
+        <tr><th scope="row">S</th><td>cameras, radar, GPS</td><td>chat input &mdash; reads the customer's messages; account interface &mdash; reads the account history</td></tr>
+        <tr><th scope="row">A</th><td>steering, brakes, screen</td><td>chat window &mdash; sends replies; ticket system &mdash; opens a ticket</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<p>For a robot, S and A are physical parts. For a software agent, S is what it reads (messages, files, database records) and A is what it writes or sends (a reply, a database row, an API call).</p>
+<p>For a robot, S and A are physical parts. For a software agent, they are channels: S reads (messages, files, database records) and A writes or sends (a reply, a database row, an API call).</p>
 
-<p>The same database can sit in E (the thing) and in S (reading it): that is correct, not a mistake.</p>
+<p>The same system can appear in three places. In E it is a thing: <em>the exam timetable system</em>. In S it is read: <em>timetable system &mdash; reads change requests</em>. In A it is changed: <em>timetable system &mdash; writes each exam into a slot</em>. That is correct, not a mistake.</p>
 
-<p>Some agents are software but use physical parts, such as a car-park guide that reads fixed cameras and lights up signs. Place each part by what it does, not by what kind of agent it is.</p>
+<p>Some agents are software but use physical parts, such as a smart car-park guide that reads fixed cameras and lights up signs. Place each part by what it does, not by what kind of agent it is.</p>
 
 <div class="aha">
   <div class="aha-label">PEAS is where projects are won or lost</div>
@@ -1074,6 +1092,7 @@ const COURSE_CONTENT = [
         items: [
           "<strong>P</strong>erformance measure · <strong>E</strong>nvironment · <strong>A</strong>ctuators · <strong>S</strong>ensors",
           "<strong>Task environment</strong> = P + E + A + S · <strong>Environment</strong> = E only",
+          "<strong>S</strong> = information IN · <strong>A</strong> = action OUT · write each as <em>channel — what it does</em>; the sensor is the channel, not the information",
           "P usually has several parts: hard requirements (they must always be true), things to improve, and parts that pull against each other (e.g. safety, time, cost)",
           "P describes <strong>what counts as success</strong>, not how the agent achieves it",
           "Write PEAS before writing code"
