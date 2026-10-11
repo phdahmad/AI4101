@@ -1,0 +1,168 @@
+<title>AI4101 Labs</title>
+<meta name="description" content="AI4101 labs: every lab of the course in one place, from Teachable Machine to Tafsir MCP.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#FAF7F2; --surface:#FFFFFF; --ink:#221A33; --ink-soft:#4A4258; --mute:#6B6378; --rule:#E4DCCF;
+  --accent:#3D2A6B; --accent-soft:#ECE7F6; --on-accent:#FFFFFF;
+  --gold:#8F6230; --gold-line:#D4A574; --gold-soft:#F6EBDD;
+  --teal:#23615C; --teal-soft:#DDEEEB;
+  --rose:#8E2F45; --rose-soft:#F6E3E7;
+  --seg-a:#3D2A6B; --seg-b:#6A55A0;
+  --display:"Crimson Pro",Georgia,"Times New Roman",serif;
+  --body:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#15111D; --surface:#1E1929; --ink:#EEE9F5; --ink-soft:#CFC7DC; --mute:#A99FB8; --rule:#342C44;
+    --accent:#C3B3F0; --accent-soft:#2B2340; --on-accent:#15111D;
+    --gold:#E2B887; --gold-line:#B98A57; --gold-soft:#33291E;
+    --teal:#86CBC2; --teal-soft:#1B3331; --rose:#F0A3B4; --rose-soft:#3A2129;
+    --seg-a:#8F7BD0; --seg-b:#5C4A92;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#15111D; --surface:#1E1929; --ink:#EEE9F5; --ink-soft:#CFC7DC; --mute:#A99FB8; --rule:#342C44;
+  --accent:#C3B3F0; --accent-soft:#2B2340; --on-accent:#15111D;
+  --gold:#E2B887; --gold-line:#B98A57; --gold-soft:#33291E;
+  --teal:#86CBC2; --teal-soft:#1B3331; --rose:#F0A3B4; --rose-soft:#3A2129;
+  --seg-a:#8F7BD0; --seg-b:#5C4A92;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;padding-inline:16px;padding-block:28px 56px}
+.wrap{max-width:920px;margin:0 auto;display:grid;gap:40px}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--gold-line);outline-offset:2px;border-radius:4px}
+code,.mono{font-family:var(--mono);font-size:.88em}
+h1,h2,h3{font-family:var(--display);color:var(--accent);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:1.8rem;font-weight:600}
+h3{font-size:1.3rem;font-weight:600}
+.eyebrow{font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:var(--gold)}
+.section-head{display:grid;gap:4px}
+.section-head p{margin:0;color:var(--mute);max-width:65ch}
+
+.back{font-size:.88rem;text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+header{display:grid;gap:12px;border-bottom:2px solid var(--gold-line);padding-bottom:24px}
+header h1{font-size:clamp(2.6rem,7vw,3.8rem);font-weight:700}
+.subtitle{font-family:var(--display);font-style:italic;font-size:1.35rem;color:var(--ink-soft);margin:0}
+.lede{margin:0;max-width:65ch;color:var(--ink-soft)}
+
+.labs{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.lab{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:18px;align-items:start;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px}
+.lab.soon{background:transparent;border-style:dashed}
+.lab .n{font-family:var(--display);font-size:2.8rem;font-weight:700;line-height:1;color:var(--gold-line);text-align:right;font-variant-numeric:tabular-nums}
+.lab.soon .n{color:var(--rule)}
+.lab-body{display:grid;gap:6px;min-width:0}
+.lab-body h3{font-size:1.45rem}
+.lab.soon h3{color:var(--ink-soft)}
+.lab-body p{margin:0;color:var(--ink-soft);max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;padding:0;list-style:none}
+.meta li{font-size:.8rem;border:1px solid var(--rule);border-radius:999px;padding:2px 10px;color:var(--ink-soft);background:var(--paper)}
+.meta li.tool{font-family:var(--mono);font-size:.76rem;color:var(--accent);border-color:var(--accent-soft);background:var(--accent-soft)}
+.side{display:grid;gap:8px;justify-items:end;align-content:start}
+.status{font-size:.74rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:2px 8px}
+.status.open{background:var(--teal-soft);color:var(--teal)}
+.status.soon{color:var(--mute);border:1px dashed var(--rule)}
+.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:600;font-size:.9rem;border-radius:6px;padding:8px 14px;background:var(--accent);color:var(--on-accent);white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
+
+.how{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.piece{border-top:3px solid var(--gold-line);padding-top:10px;display:grid;gap:4px;align-content:start}
+.piece b{font-family:var(--display);font-size:1.15rem;color:var(--accent)}
+.piece span{font-size:.9rem;color:var(--ink-soft)}
+.rules{margin:0;padding-left:1.1em;display:grid;gap:6px;color:var(--ink-soft);max-width:70ch}
+.rules code{color:var(--accent)}
+footer{border-top:1px solid var(--rule);padding-top:14px;font-size:.84rem;color:var(--mute);display:grid;gap:4px}
+
+@media (max-width:760px){
+  .how{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lab{grid-template-columns:48px minmax(0,1fr)}
+  .lab .n{font-size:2.1rem}
+  .side{grid-column:2;justify-items:start;grid-auto-flow:column;justify-content:start;align-items:center}
+}
+@media (max-width:420px){ .how{grid-template-columns:1fr} }
+</style>
+
+<div class="wrap">
+  <header>
+    <a class="back" href="../">← AI4101 course site</a>
+    <div class="eyebrow">AI4101 · Artificial Intelligence Principles</div>
+    <h1>Labs</h1>
+    <p class="subtitle">From an idea in class to a tool that works</p>
+    <p class="lede">Each lab takes one idea from the modules and puts it to work with a real, current tool. The labs are separate: you can do each one without the others.</p>
+  </header>
+
+  <section class="section-head" aria-labelledby="labs-h">
+    <div class="eyebrow">The labs</div>
+    <h2 id="labs-h">Five labs, in order</h2>
+  </section>
+  <ol class="labs" id="labs" style="margin-top:-28px"></ol>
+
+  <section class="section-head" aria-labelledby="how-h">
+    <div class="eyebrow">Every lab</div>
+    <h2 id="how-h">How a lab works</h2>
+    <p>Every lab has the same four parts, so you always know where to look.</p>
+  </section>
+  <div class="how" style="margin-top:-24px">
+    <div class="piece"><b>Lab page</b><span>Start here. The steps, your files, and what to submit.</span></div>
+    <div class="piece"><b>Guide</b><span>The official reference, as PDF or Word. When the page and the guide differ, follow the guide.</span></div>
+    <div class="piece"><b>Tool</b><span>Where you do the work: Teachable Machine, Google Colab, and later n8n and Claude.</span></div>
+    <div class="piece"><b>Report template</b><span>Fill it in as you go, then save it as PDF.</span></div>
+  </div>
+
+  <section class="section-head" aria-labelledby="rules-h">
+    <div class="eyebrow">The same in every lab</div>
+    <h2 id="rules-h">Rules</h2>
+  </section>
+  <ul class="rules" style="margin-top:-28px">
+    <li>Work in <b>pairs</b>, and write <b>one report per pair</b>.</li>
+    <li>Name the PDF <code>AI4101_LabN_&lt;ID1&gt;_&lt;ID2&gt;.pdf</code>: the lab number, then your two student IDs.</li>
+    <li>Submit the report the way your instructor announces in class.</li>
+    <li>You may use an AI assistant to help with your English. The results, the screenshots and the ideas must be your own, and the last section of every report says which tools you used and for what.</li>
+  </ul>
+
+  <footer>
+    <span>AI4101 Open Educational Resource · Curated, reviewed, and academically directed by Dr. Ahmad Alhindi · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></span>
+  </footer>
+</div>
+
+<script>
+// One entry per lab. To open a lab: add its folder, set open:true and href.
+const LABS = [
+  {n:1, open:true,  href:"lab1/", title:"Teaching a Computer to See",
+   text:"Train an image classifier from your own examples, then find out where it fails.",
+   meta:["Modules 1–2","At home","About 2 hours","Not graded"], tool:"Teachable Machine"},
+  {n:2, open:true,  href:"lab2/", title:"From Search to Routes",
+   text:"Model Ekram’s food-collection trip as a search problem, then compare the optimal route with a fast greedy one.",
+   meta:["Module 3","In the lab","4 hours"], tool:"Google Colab"},
+  {n:3, open:false, title:"Better Routes: Local Search and Genetic Algorithms",
+   text:"Improve a route step by step instead of trying every order, and build a genetic algorithm with an AI coding assistant.",
+   meta:["Module 4","In the lab"], tool:"Google Colab"},
+  {n:4, open:false, title:"Agents and Automation",
+   text:"Build an automation that calls a large language model, and see what makes it an agent.",
+   meta:["Module 2","In the lab"], tool:"n8n"},
+  {n:5, open:false, title:"Connecting AI to Real Data with MCP",
+   text:"Connect an AI assistant to a real source of knowledge through the Model Context Protocol, using Tafsir MCP.",
+   meta:["Beyond the syllabus","In the lab"], tool:"Tafsir MCP"}
+];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+document.getElementById("labs").innerHTML = LABS.map((l) => `
+  <li class="lab${l.open ? "" : " soon"}">
+    <div class="n">${l.n}</div>
+    <div class="lab-body">
+      <h3>${esc(l.title)}</h3>
+      <p>${esc(l.text)}</p>
+      <ul class="meta"><li class="tool">${esc(l.tool)}</li>${l.meta.map((m) => `<li>${esc(m)}</li>`).join("")}</ul>
+    </div>
+    <div class="side">
+      ${l.open ? `<span class="status open">Open</span><a class="btn" href="${esc(l.href)}">Open lab ${l.n} →</a>`
+               : `<span class="status soon">Coming soon</span>`}
+    </div>
+  </li>`).join("");
+</script>

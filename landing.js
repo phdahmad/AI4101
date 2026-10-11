@@ -91,6 +91,7 @@ function renderLanding(ctx) {
 
         <div class="hero-cta">
           ${cta}
+          <a href="labs/" class="btn btn-ghost">Course labs</a>
           <a href="#about" class="btn btn-ghost">About this course</a>
         </div>
         ${ctaNote}
