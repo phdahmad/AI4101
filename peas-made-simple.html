@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>PEAS Made Simple</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F3EFF8; --sand:#F4EEE3; --line:#DED7E8;
+  --fg:#221C2E; --muted:#625A70; --purple:#3D2A6B; --purple-soft:#EEE9F6;
+  --gold:#9A6A30; --gold-soft:#FBF3E6; --green:#256E5E; --green-soft:#E6F3EF;
+  --red:#A63A32; --red-soft:#FBEAE8; --ar-bg:#F1F7F5; --ar-line:#256E5E;
+  --shadow:0 1px 2px rgba(40,25,70,.06),0 4px 16px rgba(40,25,70,.05);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#15121C; --surface:#1E1A28; --surface-2:#262035; --sand:#2A2419; --line:#3A3349;
+  --fg:#ECE8F3; --muted:#B0A8BE; --purple:#C3B2F0; --purple-soft:#2B2441;
+  --gold:#E0AE6C; --gold-soft:#2E2618; --green:#6FD0B6; --green-soft:#17302A;
+  --red:#F0948B; --red-soft:#3A1E1C; --ar-bg:#182723; --ar-line:#6FD0B6;
+  --shadow:none; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#15121C; --surface:#1E1A28; --surface-2:#262035; --sand:#2A2419; --line:#3A3349;
+  --fg:#ECE8F3; --muted:#B0A8BE; --purple:#C3B2F0; --purple-soft:#2B2441;
+  --gold:#E0AE6C; --gold-soft:#2E2618; --green:#6FD0B6; --green-soft:#17302A;
+  --red:#F0948B; --red-soft:#3A1E1C; --ar-bg:#182723; --ar-line:#6FD0B6;
+  --shadow:none; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:17px;line-height:1.6;font-variant-numeric:lining-nums}
+.page{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:28px 64px}
+h1,h2,h3{color:var(--purple);line-height:1.25;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,6vw,2.75rem);letter-spacing:-.01em}
+h2{font-size:1.55rem;margin-block:48px 14px;padding-block-start:18px;border-block-start:2px solid var(--line)}
+h3{font-size:1.18rem;margin-block:30px 8px}
+p{margin-block:0 12px}
+strong{font-weight:700}
+.kicker{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.sub{font-size:1.25rem;color:var(--gold);font-weight:600;margin-block:6px 6px}
+.meta{color:var(--muted);font-size:.92rem}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-block:18px 6px;padding:0;list-style:none}
+.toc a{display:inline-block;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--purple);text-decoration:none;font-size:.9rem;background:var(--surface)}
+.toc a:hover{background:var(--purple-soft)}
+.goal{background:var(--surface-2);border-radius:12px;padding:16px 18px;margin-block:18px}
+.goal ul{margin:6px 0 0;padding-inline-start:22px}
+.ch{font-family:"IBM Plex Sans",system-ui,sans-serif;white-space:nowrap}
+.in{color:var(--green);font-weight:700}.out{color:var(--gold);font-weight:700}
+
+/* Arabic explanation */
+.ar{direction:rtl;font-family:"IBM Plex Sans Arabic","Noto Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif;background:var(--ar-bg);border-inline-start:4px solid var(--ar-line);border-radius:10px;padding:14px 18px 6px;margin-block:14px 22px;line-height:1.95;font-size:1.04rem}
+.ar .ar-h{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--green);font-size:.95rem;margin-block-end:4px}
+.ar .ar-h::before{content:"";inline-size:8px;block-size:8px;border-radius:50%;background:var(--green)}
+.ar p{margin-block:0 10px}
+.ar ul,.ar ol{margin:0 0 10px;padding-inline-start:24px}
+.ar li{margin-block:2px}
+.ar bdi{unicode-bidi:isolate}
+.ar bdi,.ar .en{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.95em}
+
+/* tables */
+.tbl{overflow-x:auto;margin-block:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.97rem}
+th,td{padding:10px 12px;text-align:start;vertical-align:top;border-block-end:1px solid var(--line)}
+tr:last-child td{border-block-end:0}
+th{background:var(--purple);color:var(--bg);font-weight:600;font-size:.9rem}
+td.l{inline-size:52px;font-weight:700;color:var(--purple);background:var(--purple-soft);text-align:center;font-size:1.1rem}
+.peas td+td{min-width:0}
+.wide{min-width:560px}
+
+/* rules box */
+.rules{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);margin-block:16px}
+.rules h3{margin-block:0 8px}
+.rules ol{margin:0;padding-inline-start:22px}
+.rules li{margin-block:6px}
+.warn{background:var(--gold-soft);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);border-radius:12px;padding:14px 18px;margin-block:16px}
+.warn h3{margin-block:0 6px;color:var(--gold)}
+
+/* loop diagram */
+.loopwrap{margin-block:18px}
+.loop-title{font-weight:700;color:var(--purple);margin-block:16px 8px}
+.loop{display:grid;grid-template-columns:minmax(0,1fr) 116px minmax(0,1fr) 116px minmax(0,1fr);align-items:stretch;gap:8px}
+.node{border-radius:12px;padding:12px;text-align:center;font-size:.93rem;min-width:0}
+.node b{display:block;margin-block-end:4px}
+.env{background:var(--sand);border:1px solid var(--line)}
+.agent{background:var(--purple-soft);border:2px solid var(--purple)}
+.agent b{color:var(--purple)}
+.arrow{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-size:.82rem;min-width:0;padding-inline:2px}
+.arrow .lbl{font-weight:700}
+.arrow .shaft{font-size:1.6rem;line-height:1}
+.arrow.i{color:var(--green)}.arrow.o{color:var(--gold)}
+.arrow small{color:var(--muted)}
+@media (max-width:640px){
+  .loop{grid-template-columns:1fr}
+  .arrow{flex-direction:row;gap:8px;min-width:0;padding-block:2px}
+  .arrow .shaft{transform:rotate(90deg)}
+}
+
+/* examples */
+.ex{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px 18px 8px;margin-block:22px;box-shadow:var(--shadow)}
+.ex h3{margin-block:16px 4px}
+.tag{display:inline-block;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:2px 10px;border-radius:999px;margin-block-end:8px}
+.tag.sw{background:var(--purple-soft);color:var(--purple)}
+.tag.rb{background:var(--gold-soft);color:var(--gold)}
+.tag.mx{background:var(--green-soft);color:var(--green)}
+.why{margin-block:8px 6px}
+.why h4{margin:0 0 4px;color:var(--purple);font-size:1rem}
+.why ul{margin:0;padding-inline-start:22px}
+.why li{margin-block:4px}
+
+/* practice */
+.q{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 18px 14px;margin-block:22px;box-shadow:var(--shadow)}
+.q h3{margin-block:16px 6px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;margin-block:10px}
+.card{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--bg);min-width:0}
+.card{flex-wrap:wrap}
+.card>span{min-width:0;flex:1 1 150px}
+.card select{font:inherit;font-weight:700;padding:4px 6px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);flex:none}
+.card.ok{border-color:var(--green);background:var(--green-soft)}
+.card.no{border-color:var(--red);background:var(--red-soft)}
+.pick{display:flex;gap:4px;flex:none}
+.pick label{cursor:pointer}
+.pick input{position:absolute;opacity:0;pointer-events:none}
+.pick span{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:8px;font-size:.88rem;background:var(--surface)}
+.pick input:checked+span{background:var(--purple);border-color:var(--purple);color:var(--bg);font-weight:600}
+.pick input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-block:8px}
+button{font:inherit;font-weight:600;padding:8px 16px;border-radius:10px;border:1px solid var(--purple);background:var(--purple);color:var(--bg);cursor:pointer}
+button.ghost{background:transparent;color:var(--purple)}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.score{font-weight:700;color:var(--muted)}
+details.ans{margin-block:10px 4px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+details.ans summary{cursor:pointer;padding:10px 14px;font-weight:700;color:var(--purple)}
+details.ans .body{padding:0 14px 6px}
+textarea{width:100%;min-height:90px;font:inherit;font-size:.95rem;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);resize:vertical}
+.note{font-size:.88rem;color:var(--muted)}
+.final{background:var(--purple);color:var(--bg);border-radius:14px;padding:18px 20px;margin-block:36px 8px}
+.final h2{color:var(--bg);border:0;margin:0 0 8px;padding:0;font-size:1.3rem}
+.final ol{margin:0;padding-inline-start:22px}
+.final .ar{background:color-mix(in srgb,var(--bg) 12%,transparent);border-color:var(--bg);color:var(--bg);margin-block-end:4px}
+.final .ar .ar-h{color:var(--bg)}.final .ar .ar-h::before{background:var(--bg)}
+@media (max-width:480px){.q,.ex{padding-inline:12px}.q .ar,.ex .ar{padding-inline:12px}}
+footer{margin-block-start:28px;color:var(--muted);font-size:.85rem}
+</style>
+
+<div class="page" dir="ltr" lang="en">
+
+<header>
+  <div class="kicker">AI4101 · Module 2 · Section 2.3 · Self-study</div>
+  <h1>PEAS Made Simple</h1>
+  <p class="sub">Robot Agents vs. Software Agents</p>
+  <p class="meta">About 45 minutes · read each part in English, then read the Arabic note under it · the practice questions check themselves</p>
+  <nav aria-label="Contents"><ul class="toc">
+    <li><a href="#part1">1 · Four questions</a></li>
+    <li><a href="#part2">2 · The same loop</a></li>
+    <li><a href="#part3">3 · Four examples</a></li>
+    <li><a href="#part4">4 · Common mistakes</a></li>
+    <li><a href="#part5">5 · Practice</a></li>
+  </ul></nav>
+</header>
+
+<div class="goal">
+  <strong>After this page you will be able to</strong>
+  <ul>
+    <li>Ask one question for each letter of PEAS and put any item in the right place.</li>
+    <li>Write the sensors and actuators of a <strong>software</strong> agent, not only of a robot.</li>
+    <li>Analyse an agent you have never seen before, instead of remembering examples.</li>
+  </ul>
+</div>
+
+<aside class="ar" lang="ar" dir="rtl">
+  <div class="ar-h">بالعربي</div>
+  <p>هذه الصفحة تساعدك على أن تكتب PEAS صحيحاً سواء كان الوكيل <strong>روبوتاً</strong> له قطع تلمسها، أو <strong>برنامجاً</strong> يعمل على الحاسب فقط.</p>
+  <p>طريقة القراءة: اقرأ الجزء الإنجليزي أولاً، ثم اقرأ الشرح العربي تحته ليتأكد فهمك. الاختبار باللغة الإنجليزية، فاحفظ المصطلحات بالإنجليزي كما هي.</p>
+  <p>الفكرة كلها في جملة واحدة: <strong>المعلومة تدخل عبر <bdi>S</bdi>، والفعل يخرج عبر <bdi>A</bdi>.</strong></p>
+</aside>
+
+<!-- ===================== PART 1 ===================== -->
+<h2 id="part1">1. One question for each letter</h2>
+<p>Do not start from the name of the item. Start from a question. The answer tells you where the item goes.</p>
+
+<div class="tbl"><table class="wide">
+  <thead><tr><th>PEAS</th><th>Ask</th><th>Write it as</th></tr></thead>
+  <tbody>
+    <tr><td><strong>P</strong> · Performance measure</td><td>How do we measure success?</td><td>Something you can count. Hard requirements first, then things to improve.</td></tr>
+    <tr><td><strong>E</strong> · Environment</td><td>What is outside the agent, affecting it or affected by it?</td><td>Things: the customer, the road, the database.</td></tr>
+    <tr><td><strong>A</strong> · Actuators</td><td>How does the agent act on its environment?</td><td><strong>channel — what it does</strong> <span class="out">(action OUT)</span></td></tr>
+    <tr><td><strong>S</strong> · Sensors</td><td>How does the agent get information?</td><td><strong>channel — what it reads</strong> <span class="in">(information IN)</span></td></tr>
+  </tbody>
+</table></div>
+
+<aside class="ar" lang="ar" dir="rtl">
+  <div class="ar-h">بالعربي</div>
+  <p>لا تسأل: «ما اسم هذا الشيء؟» بل اسأل: <strong>«ماذا يفعل هذا الشيء؟»</strong>. لكل حرف سؤال واحد فقط:</p>
+  <ul>
+    <li><strong><bdi>P</bdi> — كيف نقيس النجاح؟</strong> اكتب شيئاً يمكن عدّه أو قياسه. ابدأ بالشروط التي لا يُسمح بكسرها أبداً <bdi>(Hard requirement)</bdi>، ثم الأشياء التي نريدها أفضل كلما زادت <bdi>(Thing to improve)</bdi>.</li>
+    <li><strong><bdi>E</bdi> — ما الذي خارج الوكيل، ويؤثر فيه أو يتأثر به؟</strong> هنا نكتب «أشياء»: العميل، الطريق، قاعدة البيانات.</li>
+    <li><strong><bdi>A</bdi> — كيف يؤثر الوكيل في بيئته؟</strong> نكتب القناة ثم ماذا تفعل، مثل: <bdi>chat window — sends replies</bdi> أي «نافذة المحادثة — ترسل الردود».</li>
+    <li><strong><bdi>S</bdi> — كيف يحصل الوكيل على المعلومة؟</strong> نكتب القناة ثم ماذا تقرأ، مثل: <bdi>chat input — reads messages</bdi> أي «خانة الإدخال — تقرأ الرسائل».</li>
+  </ul>
+</aside>
+
+<div class="rules">
+  <h3>Three rules to remember</h3>
+  <ol>
+    <li><strong>Information comes IN through S. Action goes OUT through A.</strong></li>
+    <li><strong>A sensor is the channel, not the information.</strong> The camera is the sensor; the image of the road is the percept. In the same way, <strong>an actuator is the channel, not the action</strong>: the brakes are the actuator; stopping the car is the action.</li>
+    <li><strong>The agent's own parts never go in E.</strong> An outside system (a database, a ticket system) can appear in E as a thing, and in S or A as the channel that reads it or changes it.</li>
+  </ol>
+</div>
+
+<aside class="ar" lang="ar" dir="rtl">
+  <div class="ar-h">بالعربي</div>
+  <ol>
+    <li><strong>القاعدة الأولى:</strong> كل ما يُدخل معلومة إلى الوكيل يذهب إلى <bdi>S</bdi>، وكل ما يُخرج فعلاً من الوكيل يذهب إلى <bdi>A</bdi>.</li>
+    <li><strong>القاعدة الثانية:</strong> الحسّاس <bdi>(sensor)</bdi> هو «القناة» وليس المعلومة نفسها. الكاميرا حسّاس، أما صورة الطريق التي تلتقطها فهي المُدرَك <bdi>(percept)</bdi>. وبالمثل المشغِّل <bdi>(actuator)</bdi> هو القناة وليس الفعل: الفرامل مشغِّل، أما توقّف السيارة فهو الفعل <bdi>(action)</bdi>.</li>
+    <li><strong>القاعدة الثالثة:</strong> أجزاء الوكيل نفسه لا تُكتب أبداً في <bdi>E</bdi>، فكاميرات السيارة ليست من بيئتها. أما النظام الخارجي مثل قاعدة البيانات فيُكتب في <bdi>E</bdi> لأنه «شيء» خارج الوكيل، ويظهر أيضاً في <bdi>S</bdi> أو <bdi>A</bdi> من خلال القناة التي تقرأ منه أو تكتب فيه.</li>
+  </ol>
+</aside>
+
+<h3>Channel or what comes through it?</h3>
+<p>Read each row from left to right.</p>
+<div class="tbl"><table>
+  <thead><tr><th>Channel</th><th>What comes through it</th><th>So the channel is…</th></tr></thead>
+  <tbody>
+    <tr><td>camera</td><td>the image of the road (a percept)</td><td class="in">a sensor</td></tr>
+    <tr><td>chat input</td><td>the customer's message (a percept)</td><td class="in">a sensor</td></tr>
+    <tr><td>brakes</td><td>stopping the car (an action)</td><td class="out">an actuator</td></tr>
+    <tr><td>chat window</td><td>sending the reply (an action)</td><td class="out">an actuator</td></tr>
+  </tbody>
+</table></div>
+
+<aside class="ar" lang="ar" dir="rtl">
+  <div class="ar-h">بالعربي</div>
+  <p>تخيّل <strong>أنبوب ماء</strong>: القناة هي الأنبوب، والذي يمرّ فيه هو الماء. في <bdi>S</bdi> و<bdi>A</bdi> نكتب <strong>الأنبوب</strong> لا الماء.</p>
+  <p>فالكاميرا وخانة المحادثة أنابيب تُدخل معلومة، فهما حسّاسات. والفرامل ونافذة المحادثة أنابيب يخرج منها فعل، فهما مشغِّلات. أما صورة الطريق ورسالة العميل فهما «الماء» الداخل، أي مُدرَكات، ولا تُكتبان في <bdi>S</bdi>.</p>
+</aside>
+
+<!-- ===================== PART 2 ===================== -->
+<h2 id="part2">2. Robot or software: the same loop</h2>
+<p>A robot and a software agent do the same thing: information comes in, the agent chooses, action goes out. The only difference is what the channels look like. For a robot they are physical parts. For a software agent they are channels: S <strong>reads</strong> (messages, files, database records) and A <strong>writes or sends</strong> (a reply, a database row, an API call).</p>
+
+<figure class="loopwrap" aria-label="The same loop for a robot agent and a software agent">
+  <div class="loop-title">Robot agent: self-driving taxi</div>
+  <div class="loop">
+    <div class="node env"><b>E · Environment</b>the roads, other drivers, pedestrians, the weather</div>
+    <div class="arrow i"><span class="lbl">IN (S)</span><span class="shaft" aria-hidden="true">→</span><span>image of the road <small>(a percept)</small></span></div>
+    <div class="node agent"><b>AGENT</b>S: cameras, radar, GPS<br>A: steering, brakes<br><small class="meta">physical parts</small></div>
+    <div class="arrow o"><span class="lbl">OUT (A)</span><span class="shaft" aria-hidden="true">→</span><span>brakes, turns <small>(actions)</small></span></div>
+    <div class="node env"><b>E · Environment</b>the same roads, now changed: the car turns, slows</div>
+  </div>
+  <div class="loop-title">Software agent: customer-service assistant</div>
+  <div class="loop">
+    <div class="node env"><b>E · Environment</b>the customer, the account system, the knowledge base, the ticket system</div>
+    <div class="arrow i"><span class="lbl">IN (S)</span><span class="shaft" aria-hidden="true">→</span><span>the customer's message <small>(a percept)</small></span></div>
+    <div class="node agent"><b>AGENT</b>S: chat input, account interface<br>A: chat window, ticket system<br><small class="meta">channels, not parts you can touch</small></div>
+    <div class="arrow o"><span class="lbl">OUT (A)</span><span class="shaft" aria-hidden="true">→</span><span>sends reply, opens ticket <small>(actions)</small></span></div>
+    <div class="node env"><b>E · Environment</b>the same world, now changed: the customer has a reply, a ticket exists</div>
+  </div>
+</figure>
+
+<aside class="ar" lang="ar" dir="rtl">
+  <div class="ar-h">بالعربي</div>
+  <p>الروبوت والبرنامج يعملان <strong>بنفس الدورة</strong>: معلومة تدخل ← الوكيل يختار ← فعل يخرج. الفرق الوحيد هو شكل القنوات:</p>
+  <ul>
+    <li>في <strong>الروبوت</strong> القنوات قطع حقيقية تلمسها بيدك: كاميرا، رادار، فرامل، مقود.</li>
+    <li>في <strong>البرنامج</strong> القنوات قنوات بيانات: <bdi>S</bdi> «تقرأ» (رسائل، ملفات، سجلات في قاعدة بيانات)، و<bdi>A</bdi> «تكتب أو ترسل» (رداً، سطراً في قاعدة بيانات، طلباً إلى نظام آخر).</li>
+  </ul>
+  <p>انتبه لخطأ شائع: «البرنامج لا يتحرك، إذن ليس له مشغِّلات». هذا غير صحيح؛ <strong>كل قناة يرسل بها البرنامج شيئاً أو يكتب بها شيئاً هي مشغِّل</strong>.</p>
+</aside>
+
+<!-- ===================== PART 3 ===================== -->
+<h2 id="part3">3. Four worked examples</h2>
+<p>Read the table first, then the <em>Why</em> notes. The notes are the important part: they show the question that decides each item.</p>
+
+<article class="ex">
+  <h3>Example 1 · Customer-service assistant</h3>
+  <span class="tag sw">Software agent</span>
+  <p>A company's Arabic chat assistant answers customers from the company's knowledge base, and passes the chat to a human when it is not sure.</p>
+  <div class="tbl"><table class="peas"><tbody>
+    <tr><td class="l">P</td><td><strong>Hard requirement:</strong> never give an answer that is not in the knowledge base. <strong>To improve:</strong> questions answered correctly, in as few turns as possible. Passing the chat to a human when unsure counts as correct.</td></tr>
+    <tr><td class="l">E</td><td>the customer, the company's knowledge base, the account system, the ticket system</td></tr>
+    <tr><td class="l">A</td><td>chat window — sends replies · ticket system — opens a ticket · transfer — passes the chat to a human staff member</td></tr>
+    <tr><td class="l">S</td><td>chat input — reads the customer's messages · account interface — reads the account history · knowledge-base search — reads the matching answers</td></tr>
+  </tbody></table></div>
+  <div class="why"><h4>Why</h4><ul>
+    <li>The customer's message is not a sensor. It is the percept: what the chat input reads.</li>
+    <li>The knowledge base is in E (a thing) and in S (read through search). That is correct, not a repeat.</li>
+    <li>Nothing moves, but there are actuators: every channel that sends or writes something.</li>
+  </ul></div>
+  <aside class="ar" lang="ar" dir="rtl">
+    <div class="ar-h">بالعربي</div>
+    <p>هذا برنامج، فلا توجد قطع نلمسها. لذلك نكتب كل قناة ومعها ما تفعله.</p>
+    <ul>
+      <li><strong>رسالة العميل ليست حسّاساً</strong>؛ هي المعلومة التي تقرؤها خانة الإدخال <bdi>(chat input)</bdi>، أي أنها مُدرَك.</li>
+      <li>قاعدة المعرفة تظهر في <bdi>E</bdi> لأنها شيء خارج الوكيل، وتظهر في <bdi>S</bdi> لأن الوكيل يقرأ منها بالبحث. هذا صحيح وليس تكراراً.</li>
+      <li>في <bdi>P</bdi>: إذا لم يكن المساعد متأكداً فحوّل المحادثة إلى موظف، فهذا يُحسب إجابة صحيحة لا فشلاً.</li>
+    </ul>
+  </aside>
+</article>
+
+<article class="ex">
+  <h3>Example 2 · Exam timetabling agent</h3>
+  <span class="tag sw">Software agent</span>
+  <p>An agent at the university builds the final-exam timetable and publishes it to the departments.</p>
+  <div class="tbl"><table class="peas"><tbody>
+    <tr><td class="l">P</td><td><strong>Hard requirements:</strong> zero student clashes; no room over capacity. <strong>To improve:</strong> exams spread as evenly as possible across the exam period.</td></tr>
+    <tr><td class="l">E</td><td>the students, the courses, the rooms, the exam period, the registration database, the exam timetable system</td></tr>
+    <tr><td class="l">A</td><td>timetable system — writes each exam into a room and a time slot · email — sends the timetable to the departments</td></tr>
+    <tr><td class="l">S</td><td>database interface — reads student enrolments from the registration database · timetable system — reads change requests</td></tr>
+  </tbody></table></div>
+  <div class="why"><h4>Why</h4><ul>
+    <li>The exam timetable system appears <strong>three times</strong>: in E as a thing, in S because the agent reads change requests from it, and in A because the agent writes exams into it. One system, three roles.</li>
+    <li>The registration database is in E and S only. The agent reads enrolments but never changes them, so it is not in A.</li>
+    <li>"Zero clashes" is a hard requirement: a timetable with one clash is not accepted, however good it is in other ways.</li>
+  </ul></div>
+  <aside class="ar" lang="ar" dir="rtl">
+    <div class="ar-h">بالعربي</div>
+    <ul>
+      <li><strong>نظام جدول الاختبارات يظهر في ثلاثة أماكن:</strong> في <bdi>E</bdi> لأنه شيء خارج الوكيل، وفي <bdi>S</bdi> لأن الوكيل يقرأ منه طلبات التعديل، وفي <bdi>A</bdi> لأنه يكتب فيه مواعيد الاختبارات. نظام واحد بثلاثة أدوار.</li>
+      <li><strong>قاعدة بيانات التسجيل</strong> تظهر في <bdi>E</bdi> و<bdi>S</bdi> فقط؛ لأن الوكيل يقرأ منها أسماء الطلاب المسجلين ولا يغيّر فيها شيئاً، فلا مكان لها في <bdi>A</bdi>.</li>
+      <li>«صفر تعارض» شرط لا يُكسر: جدول فيه تعارض واحد مرفوض، مهما كان جيداً في غير ذلك.</li>
+    </ul>
+  </aside>
+</article>
+
+<article class="ex">
+  <h3>Example 3 · Self-driving taxi in Riyadh</h3>
+  <span class="tag rb">Robot agent</span>
+  <p>A taxi with no driver takes passengers across Riyadh.</p>
+  <div class="tbl"><table class="peas"><tbody>
+    <tr><td class="l">P</td><td><strong>Hard requirements:</strong> no accident; no traffic violation. <strong>To improve:</strong> shorter trip time, comfort, less fuel.</td></tr>
+    <tr><td class="l">E</td><td>Riyadh roads, other drivers, pedestrians, the weather, the passengers</td></tr>
+    <tr><td class="l">A</td><td>steering, accelerator, brakes, indicators, horn</td></tr>
+    <tr><td class="l">S</td><td>cameras, radar, GPS, speedometer</td></tr>
+  </tbody></table></div>
+  <div class="why"><h4>Why</h4><ul>
+    <li>For a robot, the name of the part is enough. You can still check it with the same questions: the camera <strong>reads</strong> the road, so it is S; the brakes <strong>change</strong> the speed, so they are A.</li>
+    <li>The image from the camera is a percept, not a sensor.</li>
+    <li>The taxi's own cameras never go in E. They are part of the agent.</li>
+  </ul></div>
+  <aside class="ar" lang="ar" dir="rtl">
+    <div class="ar-h">بالعربي</div>
+    <p>في الروبوت الأمر أسهل: <strong>اسم القطعة يكفي</strong>، فلا نحتاج إلى كتابة «ماذا تفعل». ومع ذلك تحقّق بنفس الأسئلة:</p>
+    <ul>
+      <li>الكاميرا تقرأ الطريق ← معلومة داخلة ← <bdi>S</bdi>.</li>
+      <li>الفرامل تغيّر السرعة ← فعل خارج ← <bdi>A</bdi>.</li>
+      <li>الصورة التي تلتقطها الكاميرا مُدرَك وليست حسّاساً، وكاميرات التاكسي لا تُكتب في <bdi>E</bdi> لأنها جزء من الوكيل نفسه.</li>
+    </ul>
+  </aside>
+</article>
+
+<article class="ex">
+  <h3>Example 4 · Smart attendance system</h3>
+  <span class="tag mx">Software agent with physical parts</span>
+  <p>At the door of each lecture hall at Umm Al-Qura University, a card reader reads students' ID cards. The system records attendance in Blackboard and emails a warning to a student who misses three lectures.</p>
+  <div class="tbl"><table class="peas"><tbody>
+    <tr><td class="l">P</td><td><strong>Hard requirement:</strong> never mark a student present who did not enter the hall. <strong>To improve:</strong> students recorded within the first minute; warnings sent on the same day.</td></tr>
+    <tr><td class="l">E</td><td>the students, the lecture hall, the lecture timetable, Blackboard, the university email service</td></tr>
+    <tr><td class="l">A</td><td>Blackboard interface — writes each student's attendance · email — sends a warning to the student</td></tr>
+    <tr><td class="l">S</td><td>card reader at the door — reads each student's ID card · timetable interface — reads which lecture is in the hall now</td></tr>
+  </tbody></table></div>
+  <div class="why"><h4>Why</h4><ul>
+    <li>This is the hard case. The system is software, but the card reader is a physical part. <strong>Place each part by what it does</strong>, not by what kind of agent it is: the card reader brings information in, so it is S.</li>
+    <li>Blackboard is in E (a thing) and in A (the agent writes to it).</li>
+    <li>The ID card is not the sensor. The card reader is the sensor; the number on the card is what it reads.</li>
+  </ul></div>
+  <aside class="ar" lang="ar" dir="rtl">
+    <div class="ar-h">بالعربي</div>
+    <p>هذا هو المثال الأصعب: النظام برنامج، لكن فيه قطعة حقيقية هي قارئ البطاقات. القاعدة الذهبية هنا: <strong>ضع كل جزء حسب ما يفعله، لا حسب نوع الوكيل.</strong></p>
+    <ul>
+      <li>قارئ البطاقات يُدخل معلومة ← <bdi>S</bdi>.</li>
+      <li>بلاك بورد في <bdi>E</bdi> لأنه شيء خارجي، وفي <bdi>A</bdi> لأن الوكيل يكتب فيه الحضور.</li>
+      <li>البطاقة الجامعية نفسها ليست الحسّاس؛ الحسّاس هو القارئ، والرقم المكتوب على البطاقة هو ما يقرؤه.</li>
+    </ul>
+  </aside>
+</article>
+
+<!-- ===================== PART 4 ===================== -->
+<h2 id="part4">4. Five common mistakes</h2>
+<div class="tbl"><table class="wide">
+  <thead><tr><th>Mistake</th><th>Example</th><th>Fix</th></tr></thead>
+  <tbody>
+    <tr><td>Information written as a sensor</td><td>S: the customer's message</td><td>chat input — reads the customer's messages</td></tr>
+    <tr><td>Information written as an actuator</td><td>A: the reply</td><td>chat window — sends the reply</td></tr>
+    <tr><td>A sensor and an actuator swapped</td><td>A: camera · S: horn</td><td>camera goes in S; horn goes in A</td></tr>
+    <tr><td>The agent's own parts in E</td><td>E: the cameras, the app</td><td>cameras go in S; the app is the agent itself</td></tr>
+    <tr><td>A hope instead of a measure in P</td><td>P: works well</td><td>P: questions answered correctly each day</td></tr>
+  </tbody>
+</table></div>
+
+<aside class="ar" lang="ar" dir="rtl">
+  <div class="ar-h">بالعربي</div>
+  <ol>
+    <li><strong>كتابة المعلومة مكان الحسّاس:</strong> «رسالة العميل» في <bdi>S</bdi>. الصحيح أن تكتب القناة التي تقرؤها.</li>
+    <li><strong>كتابة المعلومة مكان المشغِّل:</strong> «الرد» في <bdi>A</bdi>. الصحيح أن تكتب القناة التي ترسله.</li>
+    <li><strong>تبديل الحسّاس والمشغِّل:</strong> الكاميرا تُدخل معلومة فهي في <bdi>S</bdi>، والبوق يُخرج صوتاً يسمعه الناس فهو في <bdi>A</bdi>.</li>
+    <li><strong>كتابة أجزاء الوكيل في <bdi>E</bdi>:</strong> كاميرات الوكيل جزء منه، والتطبيق هو الوكيل نفسه.</li>
+    <li><strong>أمنية بدل مقياس في <bdi>P</bdi>:</strong> «يعمل جيداً» لا يمكن عدّه. المقياس شيء تعدّه، مثل عدد الأسئلة التي أجاب عنها إجابة صحيحة كل يوم.</li>
+  </ol>
+</aside>
+
+<div class="warn">
+  <h3>How your answer is marked</h3>
+  <p>An item written under the wrong letter cancels the mark for that letter. For example, cameras written under E give zero for E. So do not write everything everywhere.</p>
+  <p><strong>One exception:</strong> a data source, such as a database, may be written in E as the thing or in S as reading it, and neither cancels a mark. Still, the clearest S line is a channel: <em>database interface — reads student enrolments</em>.</p>
+</div>
+
+<aside class="ar" lang="ar" dir="rtl">
+  <div class="ar-h">بالعربي</div>
+  <p><strong>انتبه لطريقة التصحيح:</strong> أي عنصر تكتبه تحت حرف خاطئ يُلغي درجة ذلك الحرف كاملة. مثلاً لو كتبت الكاميرات في <bdi>E</bdi> تأخذ صفراً في <bdi>E</bdi>. لذلك لا تكتب كل شيء في كل مكان «احتياطاً».</p>
+  <p><strong>استثناء واحد:</strong> مصدر البيانات مثل قاعدة البيانات يُقبل في <bdi>E</bdi> بوصفه شيئاً، أو في <bdi>S</bdi> بوصفه مصدراً نقرأ منه، ولا يُلغي الدرجة في الحالتين. ومع ذلك فأوضح صيغة في <bdi>S</bdi> هي القناة: <bdi>database interface — reads student enrolments</bdi>.</p>
+</aside>
+
+<!-- ===================== PART 5 ===================== -->
+<h2 id="part5">5. Practice: eight questions</h2>
+<p>The questions go from easy to hard. All the scenarios are new. Try each one before you open its answer.</p>
+<aside class="ar" lang="ar" dir="rtl">
+  <div class="ar-h">بالعربي</div>
+  <p>الأسئلة مرتبة من الأسهل إلى الأصعب، وكل الأمثلة جديدة لم تمرّ عليك. في الأسئلة 1 إلى 4 اختر إجابتك ثم اضغط <bdi>Check</bdi> لترى ما أصبت فيه باللون الأخضر وما أخطأت فيه باللون الأحمر. في الأسئلة 5 إلى 8 اكتب إجابتك أولاً ثم افتح <bdi>Show the answer</bdi>.</p>
+  <p>لا تستعجل فتح الإجابة؛ الفهم يحدث وأنت تحاول، لا وأنت تقرأ الحل.</p>
+</aside>
+
+<section class="q" id="q1">
+  <h3>Q1 · Sort the cards (software agent)</h3>
+  <p>The university library has a chat assistant. A student asks to renew a book. The assistant checks the due date and whether another student has reserved the book, renews it if it can, and emails the student before the new due date. Choose the right letter for each card.</p>
+  <div class="cards" data-set="q1"></div>
+  <div class="btns"><button type="button" data-check="q1">Check</button><button type="button" class="ghost" data-reset="q1">Try again</button><span class="score" data-score="q1" aria-live="polite"></span></div>
+  <details class="ans"><summary>Show the answer</summary><div class="body">
+    <div class="tbl"><table class="peas"><tbody>
+      <tr><td class="l">P</td><td>c (hard requirement), f (thing to improve)</td></tr>
+      <tr><td class="l">E</td><td>b, e</td></tr><tr><td class="l">A</td><td>a, g</td></tr><tr><td class="l">S</td><td>d, h</td></tr>
+    </tbody></table></div>
+    <div class="why"><h4>Why</h4><ul>
+      <li><strong>c</strong> must always be true: a renewal that breaks it is not accepted. <strong>f</strong> is a thing to improve: more is better.</li>
+      <li><strong>a</strong> and <strong>h</strong> use the same library system. <strong>h</strong> reads from it (information in), so S. <strong>a</strong> writes to it (action out), so A. The library system itself (<strong>e</strong>) is the thing, so E: one system, three roles.</li>
+      <li><strong>d</strong> is the channel that reads the request. The request itself would be the percept.</li>
+    </ul></div>
+    <aside class="ar" lang="ar" dir="rtl">
+      <div class="ar-h">بالعربي</div>
+      <ul>
+        <li><bdi>c</bdi> شرط لا يُكسر: أي تجديد يخالفه مرفوض. أما <bdi>f</bdi> فشيء نحسّنه: كلما زاد كان أفضل.</li>
+        <li><bdi>a</bdi> و<bdi>h</bdi> تستخدمان نفس نظام المكتبة: <bdi>h</bdi> تقرأ منه فهي <bdi>S</bdi>، و<bdi>a</bdi> تكتب فيه فهي <bdi>A</bdi>، والنظام نفسه <bdi>e</bdi> شيء خارجي فهو <bdi>E</bdi>. نظام واحد بثلاثة أدوار.</li>
+        <li><bdi>d</bdi> هي القناة التي تقرأ طلب الطالب، أما الطلب نفسه فهو المُدرَك.</li>
+      </ul>
+    </aside>
+  </div></details>
+</section>
+
+<section class="q" id="q2">
+  <h3>Q2 · Sort the cards (robot agent)</h3>
+  <p>A robot mows the grass on the Al-Abidiyah campus. Choose the right letter for each card.</p>
+  <div class="cards" data-set="q2"></div>
+  <div class="btns"><button type="button" data-check="q2">Check</button><button type="button" class="ghost" data-reset="q2">Try again</button><span class="score" data-score="q2" aria-live="polite"></span></div>
+  <details class="ans"><summary>Show the answer</summary><div class="body">
+    <div class="tbl"><table class="peas"><tbody>
+      <tr><td class="l">P</td><td>d (hard requirement), g (thing to improve)</td></tr>
+      <tr><td class="l">E</td><td>b, h</td></tr><tr><td class="l">A</td><td>a, e</td></tr><tr><td class="l">S</td><td>c, f</td></tr>
+    </tbody></table></div>
+    <div class="why"><h4>Why</h4><ul>
+      <li>Robot parts can be written by name. Check them with the questions: the bump sensor and GPS bring information in (S); the wheels and the blade change the world (A).</li>
+      <li>People on the grass are outside the robot and affect what it should do, so E.</li>
+    </ul></div>
+    <aside class="ar" lang="ar" dir="rtl">
+      <div class="ar-h">بالعربي</div>
+      <ul>
+        <li>حسّاس الاصطدام و<bdi>GPS</bdi> يُدخلان معلومة ← <bdi>S</bdi>. العجلات وشفرة القص تغيّران العالم ← <bdi>A</bdi>.</li>
+        <li>الناس الذين يمشون على العشب خارج الروبوت، ووجودهم يؤثر فيما يجب أن يفعله ← <bdi>E</bdi>.</li>
+      </ul>
+    </aside>
+  </div></details>
+</section>
+
+<section class="q" id="q3">
+  <h3>Q3 · Sensor or percept?</h3>
+  <p>Choose <strong>Sensor</strong> or <strong>Percept</strong> for each item.</p>
+  <div class="cards" data-set="q3"></div>
+  <div class="btns"><button type="button" data-check="q3">Check</button><button type="button" class="ghost" data-reset="q3">Try again</button><span class="score" data-score="q3" aria-live="polite"></span></div>
+  <details class="ans"><summary>Show the answer</summary><div class="body">
+    <p>Sensors: 1 microphone, 3 thermometer, 5 database interface, 7 GPS. Percepts: 2, 4, 6, 8.</p>
+    <div class="why"><h4>Why</h4><ul>
+      <li>A sensor is the channel. A percept is what comes through it at one moment. Each pair is one channel and one thing it brings in: 1–2, 3–4, 5–6, 7–8.</li>
+    </ul></div>
+    <aside class="ar" lang="ar" dir="rtl">
+      <div class="ar-h">بالعربي</div>
+      <p>الحسّاس هو القناة، والمُدرَك هو ما يمرّ فيها في لحظة معينة. لاحظ أن كل زوج هو قناة ومعها ما تُدخله: الميكروفون يُدخل جملة «غيّروا موعد اختباري»، ومقياس الحرارة يُدخل «41 درجة»، وواجهة قاعدة البيانات تُدخل «هذا الطالب عنده ثلاثة اختبارات يوم الاثنين»، و<bdi>GPS</bdi> يُدخل «السيارة في طريق الملك فهد».</p>
+    </aside>
+  </div></details>
+</section>
+
+<section class="q" id="q4">
+  <h3>Q4 · Actuator or action?</h3>
+  <p>Choose <strong>Actuator</strong> or <strong>Action</strong> for each item.</p>
+  <div class="cards" data-set="q4"></div>
+  <div class="btns"><button type="button" data-check="q4">Check</button><button type="button" class="ghost" data-reset="q4">Try again</button><span class="score" data-score="q4" aria-live="polite"></span></div>
+  <details class="ans"><summary>Show the answer</summary><div class="body">
+    <p>Actuators: 1 brakes, 3 water valve, 5 chat window, 7 email service. Actions: 2, 4, 6, 8.</p>
+    <div class="why"><h4>Why</h4><ul>
+      <li>An actuator is the channel. An action is what the agent does through it. In PEAS, A lists the channels; in a software agent we add what each one does: "ticket system — opens a ticket".</li>
+    </ul></div>
+    <aside class="ar" lang="ar" dir="rtl">
+      <div class="ar-h">بالعربي</div>
+      <p>المشغِّل هو القناة، والفعل هو ما يقوم به الوكيل من خلالها: الفرامل ← التوقف عند الإشارة، والمحبس ← فتح الماء اثنتي عشرة دقيقة، ونافذة المحادثة ← إرسال «تم استلام طلبك»، وخدمة البريد ← إرسال الجدول إلى الأقسام.</p>
+      <p>في <bdi>A</bdi> نكتب القنوات، ومع البرامج نضيف بعد الشرطة ماذا تفعل كل قناة.</p>
+    </aside>
+  </div></details>
+</section>
+
+<section class="q" id="q5">
+  <h3>Q5 · Find three mistakes (software agent)</h3>
+  <p>A student wrote this PEAS for a chat assistant that tells riders which Makkah bus to take. Find <strong>three</strong> mistakes and fix them.</p>
+  <div class="tbl"><table class="peas"><tbody>
+    <tr><td class="l">P</td><td>gives good answers</td></tr>
+    <tr><td class="l">E</td><td>the riders, the bus timetable database, the assistant's own server</td></tr>
+    <tr><td class="l">A</td><td>chat window — sends the best route and the next bus time</td></tr>
+    <tr><td class="l">S</td><td>the rider's question · timetable interface — reads the bus times</td></tr>
+  </tbody></table></div>
+  <label class="note" for="t5">Your three mistakes and fixes (for you only; nothing is saved):</label>
+  <textarea id="t5"></textarea>
+  <details class="ans"><summary>Show the answer</summary><div class="body">
+    <div class="tbl"><table class="wide"><thead><tr><th>#</th><th>Mistake</th><th>Fix</th></tr></thead><tbody>
+      <tr><td>1</td><td>P: "gives good answers" is a hope, not a measure.</td><td>P: questions answered with the right bus and time; never send a rider to a bus that has already left.</td></tr>
+      <tr><td>2</td><td>E: "the assistant's own server" is part of the agent.</td><td>Remove it from E. The agent's own parts never go in E.</td></tr>
+      <tr><td>3</td><td>S: "the rider's question" is a percept: the information, not the sensor.</td><td>S: chat input — reads the rider's question.</td></tr>
+    </tbody></table></div>
+    <div class="why"><h4>Why</h4><ul>
+      <li>Mistake 3 is the most common one. Ask the S question: <em>how does the agent get information?</em> The answer is a channel, not the information that comes through it.</li>
+      <li>Note that "the bus timetable database" in E is correct: it is a thing outside the agent. The S row already reads it through the timetable interface.</li>
+    </ul></div>
+    <aside class="ar" lang="ar" dir="rtl">
+      <div class="ar-h">بالعربي</div>
+      <ol>
+        <li>«يعطي إجابات جيدة» أمنية لا تُقاس. نكتب بدلها شيئاً يُعدّ: عدد الأسئلة التي أجاب عنها بالحافلة والموعد الصحيحين، وشرطاً لا يُكسر: لا يرسل راكباً إلى حافلة غادرت.</li>
+        <li>خادم المساعد جزء من الوكيل نفسه، فلا يُكتب في <bdi>E</bdi>.</li>
+        <li>وهو الخطأ الأشهر: «سؤال الراكب» معلومة داخلة (مُدرَك) وليس حسّاساً. الصحيح: <bdi>chat input — reads the rider's question</bdi>.</li>
+      </ol>
+      <p>أما قاعدة بيانات مواعيد الحافلات في <bdi>E</bdi> فهي صحيحة، لأنها شيء خارج الوكيل.</p>
+    </aside>
+  </div></details>
+</section>
+
+<section class="q" id="q6">
+  <h3>Q6 · Find three mistakes (robot agent)</h3>
+  <p>A student wrote this PEAS for a self-driving taxi in Jeddah. Three items are in the wrong row. Find them and say where each one should go.</p>
+  <div class="tbl"><table class="peas"><tbody>
+    <tr><td class="l">P</td><td>no accident; shorter trip time</td></tr>
+    <tr><td class="l">E</td><td>Jeddah roads, other drivers, pedestrians, the radar</td></tr>
+    <tr><td class="l">A</td><td>steering, brakes, GPS</td></tr>
+    <tr><td class="l">S</td><td>cameras, horn, speedometer</td></tr>
+  </tbody></table></div>
+  <label class="note" for="t6">Your answer (for you only; nothing is saved):</label>
+  <textarea id="t6"></textarea>
+  <details class="ans"><summary>Show the answer</summary><div class="body">
+    <div class="tbl"><table class="wide"><thead><tr><th>#</th><th>Item in the wrong row</th><th>Correct row</th></tr></thead><tbody>
+      <tr><td>1</td><td>the radar (written in E)</td><td>S — it brings information in, and it is the taxi's own part</td></tr>
+      <tr><td>2</td><td>GPS (written in A)</td><td>S — it reads the position; it changes nothing</td></tr>
+      <tr><td>3</td><td>horn (written in S)</td><td>A — it acts on the world: other drivers hear it</td></tr>
+    </tbody></table></div>
+    <div class="why"><h4>Why</h4><ul>
+      <li>Remember how it is marked: one wrong item cancels the mark of its row. Here the student would lose E, A and S.</li>
+    </ul></div>
+    <aside class="ar" lang="ar" dir="rtl">
+      <div class="ar-h">بالعربي</div>
+      <ul>
+        <li>الرادار جزء من التاكسي ويُدخل معلومة ← مكانه <bdi>S</bdi> لا <bdi>E</bdi>.</li>
+        <li><bdi>GPS</bdi> يقرأ الموقع ولا يغيّر شيئاً ← مكانه <bdi>S</bdi> لا <bdi>A</bdi>.</li>
+        <li>البوق يؤثر في العالم لأن السائقين الآخرين يسمعونه ← مكانه <bdi>A</bdi> لا <bdi>S</bdi>.</li>
+      </ul>
+      <p>وتذكّر طريقة التصحيح: هذا الطالب سيخسر درجة <bdi>E</bdi> و<bdi>A</bdi> و<bdi>S</bdi> كلها بسبب ثلاثة عناصر فقط.</p>
+    </aside>
+  </div></details>
+</section>
+
+<section class="q" id="q7">
+  <h3>Q7 · One system, three places</h3>
+  <p>A grade-entry assistant helps instructors enter grades into the student information system (SIS). It reads the class list, warns the instructor when a grade is missing, and writes each grade into the SIS. Write one line for the SIS in each row: E, S and A.</p>
+  <label class="note" for="t7">Your answer (for you only; nothing is saved):</label>
+  <textarea id="t7"></textarea>
+  <details class="ans"><summary>Show the answer</summary><div class="body">
+    <div class="tbl"><table class="peas"><tbody>
+      <tr><td class="l">E</td><td>the student information system (the thing)</td></tr>
+      <tr><td class="l">S</td><td>SIS interface — reads the class list and the grades already entered</td></tr>
+      <tr><td class="l">A</td><td>SIS interface — writes each grade into the SIS</td></tr>
+    </tbody></table></div>
+    <div class="why"><h4>Why</h4><ul>
+      <li>One system, three roles: a thing in E, read in S, changed in A. That is correct, not a repeat.</li>
+      <li>The warning to the instructor is another actuator: screen or email — sends a warning. It is not about the SIS, so it was not asked here.</li>
+    </ul></div>
+    <aside class="ar" lang="ar" dir="rtl">
+      <div class="ar-h">بالعربي</div>
+      <p>نظام معلومات الطلاب نظام واحد بثلاثة أدوار: هو «شيء» خارج الوكيل في <bdi>E</bdi>، والوكيل يقرأ منه قائمة الطلاب في <bdi>S</bdi>، ويكتب فيه الدرجات في <bdi>A</bdi>. ظهوره ثلاث مرات صحيح وليس تكراراً.</p>
+      <p>أما تنبيه الأستاذ عند نقص درجة فهو مشغِّل آخر (شاشة أو بريد يرسل التنبيه)، ولم يُطلب هنا لأنه لا يخص النظام.</p>
+    </aside>
+  </div></details>
+</section>
+
+<section class="q" id="q8">
+  <h3>Q8 · A new agent: write the whole PEAS</h3>
+  <p>A smart traffic light controls a busy junction in Makkah. Cameras watch each road. A light controller changes the lights. An ambulance sends a signal when it comes near. Every hour the system sends traffic counts to the city traffic centre server, and on special days it receives a timing plan from the same server.</p>
+  <p>Write the whole PEAS. In P, write one hard requirement and one thing to improve. <strong>Then:</strong> where does the city traffic centre server go? Explain with the rule.</p>
+  <label class="note" for="t8">Your PEAS (for you only; nothing is saved):</label>
+  <textarea id="t8" style="min-height:150px"></textarea>
+  <details class="ans"><summary>Show the answer</summary><div class="body">
+    <div class="tbl"><table class="peas"><tbody>
+      <tr><td class="l">P</td><td><strong>Hard requirement:</strong> never green for two crossing roads at the same time; always give way to an ambulance. <strong>To improve:</strong> shorter average waiting time at the junction.</td></tr>
+      <tr><td class="l">E</td><td>the cars, the pedestrians, the ambulances, the roads of the junction, the city traffic centre server</td></tr>
+      <tr><td class="l">A</td><td>light controller — switches the lights · network link — sends the hourly traffic counts to the traffic centre</td></tr>
+      <tr><td class="l">S</td><td>road cameras — read the queue on each road · ambulance receiver — reads the ambulance signal · network link — reads the timing plan from the traffic centre</td></tr>
+    </tbody></table></div>
+    <p><strong>The traffic centre server goes in E.</strong> It is outside the agent, affects it (it sends timing plans) and is affected by it (it receives counts). The <strong>network link</strong> is the channel: it appears in S (reads the plan) and in A (sends the counts).</p>
+    <div class="why"><h4>Why</h4><ul>
+      <li>This is the hard case: a software system with physical parts (cameras, lights) and an outside system (the server). The same rule decides all of them: place each item by what it does.</li>
+      <li>Accept other good answers, for example "fewer cars waiting more than two minutes" for the thing to improve. A hope such as "the traffic is good" is not a measure.</li>
+    </ul></div>
+    <aside class="ar" lang="ar" dir="rtl">
+      <div class="ar-h">بالعربي</div>
+      <ul>
+        <li><strong>خادم مركز المرور في <bdi>E</bdi>:</strong> هو خارج الوكيل، ويؤثر فيه لأنه يرسل خطة التوقيت، ويتأثر به لأنه يستقبل أعداد السيارات.</li>
+        <li><strong>وصلة الشبكة <bdi>(network link)</bdi> هي القناة:</strong> تظهر في <bdi>S</bdi> لأنها تقرأ الخطة، وفي <bdi>A</bdi> لأنها ترسل الأعداد.</li>
+        <li>الكاميرات ومستقبِل إشارة الإسعاف تُدخل معلومات ← <bdi>S</bdi>. ومتحكم الإشارات يغيّر الأضواء ← <bdi>A</bdi>.</li>
+        <li>في <bdi>P</bdi> تُقبل إجابات أخرى جيدة بشرط أن تكون قابلة للقياس، مثل «عدد أقل من السيارات تنتظر أكثر من دقيقتين». أما «الحركة جيدة» فأمنية لا تُقاس.</li>
+      </ul>
+    </aside>
+  </div></details>
+</section>
+
+<div class="final">
+  <h2>Remember before the exam</h2>
+  <ol>
+    <li>S = information IN · A = action OUT.</li>
+    <li>Write each sensor and actuator as <strong>channel — what it does</strong>.</li>
+    <li>The agent's own parts never go in E; an outside system can be in E, S and A.</li>
+    <li>P = something you can count: hard requirements first, then things to improve.</li>
+  </ol>
+  <aside class="ar" lang="ar" dir="rtl">
+    <div class="ar-h">الخلاصة بالعربي</div>
+    <p>المعلومة تدخل عبر <bdi>S</bdi>، والفعل يخرج عبر <bdi>A</bdi>. اكتب القناة لا ما يمرّ فيها. أجزاء الوكيل لا تدخل <bdi>E</bdi>. ومقياس الأداء شيء يُعدّ، لا أمنية.</p>
+  </aside>
+</div>
+
+<footer>AI4101 Artificial Intelligence Principles · Umm Al-Qura University · Module 2 self-study. The Word and PDF versions of this sheet have the same content.</footer>
+</div>
+
+<script>
+(function(){
+  var SETS = {
+    q1:{opts:["P","E","A","S"], items:[
+      ["a. library system interface — writes the new due date","A"],
+      ["b. the student","E"],
+      ["c. never renew a book that another student has reserved","P"],
+      ["d. chat input — reads the student's renewal request","S"],
+      ["e. the library system (books, due dates, reservations)","E"],
+      ["f. renewals done correctly without help from staff","P"],
+      ["g. email service — sends a reminder before the due date","A"],
+      ["h. library system interface — reads the due date and the reservations","S"]]},
+    q2:{opts:["P","E","A","S"], items:[
+      ["a. wheels","A"],["b. the lawns and the trees","E"],["c. bump sensor","S"],["d. never hits a person","P"],
+      ["e. cutting blade","A"],["f. GPS","S"],["g. area mowed per hour","P"],["h. people walking on the grass","E"]]},
+    q3:{opts:["Sensor","Percept"], radio:true, items:[
+      ["1. microphone","Sensor"],["2. “Please change my exam date.”","Percept"],
+      ["3. thermometer","Sensor"],["4. “41 degrees”","Percept"],
+      ["5. database interface","Sensor"],["6. “This student has three exams on Monday.”","Percept"],
+      ["7. GPS","Sensor"],["8. “The car is on King Fahd Road.”","Percept"]]},
+    q4:{opts:["Actuator","Action"], radio:true, items:[
+      ["1. brakes","Actuator"],["2. stopping at the red light","Action"],
+      ["3. water valve","Actuator"],["4. opening for twelve minutes","Action"],
+      ["5. chat window","Actuator"],["6. sending “Your request is received.”","Action"],
+      ["7. email service","Actuator"],["8. emailing the timetable to the departments","Action"]]}
+  };
+  Object.keys(SETS).forEach(function(k){
+    var set = SETS[k], box = document.querySelector('[data-set="'+k+'"]');
+    set.items.forEach(function(it, i){
+      var card = document.createElement('div'); card.className = 'card';
+      var t = document.createElement('span'); t.textContent = it[0]; card.appendChild(t);
+      if (set.radio){
+        var g = document.createElement('div'); g.className = 'pick'; g.setAttribute('role','radiogroup'); g.setAttribute('aria-label', it[0]);
+        set.opts.forEach(function(o){
+          var l = document.createElement('label'), inp = document.createElement('input'), s = document.createElement('span');
+          inp.type = 'radio'; inp.name = k+'-'+i; inp.value = o; s.textContent = o;
+          l.appendChild(inp); l.appendChild(s); g.appendChild(l);
+        });
+        card.appendChild(g);
+      } else {
+        var sel = document.createElement('select'); sel.setAttribute('aria-label', it[0]);
+        ['—'].concat(set.opts).forEach(function(o){ var op = document.createElement('option'); op.value = o === '—' ? '' : o; op.textContent = o; sel.appendChild(op); });
+        card.appendChild(sel);
+      }
+      card.dataset.answer = it[1];
+      box.appendChild(card);
+    });
+  });
+  function val(card){
+    var s = card.querySelector('select'); if (s) return s.value;
+    var r = card.querySelector('input:checked'); return r ? r.value : '';
+  }
+  document.addEventListener('click', function(e){
+    var c = e.target.closest('[data-check]'), r = e.target.closest('[data-reset]');
+    if (c){
+      var k = c.getAttribute('data-check'), cards = document.querySelectorAll('[data-set="'+k+'"] .card'), ok = 0, blank = 0;
+      cards.forEach(function(card){
+        var v = val(card); card.classList.remove('ok','no');
+        if (!v){ blank++; return; }
+        if (v === card.dataset.answer){ card.classList.add('ok'); ok++; } else card.classList.add('no');
+      });
+      var msg = ok + ' / ' + cards.length + ' correct';
+      if (blank) msg += ' · ' + blank + ' not answered yet';
+      else if (ok === cards.length) msg += ' · excellent!';
+      document.querySelector('[data-score="'+k+'"]').textContent = msg;
+    }
+    if (r){
+      var k2 = r.getAttribute('data-reset');
+      document.querySelectorAll('[data-set="'+k2+'"] .card').forEach(function(card){
+        card.classList.remove('ok','no');
+        var s = card.querySelector('select'); if (s) s.value = '';
+        card.querySelectorAll('input').forEach(function(i){ i.checked = false; });
+      });
+      document.querySelector('[data-score="'+k2+'"]').textContent = '';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
