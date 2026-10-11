@@ -621,6 +621,8 @@ const COURSE_CONTENT = [
       { term: "Rational agent", meaning: "An agent that chooses, for each percept sequence, the action expected to maximise its performance measure, given what it has perceived and what it knows. Rational does not mean perfect or always successful." },
       { term: "Autonomy", meaning: "How far an agent relies on its own percepts and experience, rather than only on the knowledge its designer built in. Learning is what makes it possible." },
       { term: "Performance measure", meaning: "How the agent's success is evaluated. It is rarely a single number: some parts are hard requirements, some are things to improve, and some pull against each other. An agent built to maximise it will optimise exactly what you write." },
+      { term: "Hard requirement", meaning: "A rule that must always be true. A solution that breaks it is not accepted, however good it is in other ways. Example: no student has two exams at the same time. Compare with a thing to improve: the fewer rooms, the better. Module 6 calls these hard constraints." },
+      { term: "Thing to improve", meaning: "A part of P where more (or less) is better, but no exact value is required. Example: exams spread as evenly as possible." },
       { term: "Environment", meaning: "The same idea as in Module 1 — what lies outside the agent and can affect it or be affected by its actions." },
       { term: "PEAS", meaning: "The four-part checklist for describing an agent's task environment: Performance measure, Environment, Actuators, Sensors." },
       { term: "Task environment", meaning: "The whole PEAS description of a task — the performance measure, the environment, the actuators and the sensors taken together. The environment alone is one of its four parts." },
@@ -663,8 +665,8 @@ const COURSE_CONTENT = [
     <text x="180" y="85" text-anchor="middle" font-size="14" fill="var(--accent)" font-weight="700">AGENT</text>
     <rect x="95" y="105" width="170" height="38" rx="6" fill="var(--bg-elev)" stroke="var(--rule)"/>
     <text x="180" y="129" text-anchor="middle" font-size="12" fill="var(--ink)">agent program</text>
-    <text x="180" y="170" text-anchor="middle" font-size="11" fill="var(--ink-soft)">decides: what do I do now,</text>
-    <text x="180" y="188" text-anchor="middle" font-size="11" fill="var(--ink-soft)">given everything I have perceived?</text>
+    <text x="180" y="170" text-anchor="middle" font-size="11" fill="var(--ink-soft)">turns what it has perceived</text>
+    <text x="180" y="188" text-anchor="middle" font-size="11" fill="var(--ink-soft)">into the next action</text>
 
     <rect x="400" y="55" width="240" height="160" rx="10" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="2"/>
     <text x="520" y="85" text-anchor="middle" font-size="14" fill="var(--ink)" font-weight="700">ENVIRONMENT</text>
@@ -686,7 +688,17 @@ const COURSE_CONTENT = [
       <marker id="ag2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--gold)"/></marker>
     </defs>
   </svg>
-  <div class="diagram-caption">Perceive, decide, act. Then do it again.</div>
+  <div class="diagram-caption">Perceive, then act &mdash; again and again. An intelligent agent also decides in between.</div>
+</div>
+
+<div class="callout intuition">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">Decide or act?</div>
+    <p><strong>Deciding</strong> is choosing one option from several: which driver gets the order, which road to take. <strong>Acting</strong> is doing what was chosen: sending the order, turning the wheel.</p>
+    <p>Every agent acts. Only an intelligent agent decides.</p>
+    <p>Quick test: &ldquo;decide&rdquo; answers <em>which one?</em> &mdash; &ldquo;act&rdquo; answers <em>what did it do?</em></p>
+  </div>
 </div>
 
 <h3>Function on paper, program in the machine</h3>
@@ -837,9 +849,33 @@ const COURSE_CONTENT = [
   <li><strong>An Arabic customer-service assistant</strong><p><em>P:</em> questions answered correctly from the knowledge base, in as few turns as possible. Escalating to a human when unsure counts as a correct answer, not a failure &mdash; and a confident wrong answer is the most expensive outcome of all. <em>E:</em> the chat window, the customer, the company's knowledge base. <em>A:</em> send a message, open a ticket, transfer to a human staff member. <em>S:</em> the text the customer types, and the account history.</p></li>
 </ol>
 
-<p>Notice that the parts of a <strong>P</strong> are not all the same kind. Some are <strong>hard requirements</strong> that must hold &mdash; no student sitting two exams at once. Others are things to <strong>improve as far as possible</strong> &mdash; the fewest rooms, the shortest trip. And some <strong>pull against each other</strong>: a faster trip is a less comfortable one. Section 2.5 shows how a utility-based agent weighs the ones that pull against each other.</p>
+<p>Notice that the parts of a <strong>P</strong> are not all the same kind. Some are <strong>hard requirements</strong> (rules that must always be true) &mdash; no student sitting two exams at once. Others are <strong>things to improve</strong> as far as possible &mdash; the fewest rooms, the shortest trip. And some <strong>pull against each other</strong>: a faster trip is a less comfortable one. Section 2.5 shows how a utility-based agent weighs the ones that pull against each other.</p>
 
 <p>One more rule &mdash; easy to state, and easy to break. Write <strong>P</strong> in terms of <em>what counts as success</em> &mdash; the outcome you want &mdash; not in terms of how you imagine the agent should behave. &ldquo;The floor is clean&rdquo; is an outcome. &ldquo;The robot moves in a spiral pattern&rdquo; is a guess at a method &mdash; and if you write it into the measure, a spiral is exactly what you will get, clean floor or not.</p>
+
+<h3>Robot or software: where do things go?</h3>
+
+<p>The rule: <strong>E</strong> is what lies outside the agent. <strong>S</strong> is how the agent reads it. <strong>A</strong> is how the agent changes it.</p>
+
+<div class="table-figure">
+  <div class="table-scroll">
+    <table class="env-table" style="white-space: normal;">
+      <thead>
+        <tr><th scope="col"></th><th scope="col">Self-driving taxi (robot)</th><th scope="col">Customer-service assistant (software)</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">S</th><td>cameras, radar, GPS</td><td>the text the customer types, the account history it reads</td></tr>
+        <tr><th scope="row">A</th><td>steering, brakes, screen</td><td>send a message, open a ticket, transfer to a human</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<p>For a robot, S and A are physical parts. For a software agent, S is what it reads (messages, files, database records) and A is what it writes or sends (a reply, a database row, an API call).</p>
+
+<p>The same database can sit in E (the thing) and in S (reading it): that is correct, not a mistake.</p>
+
+<p>Some agents are software but use physical parts, such as a car-park guide that reads fixed cameras and lights up signs. Place each part by what it does, not by what kind of agent it is.</p>
 
 <div class="aha">
   <div class="aha-label">PEAS is where projects are won or lost</div>
@@ -1038,7 +1074,7 @@ const COURSE_CONTENT = [
         items: [
           "<strong>P</strong>erformance measure · <strong>E</strong>nvironment · <strong>A</strong>ctuators · <strong>S</strong>ensors",
           "<strong>Task environment</strong> = P + E + A + S · <strong>Environment</strong> = E only",
-          "P usually has several parts: some must hold, some should improve, some pull against each other (e.g. safety, time, cost)",
+          "P usually has several parts: hard requirements (they must always be true), things to improve, and parts that pull against each other (e.g. safety, time, cost)",
           "P describes <strong>what counts as success</strong>, not how the agent achieves it",
           "Write PEAS before writing code"
         ]
