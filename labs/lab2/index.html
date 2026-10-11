@@ -1,0 +1,320 @@
+<title>Lab 2 · From Search to Routes</title>
+<meta name="description" content="AI4101 Lab 2: Ekram as a Travelling Salesman Problem. Start here during the lab.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#FAF7F2; --surface:#FFFFFF; --ink:#221A33; --ink-soft:#4A4258; --mute:#6B6378; --rule:#E4DCCF;
+  --accent:#3D2A6B; --accent-soft:#ECE7F6; --on-accent:#FFFFFF;
+  --gold:#8F6230; --gold-line:#D4A574; --gold-soft:#F6EBDD;
+  --teal:#23615C; --teal-soft:#DDEEEB;
+  --rose:#8E2F45; --rose-soft:#F6E3E7;
+  --seg-a:#3D2A6B; --seg-b:#6A55A0;
+  --display:"Crimson Pro",Georgia,"Times New Roman",serif;
+  --body:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#15111D; --surface:#1E1929; --ink:#EEE9F5; --ink-soft:#CFC7DC; --mute:#A99FB8; --rule:#342C44;
+    --accent:#C3B3F0; --accent-soft:#2B2340; --on-accent:#15111D;
+    --gold:#E2B887; --gold-line:#B98A57; --gold-soft:#33291E;
+    --teal:#86CBC2; --teal-soft:#1B3331; --rose:#F0A3B4; --rose-soft:#3A2129;
+    --seg-a:#8F7BD0; --seg-b:#5C4A92;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#15111D; --surface:#1E1929; --ink:#EEE9F5; --ink-soft:#CFC7DC; --mute:#A99FB8; --rule:#342C44;
+  --accent:#C3B3F0; --accent-soft:#2B2340; --on-accent:#15111D;
+  --gold:#E2B887; --gold-line:#B98A57; --gold-soft:#33291E;
+  --teal:#86CBC2; --teal-soft:#1B3331; --rose:#F0A3B4; --rose-soft:#3A2129;
+  --seg-a:#8F7BD0; --seg-b:#5C4A92;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;padding-inline:16px;padding-block:28px 56px}
+.wrap{max-width:920px;margin:0 auto;display:grid;gap:40px}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--gold-line);outline-offset:2px;border-radius:4px}
+code,.mono{font-family:var(--mono);font-size:.88em}
+h1,h2,h3{font-family:var(--display);color:var(--accent);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:1.8rem;font-weight:600}
+h3{font-size:1.3rem;font-weight:600}
+.eyebrow{font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:var(--gold)}
+.section-head{display:grid;gap:4px}
+.section-head p{margin:0;color:var(--mute);max-width:65ch}
+
+/* Header */
+header{display:grid;gap:14px;border-bottom:2px solid var(--gold-line);padding-bottom:22px}
+header h1{font-size:clamp(2.3rem,6vw,3.4rem);font-weight:700}
+.subtitle{font-family:var(--display);font-style:italic;font-size:1.35rem;color:var(--ink-soft);margin:0}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0;padding:0;list-style:none}
+.facts li{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:.88rem;color:var(--ink-soft)}
+.facts b{color:var(--ink);font-weight:600}
+.note{font-size:.9rem;color:var(--mute);margin:0;max-width:70ch}
+
+/* Kit */
+.kit{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.item{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px;display:grid;grid-template-rows:auto auto 1fr auto;gap:6px}
+.item .tag{font-family:var(--mono);font-size:.72rem;color:var(--mute);letter-spacing:.04em}
+.item h3{font-size:1.2rem}
+.item p{margin:0;font-size:.9rem;color:var(--ink-soft)}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:600;font-size:.86rem;border-radius:6px;padding:7px 11px;border:1px solid var(--accent);color:var(--accent);background:transparent;cursor:pointer;font-family:var(--body)}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn:hover{filter:brightness(1.08)}
+.item.submit{border-color:var(--gold-line);background:var(--gold-soft)}
+.plain{font-size:.86rem;color:var(--ink-soft)}
+
+/* Time ribbon */
+.ribbon{display:grid;gap:8px}
+.bar{display:flex;height:34px;border-radius:6px;overflow:hidden;border:1px solid var(--rule);background:var(--surface)}
+.seg{display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--mono);font-size:.78rem;font-weight:600;min-width:0;border-right:1px solid var(--paper);text-decoration:none}
+.seg:nth-child(odd){background:var(--seg-a)} .seg:nth-child(even){background:var(--seg-b)}
+.seg.done{background:var(--teal)!important}
+.seg.spare{background:transparent!important;color:var(--mute);border-right:0}
+.scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.74rem;color:var(--mute);font-variant-numeric:tabular-nums}
+.progress{font-size:.9rem;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.progress b{font-variant-numeric:tabular-nums}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font:inherit;font-size:.86rem}
+
+/* Parts */
+.parts{list-style:none;margin:0;padding:0;display:grid;border-top:1px solid var(--rule)}
+.part{display:grid;grid-template-columns:64px minmax(0,1fr);gap:16px;padding-block:18px;border-bottom:1px solid var(--rule)}
+.num{font-family:var(--display);font-size:2.2rem;font-weight:700;color:var(--gold-line);line-height:1;text-align:right;font-variant-numeric:tabular-nums}
+.part.is-done .num{color:var(--teal)}
+.part-body{display:grid;gap:8px;min-width:0}
+.part-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.part-top h3{font-size:1.35rem}
+.mins{font-family:var(--mono);font-size:.8rem;color:var(--mute)}
+.goal{margin:0;max-width:65ch;color:var(--ink-soft)}
+.outputs{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.78rem;font-weight:600;border-radius:4px;padding:2px 8px;line-height:1.6}
+.chip.todo{background:var(--accent-soft);color:var(--accent)}
+.chip.shot{background:var(--gold-soft);color:var(--gold);border:1px solid var(--gold-line)}
+.chip.report{background:var(--teal-soft);color:var(--teal)}
+.chip.paper{background:var(--rose-soft);color:var(--rose)}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-size:.86rem}
+.row label{display:inline-flex;gap:6px;align-items:center;cursor:pointer;color:var(--ink-soft)}
+.row input{width:18px;height:18px;accent-color:var(--teal)}
+figure{margin:4px 0 0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border:1px solid var(--rule);border-radius:8px;background:#fff}
+figcaption{font-size:.84rem;font-style:italic;color:var(--mute)}
+
+/* Checklist */
+.check{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.check ul{margin:0;padding-left:1.1em;display:grid;gap:6px;color:var(--ink-soft)}
+.filename{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:10px 12px}
+.filename code{color:var(--accent);word-break:break-all}
+.copied{font-size:.8rem;color:var(--teal)}
+
+footer{border-top:1px solid var(--rule);padding-top:14px;font-size:.84rem;color:var(--mute);display:grid;gap:4px}
+
+@media (max-width:760px){
+  .kit{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .check{grid-template-columns:1fr}
+}
+@media (max-width:460px){
+  .kit{grid-template-columns:1fr}
+  .part{grid-template-columns:40px minmax(0,1fr);gap:10px}
+  .num{font-size:1.7rem}
+  .seg{font-size:.66rem}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+.btn.off{opacity:.45;cursor:not-allowed}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">AI4101 · Artificial Intelligence Principles · Lab 2 · Module 3</div>
+    <h1>From Search to Routes</h1>
+    <p class="subtitle">Ekram as a Travelling Salesman Problem</p>
+    <ul class="facts">
+      <li><b>Pairs</b>, in the lab</li>
+      <li><b>4 hours</b>, one lab block</li>
+      <li><b>Google Colab</b>, nothing to install</li>
+      <li>Report due <b>one week</b> after the lab</li>
+    </ul>
+    <p class="note">The Ekram scenario is simulated. It is inspired by the work of Ekram Al-Jood Association in Makkah; the warehouse, the donors and all numbers are invented for learning.</p>
+  </header>
+
+  <section class="section-head" aria-labelledby="kit-h">
+    <div class="eyebrow">Your files</div>
+    <h2 id="kit-h">Open these first</h2>
+    <p>The guide is the official reference. This page helps you move through the lab; when the two seem to differ, follow the guide.</p>
+  </section>
+  <div class="kit" style="margin-top:-24px">
+    <div class="item">
+      <span class="tag">GUIDE · 7 PAGES</span>
+      <h3>Lab guide</h3>
+      <p>Every step, the words you need, and what to do if something goes wrong.</p>
+      <div class="btns">
+        <a class="btn primary" id="guide-pdf" href="AI4101_M3_Lab2_Ekram_TSP_Search.pdf" target="_blank" rel="noopener">PDF</a>
+        <a class="btn" href="AI4101_M3_Lab2_Ekram_TSP_Search.docx" data-site-only target="_blank" rel="noopener">Word</a>
+      </div>
+    </div>
+    <div class="item">
+      <span class="tag">NOTEBOOK · 3 TODOs</span>
+      <h3>Colab notebook</h3>
+      <p>Open it, then <b>File → Save a copy in Drive</b> before you type anything.</p>
+      <div class="btns">
+        <a class="btn primary" id="colab" href="#" target="_blank" rel="noopener">Open in Colab</a>
+        <a class="btn" href="AI4101_M3_Lab2_Ekram_TSP_Search.ipynb" data-site-only target="_blank" rel="noopener">.ipynb</a>
+      </div>
+    </div>
+    <div class="item">
+      <span class="tag">REPORT · 9 SECTIONS</span>
+      <h3>Report template</h3>
+      <p>Fill it in as you go. One report per pair.</p>
+      <div class="btns">
+        <a class="btn primary" href="AI4101_M3_Lab2_Ekram_TSP_Search_ReportTemplate.docx" data-site-only target="_blank" rel="noopener">Word</a>
+      </div>
+    </div>
+    <div class="item submit">
+      <span class="tag">SUBMIT</span>
+      <h3>Submit the report</h3>
+      <p>One partner submits the PDF report, <b>one week</b> after the lab, the way your instructor announces in class.</p>
+      <div class="btns" id="bb-slot"><span class="plain">Both names and IDs on the first page.</span></div>
+    </div>
+  </div>
+
+  <section class="ribbon" aria-labelledby="plan-h">
+    <div class="section-head">
+      <div class="eyebrow">The lab block</div>
+      <h2 id="plan-h">240 minutes, ten steps</h2>
+      <p>Each block is one step, drawn to scale. Tick a step when your pair has finished it; the ticks stay in this browser only.</p>
+    </div>
+    <div class="bar" id="bar" role="img" aria-label="Time plan of the lab block"></div>
+    <div class="scale" aria-hidden="true"><span>0 min</span><span>60</span><span>120</span><span>180</span><span>240</span></div>
+    <div class="progress"><span><b id="done-count">0</b> of <b>10</b> steps done · <b id="done-min">0</b> of 210 planned minutes</span><button class="linkbtn" id="reset" type="button">Clear ticks</button></div>
+  </section>
+
+  <ol class="parts" id="parts"></ol>
+
+  <section aria-labelledby="sub-h" class="check">
+    <div class="section-head" style="grid-column:1/-1">
+      <div class="eyebrow">Before you upload</div>
+      <h2 id="sub-h">Submit</h2>
+    </div>
+    <div>
+      <h3 style="margin-bottom:8px">Check the report</h3>
+      <ul>
+        <li>Both names and student IDs on the first page.</li>
+        <li><b>Screenshot 1</b> (optimal route), <b>Screenshot 2</b> (growth chart) and <b>Screenshot 3</b> (eil51 route) are pasted in their sections.</li>
+        <li>Numbers have units: km, seconds, %.</li>
+        <li>All nine sections are filled in, including who did what and the AI tools you used.</li>
+      </ul>
+    </div>
+    <div style="display:grid;gap:10px;align-content:start">
+      <h3>Name the PDF</h3>
+      <div class="filename"><code id="fname">AI4101_Lab2_&lt;ID1&gt;_&lt;ID2&gt;.pdf</code><button class="btn" type="button" id="copy">Copy</button><span class="copied" id="copied" hidden>Copied</span></div>
+      <p class="plain" style="margin:0">Replace ID1 and ID2 with your two student IDs. Keep your Colab notebook: Assignment 2 starts with a short live check of it.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Stuck? The last page of the guide lists the common problems and what to try.</span>
+    <span>AI4101 Open Educational Resource · Curated, reviewed, and academically directed by Dr. Ahmad Alhindi · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></span>
+  </footer>
+</div>
+
+<script>
+// Links that depend on where the files are hosted. Change them here only.
+const CONFIG = {
+  preview: false,  // true only for the claude.ai preview, where Word and .ipynb files cannot be served
+  colab: "https://colab.research.google.com/github/phdahmad/AI4101/blob/main/labs/lab2/AI4101_M3_Lab2_Ekram_TSP_Search.ipynb",
+  submitLink: "",           // optional: a submission link shows a button
+  guidePdf: "AI4101_M3_Lab2_Ekram_TSP_Search.pdf"
+};
+
+// One entry per step of the guide. Wording follows the guide; the guide stays the reference.
+const PARTS = [
+  {n:"0", t:"Before you start", m:15, p:2, goal:"Open the notebook in Colab and save your own copy in Drive. Open the report template.", out:[]},
+  {n:"1", t:"The Ekram scenario", m:15, p:2, goal:"One vehicle, one warehouse in Al-Awali, six donors, each visited exactly once. Run the first two cells to see them on a map.", out:[]},
+  {n:"2", t:"Model the problem on paper", m:35, p:3, goal:"Laptop closed. Write the five parts of the search problem with your partner.", out:[["paper","On paper"],["report","Report §1"]], fig:["fig1-state.jpg","Figure 1. A state must contain enough information to determine what can happen next."]},
+  {n:"3", t:"The distance matrix", m:20, p:4, goal:"Straight-line distances in km between every pair of places.", out:[["todo","TODO 1"],["report","Report §2"]], fig:["fig2-distance-matrix.jpg","Figure 2. Reading an entry in the distance matrix."]},
+  {n:"4", t:"Brute force: try every order", m:20, p:4, goal:"Try every order of the six donors and keep the shortest route.", out:[["todo","TODO 2"],["shot","Screenshot 1"],["report","Report §3"]]},
+  {n:"5", t:"Nearest neighbour: a greedy method", m:30, p:5, goal:"Always drive to the closest donor not yet visited. Compare it with the optimal route.", out:[["todo","TODO 3"],["report","Report §4"]], fig:["fig3-brute-force-vs-nn.jpg","Figure 3. Two different ways to construct a route: exhaustive search and a greedy choice."]},
+  {n:"6", t:"How fast does the problem grow?", m:30, p:5, goal:"Time brute force on random problems with 4 to 10 donors, then read the estimates for 12, 15, 20 and 40.", out:[["shot","Screenshot 2"],["report","Report §5"]]},
+  {n:"7", t:"An academic benchmark: eil51", m:25, p:6, goal:"Run nearest neighbour on a 51-city benchmark whose optimal length, 426, is published.", out:[["shot","Screenshot 3"],["report","Report §6"]]},
+  {n:"8", t:"The borderline case", m:20, p:6, goal:"Two donors give new rules about time. Is this still the problem you modelled in Part 2?", out:[["report","Report §7"]]},
+  {n:"9", t:"Connect it to the course", m:0, p:6, goal:"Five questions: PEAS, the six properties, agent design, a precise sentence, and what a real business would need.", out:[["report","Report §8"]]}
+];
+const TOTAL = 240, KEY = "ai4101_lab2_steps";
+
+let done = {};
+try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { done = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} };
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+function render() {
+  // Time ribbon
+  const bar = $("bar"); bar.innerHTML = "";
+  let used = 0;
+  PARTS.filter((x) => x.m > 0).forEach((x) => {
+    const a = document.createElement("a");
+    a.className = "seg" + (done[x.n] ? " done" : "");
+    a.style.flex = String(x.m);
+    a.href = "#part-" + x.n;
+    a.title = (x.n === "0" ? "" : "Part " + x.n + " · ") + x.t + " · " + x.m + " min";
+    a.textContent = x.n === "0" ? "0" : x.n;
+    bar.appendChild(a); used += x.m;
+  });
+  const spare = document.createElement("span");
+  spare.className = "seg spare"; spare.style.flex = String(TOTAL - used);
+  spare.textContent = "report & spare"; spare.title = "Time for section 8 of the report and for questions";
+  bar.appendChild(spare);
+
+  // Steps
+  const list = $("parts"); list.innerHTML = "";
+  PARTS.forEach((x) => {
+    const li = document.createElement("li");
+    li.className = "part" + (done[x.n] ? " is-done" : "");
+    li.id = "part-" + x.n;
+    const chips = x.out.map(([k, v]) => `<span class="chip ${k}">${esc(v)}</span>`).join("");
+    const fig = x.fig ? `<figure><img src="${esc(x.fig[0])}" alt="${esc(x.fig[1])}" width="1400" height="700"><figcaption>${esc(x.fig[1])}</figcaption></figure>` : "";
+    const label = x.n === "0" ? x.t : "Part " + x.n + " · " + x.t;
+    li.innerHTML = `
+      <div class="num">${esc(x.n)}</div>
+      <div class="part-body">
+        <div class="part-top"><h3>${esc(label)}</h3><span class="mins">${x.m ? x.m + " min" : "in the report"}</span></div>
+        <p class="goal">${esc(x.goal)}</p>
+        ${chips ? `<div class="outputs">${chips}</div>` : ""}
+        ${fig}
+        <div class="row">
+          <label for="chk-${x.n}"><input type="checkbox" id="chk-${x.n}" ${done[x.n] ? "checked" : ""}> Our pair has finished this step</label>
+          <a href="${esc(CONFIG.guidePdf)}#page=${x.p}" target="_blank" rel="noopener">Guide, page ${x.p}</a>
+        </div>
+      </div>`;
+    list.appendChild(li);
+    li.querySelector("input").addEventListener("change", (e) => { done[x.n] = e.target.checked; save(); render(); });
+  });
+
+  const n = PARTS.filter((x) => done[x.n]).length;
+  const mins = PARTS.filter((x) => done[x.n]).reduce((s, x) => s + x.m, 0);
+  $("done-count").textContent = n; $("done-min").textContent = mins;
+}
+
+$("reset").addEventListener("click", () => { done = {}; save(); render(); });
+$("copy").addEventListener("click", () => {
+  const text = "AI4101_Lab2_<ID1>_<ID2>.pdf";
+  const ok = () => { $("copied").hidden = false; setTimeout(() => { $("copied").hidden = true; }, 1600); };
+  try {
+    navigator.clipboard.writeText(text).then(ok, () => selectName());
+  } catch (e) { selectName(); }
+});
+function selectName() { const r = document.createRange(); r.selectNodeContents($("fname")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+
+$("colab").href = CONFIG.colab;
+if (CONFIG.preview) document.querySelectorAll("[data-site-only]").forEach(a => {
+  const sp = document.createElement("span");
+  sp.className = "btn off"; sp.textContent = a.textContent; sp.title = "Available on the course site";
+  a.replaceWith(sp);
+});
+if (CONFIG.submitLink) $("bb-slot").innerHTML = `<a class="btn primary" href="${esc(CONFIG.submitLink)}" target="_blank" rel="noopener">Submit Lab 2</a>`;
+render();
+</script>
