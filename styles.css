@@ -2626,3 +2626,104 @@ body.is-landing .stats-strip { display: block; }
   .env-table th, .env-table td { padding: 0.5rem 0.55rem; }
   .env-table tbody th { box-shadow: 1px 0 0 var(--rule); }
 }
+
+/* =========================================================
+   MODULE 3 — search tracer, compact diagrams, trace tables
+   (added 2026-10-17; used by attachTracers() in app.js)
+   ========================================================= */
+
+/* A narrow diagram that must not get the phone min-width rule */
+.diagram.compact svg { max-width: 340px; margin: 0 auto; }
+@media (max-width: 700px) {
+  .diagram.compact { overflow-x: visible; }
+  .diagram.compact svg { min-width: 0; }
+  .diagram.compact::after { content: none; display: none; }
+}
+
+.tracer {
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 2rem 0;
+}
+.tracer.tracer-static { padding: 0.75rem 1rem 1rem; }
+.tracer .diagram-caption { margin-top: 0.75rem; text-align: center; }
+.tracer-svg { width: 100%; max-width: 560px; height: auto; display: block; margin: 0 auto; }
+.tracer-svg .tr-edge { stroke: var(--ink-mute); stroke-width: 2; fill: none; }
+.tracer-svg .tr-edge.on-path { stroke: var(--teal); stroke-width: 4.5; }
+.tracer-svg .tr-cost {
+  font: 600 15px 'Inter', sans-serif; fill: var(--gold); text-anchor: middle; dominant-baseline: central;
+  paint-order: stroke; stroke: var(--bg-elev); stroke-width: 5px; stroke-linejoin: round;
+}
+.tracer-svg .tr-node circle { fill: var(--bg-elev); stroke: var(--ink-mute); stroke-width: 2; }
+.tracer-svg .tr-node.is-goal > circle { stroke: var(--teal); stroke-width: 3; }
+.tracer-svg .tr-node.is-frontier > circle { stroke: var(--gold); stroke-width: 3; stroke-dasharray: 5 3; }
+.tracer-svg .tr-node.is-expanded > circle { fill: var(--accent-soft); stroke: var(--accent); stroke-dasharray: none; }
+.tracer-svg .tr-node.on-path > circle { stroke: var(--teal); stroke-width: 3.5; stroke-dasharray: none; }
+.tracer-svg .tr-node.is-current > circle { fill: var(--accent); stroke: var(--accent); stroke-width: 3; stroke-dasharray: none; }
+.tracer-svg .tr-id { font: 700 17px 'Inter', sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+.tracer-svg .tr-node.is-current .tr-id { fill: var(--bg-elev); }
+.tracer-svg .tr-sub { font: 500 13px 'Inter', sans-serif; fill: var(--ink-soft); text-anchor: middle; dominant-baseline: central; paint-order: stroke; stroke: var(--bg-elev); stroke-width: 4px; }
+.tracer-svg .tr-h { font: 500 13px 'JetBrains Mono', monospace; fill: var(--ink-mute); text-anchor: middle; dominant-baseline: central; paint-order: stroke; stroke: var(--bg-elev); stroke-width: 4px; }
+.tracer-svg .tr-badge circle { fill: var(--gold); stroke: var(--bg-elev); stroke-width: 2; }
+.tracer-svg .tr-badge text { font: 700 11px 'Inter', sans-serif; fill: var(--bg-elev); text-anchor: middle; dominant-baseline: central; }
+
+.tracer-algos { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; }
+.tracer-algo {
+  font: 600 0.85rem 'Inter', sans-serif; padding: 0.45rem 1rem; border-radius: 999px;
+  border: 1px solid var(--rule); background: transparent; color: var(--ink-soft); cursor: pointer;
+}
+.tracer-algo.is-active { background: var(--accent); border-color: var(--accent); color: var(--bg-elev); }
+
+.tracer-legend {
+  list-style: none; padding: 0; margin: 0.6rem 0 0; display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 0.35rem 1rem; font: 0.75rem 'Inter', sans-serif; color: var(--ink-soft);
+}
+.tracer-legend li { display: inline-flex; align-items: center; gap: 0.35rem; margin: 0; }
+.tracer-legend .sw { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--ink-mute); background: var(--bg-elev); }
+.tracer-legend .sw-current { background: var(--accent); border-color: var(--accent); }
+.tracer-legend .sw-frontier { border: 2px dashed var(--gold); }
+.tracer-legend .sw-expanded { background: var(--accent-soft); border-color: var(--accent); }
+.tracer-legend .sw-goal { border: 3px solid var(--teal); }
+
+.tracer-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-top: 1rem; }
+.tracer-controls .btn { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
+.tracer-controls .btn:disabled { opacity: 0.45; cursor: default; }
+.tracer-count { font: 0.8rem 'JetBrains Mono', monospace; color: var(--ink-mute); margin-left: auto; }
+.tracer-msg {
+  margin: 0.8rem 0 0; padding: 0.7rem 0.9rem; min-height: 3.2em;
+  border-left: 3px solid var(--accent); background: var(--accent-soft);
+  font: 0.92rem/1.5 'Inter', sans-serif; color: var(--ink);
+}
+.tracer-panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; margin-top: 0.8rem; }
+.tracer-panels .tp { border: 1px solid var(--rule); border-radius: 6px; padding: 0.55rem 0.7rem; min-width: 0; }
+.tp-label {
+  display: block; font: 600 0.68rem 'JetBrains Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-mute); margin-bottom: 0.3rem;
+}
+.tp-val { font: 0.9rem/1.5 'Inter', sans-serif; color: var(--ink); overflow-wrap: anywhere; }
+.tp-frontier { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.tr-chip {
+  display: inline-block; border: 1px solid var(--gold); border-radius: 999px; padding: 0.05rem 0.55rem;
+  font: 0.78rem 'JetBrains Mono', monospace; color: var(--ink); white-space: nowrap;
+}
+.tr-chip.stale { border-style: dashed; color: var(--ink-mute); text-decoration: line-through; }
+.tp-empty { color: var(--ink-mute); font-style: italic; }
+.tracer-rule { margin: 0.8rem 0 0; font: 0.78rem/1.5 'Inter', sans-serif; color: var(--ink-mute); }
+@media (max-width: 560px) {
+  /* SVG text is in viewBox units: enlarge it so it stays readable at phone width */
+  .tracer-svg .tr-id { font-size: 25px; }
+  .tracer-svg .tr-cost { font-size: 23px; }
+  .tracer-svg .tr-sub, .tracer-svg .tr-h { font-size: 20px; }
+  .tracer { padding: 0.75rem; }
+  .tracer-panels { grid-template-columns: minmax(0, 1fr); }
+  .tracer-count { margin-left: 0; width: 100%; }
+}
+.env-table.trace-table { white-space: normal; }
+.trace-table td:nth-child(3) { min-width: 15rem; }
+.trace-table td:last-child { white-space: nowrap; }
+@media print {
+  .tracer-controls, .tracer-algos { display: none !important; }
+  .tracer { break-inside: avoid; }
+}

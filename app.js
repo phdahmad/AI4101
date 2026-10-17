@@ -50,8 +50,32 @@
   function updateModuleProgress(moduleId, patch) {
     const p = loadProgress();
     p[moduleId] = Object.assign({}, p[moduleId] || {}, patch, { lastVisited: Date.now() });
+    if (Number(moduleId) === 3) p[moduleId].layout = M3_LAYOUT;   // see migrateModule3()
     saveProgress(p);
   }
+  // ===== ONE-TIME MIGRATION: Module 3 from 8 sections to 7 (2026-10-17) =====
+  // Read marks are stored as section indices. Old index 6 ("Variants of A*") was removed, so its
+  // mark is dropped; old index 7 (Applications) is now index 6. The quiz bank also changed, so an
+  // old Module 3 score is kept as legacyQuiz and no longer counts as the current score.
+  // The marker `layout` is saved inside the same record, in the same write, so the migration can
+  // never run twice on the same data. Other modules are not touched.
+  const M3_LAYOUT = '7-sections';
+  function migrateModule3() {
+    const p = loadProgress();
+    const m3 = p[3];
+    if (!m3 || m3.layout === M3_LAYOUT) return;
+    if (Array.isArray(m3.read)) {
+      m3.read = m3.read.filter(i => i !== 6 && i <= 7).map(i => (i === 7 ? 6 : i));
+    }
+    if (typeof m3.score === 'number') {
+      m3.legacyQuiz = { score: m3.score, total: m3.total, bank: 'before 2026-10-17' };
+      delete m3.score;
+      delete m3.total;
+    }
+    m3.layout = M3_LAYOUT;
+    saveProgress(p);
+  }
+
   function readSet(moduleId) {
     const p = loadProgress()[moduleId] || {};
     return new Set(p.read || []);
@@ -685,6 +709,282 @@
     updateProgressText();
   }
 
+  // ===== SEARCH TRACER (Module 3) =====
+  // A small step-through for BFS, DFS and A* on a graph written in content.js as
+  //   <div class="tracer" data-tracer='{ ...json... }'></div>
+  // Each algorithm has its own run function that records one snapshot per step, so each one
+  // keeps its own textbook behaviour. Only the drawing and the buttons are shared.
+  // Fixed rules, printed under every tracer: neighbours are taken in alphabetical order;
+  // in A*, a tie in f goes to the node that entered the frontier first (as the counter does
+  // in the Python code of section 3.5).
+  const TRACER_RULES = {
+    bfs: 'Rules: children are created in alphabetical order. BFS takes out the oldest node in the frontier (a queue), and it tests each node when it creates it — as in the BFS code in this section.',
+    dfs: 'Rules: children are considered in alphabetical order, and the first one goes on top of the stack. DFS takes out the newest node, and it tests a node when it takes it out.',
+    astar: 'Rules: neighbours are considered in alphabetical order. A* takes out the node with the smallest f; if two nodes have the same f, the one that entered the frontier first comes out first — the counter in the Python code does the same. A* tests a node when it takes it out.'
+  };
+  const TRACER_NAMES = { bfs: 'BFS', dfs: 'DFS', astar: 'A*' };
+
+  function tracerAdjacency(cfg) {
+    const adj = {};
+    Object.keys(cfg.nodes).forEach(id => { adj[id] = []; });
+    cfg.edges.forEach(([u, v, c]) => {
+      adj[u].push({ to: v, cost: c });
+      if (!cfg.directed) adj[v].push({ to: u, cost: c });
+    });
+    Object.values(adj).forEach(list => list.sort((a, b) => a.to.localeCompare(b.to)));
+    return adj;
+  }
+  function tracerPath(parent, id) {
+    const p = [id];
+    while (parent[p[0]] != null) p.unshift(parent[p[0]]);
+    return p;
+  }
+  function tracerCost(adj, path) {
+    let c = 0;
+    for (let i = 1; i < path.length; i++) c += adj[path[i - 1]].find(e => e.to === path[i]).cost;
+    return c;
+  }
+  function tracerList(ids) {
+    if (ids.length < 2) return ids.join('');
+    return ids.slice(0, -1).join(', ') + ' and ' + ids[ids.length - 1];
+  }
+
+  // Breadth-first search, graph version, goal tested when a node is created (as in the BFS code).
+  function runBFS(cfg, adj) {
+    const { start, goal } = cfg;
+    const parent = { [start]: null };
+    const reached = new Set([start]);
+    const frontier = [start];
+    const expanded = [];
+    const snap = (current, msg, result) => ({
+      current, msg, result,
+      frontier: frontier.map(id => ({ id })), expanded: [...expanded]
+    });
+    const steps = [snap(null, `Start: the frontier (a queue) holds only ${start}.`)];
+    if (start === goal) { steps[0].result = { found: true, path: [start], cost: 0 }; return steps; }
+    while (frontier.length) {
+      const n = frontier.shift();
+      expanded.push(n);
+      const created = [];
+      let found = false;
+      for (const { to } of adj[n]) {
+        if (to === goal && !reached.has(to)) { parent[to] = n; created.push(to); found = true; break; }
+        if (!reached.has(to)) { reached.add(to); parent[to] = n; frontier.push(to); created.push(to); }
+      }
+      if (found) {
+        const path = tracerPath(parent, goal);
+        steps.push(snap(n, `Take out ${n}, the oldest node, and expand it. It creates ${tracerList(created)}. ${goal} is the goal, and BFS tests a node when it creates it, so the search stops here.`,
+          { found: true, path, cost: cfg.weighted ? tracerCost(adj, path) : path.length - 1 }));
+        return steps;
+      }
+      const tail = frontier.length ? '' : ' The frontier is now empty: there is no solution.';
+      steps.push(snap(n, `Take out ${n}, the oldest node, and expand it. ` +
+        (created.length ? `New nodes join the back of the queue: ${tracerList(created)}.` : 'It creates no new nodes.') + tail,
+        frontier.length ? undefined : { found: false }));
+    }
+    return steps;
+  }
+
+  // Depth-first search, tree-like with a check on the current path; goal tested when taken out.
+  function runDFS(cfg, adj) {
+    const { start, goal } = cfg;
+    const stack = [{ id: start, path: [start] }];
+    const expanded = [];
+    const snap = (current, msg, result) => ({
+      current, msg, result,
+      frontier: stack.slice().reverse().map(e => ({ id: e.id })), expanded: [...expanded]
+    });
+    const steps = [snap(null, `Start: the frontier (a stack) holds only ${start}.`)];
+    while (stack.length) {
+      const top = stack.pop();
+      if (top.id === goal) {
+        steps.push(snap(top.id, `Take out ${goal}, the newest node. It is the goal: DFS tests a node when it takes it out, so the search stops here.`,
+          { found: true, path: top.path, cost: cfg.weighted ? tracerCost(adj, top.path) : top.path.length - 1 }));
+        return steps;
+      }
+      expanded.push(top.id);
+      const kids = adj[top.id].map(e => e.to).filter(v => !top.path.includes(v));
+      for (let i = kids.length - 1; i >= 0; i--) stack.push({ id: kids[i], path: [...top.path, kids[i]] });
+      const tail = stack.length ? '' : ' The frontier is now empty: there is no solution.';
+      steps.push(snap(top.id, `Take out ${top.id}, the newest node, and expand it. ` +
+        (kids.length ? `Its children go on the stack with ${kids[0]} on top, so ${kids[0]} comes out next.`
+                     : 'It has no children, so DFS goes back to the newest node still waiting.') + tail,
+        stack.length ? undefined : { found: false }));
+    }
+    return steps;
+  }
+
+  // A*, graph version, exactly as the Python code in section 3.5:
+  // reached table with cheaper-path updates, stale entries skipped, goal tested when taken out.
+  function runAStar(cfg, adj) {
+    const { start, goal } = cfg;
+    const H = id => cfg.nodes[id].h;
+    let counter = 0;
+    const frontier = [{ id: start, g: 0, f: H(start), c: 0 }];
+    const reached = { [start]: 0 };
+    const parent = { [start]: null };
+    const expanded = [];
+    const order = (a, b) => (a.f - b.f) || (a.c - b.c);
+    const snap = (current, msg, result) => ({
+      current, msg, result, expanded: [...expanded],
+      frontier: frontier.slice().sort(order).map(e => ({ id: e.id, g: e.g, h: H(e.id), f: e.f, stale: e.g > reached[e.id] }))
+    });
+    const steps = [snap(null, `Start: the frontier holds ${start} with g = 0, h = ${H(start)}, f = ${H(start)}.`)];
+    while (frontier.length) {
+      frontier.sort(order);
+      const n = frontier.shift();
+      if (n.g > reached[n.id]) {
+        steps.push(snap(null, `Take out ${n.id} (f = ${n.f}). This is an old entry: a cheaper path to ${n.id} was found later, so A* skips it.`));
+        continue;
+      }
+      if (n.id === goal) {
+        const path = tracerPath(parent, goal);
+        steps.push(snap(n.id, `Take out ${goal} (f = ${n.f}). It is the goal, and no node left in the frontier has a smaller f. A* returns ${path.join(' → ')}, cost ${n.g}.`,
+          { found: true, path, cost: n.g }));
+        return steps;
+      }
+      expanded.push(n.id);
+      const notes = [];
+      for (const { to, cost } of adj[n.id]) {
+        const g = n.g + cost;
+        const f = g + H(to);
+        if (!(to in reached)) {
+          reached[to] = g; parent[to] = n.id;
+          frontier.push({ id: to, g, f, c: ++counter });
+          notes.push(`creates ${to} with g = ${n.g} + ${cost} = ${g}, f = ${g} + ${H(to)} = ${f}` + (to === goal ? ` (${to} is the goal, but A* only tests nodes it takes out)` : ''));
+        } else if (g < reached[to]) {
+          const old = reached[to];
+          reached[to] = g; parent[to] = n.id;
+          frontier.push({ id: to, g, f, c: ++counter });
+          notes.push(`finds a cheaper path to ${to}: g = ${g}, less than ${old}, so f = ${f}. The reached table is updated; the old entry for ${to} stays in the frontier and will be skipped`);
+        }
+      }
+      const tail = frontier.length ? '' : ' The frontier is now empty: there is no solution.';
+      steps.push(snap(n.id, `Take out ${n.id} (smallest f = ${n.f}) and expand it. ` +
+        (notes.length ? `It ${notes.join('; it ')}.` : 'Every neighbour was already reached at a lower or equal cost.') + tail,
+        frontier.length ? undefined : { found: false }));
+    }
+    return steps;
+  }
+  const TRACER_RUN = { bfs: runBFS, dfs: runDFS, astar: runAStar };
+
+  function tracerSVG(cfg, adj, s) {
+    const N = cfg.nodes, r = cfg.r || 22;
+    const onPath = new Set();
+    if (s && s.result && s.result.found) {
+      const p = s.result.path;
+      for (let i = 1; i < p.length; i++) onPath.add(p[i - 1] + '|' + p[i]).add(p[i] + '|' + p[i - 1]);
+    }
+    const inFrontier = new Set(s ? s.frontier.filter(e => !e.stale).map(e => e.id) : []);
+    const done = s ? s.expanded : [];
+    let edges = '', labels = '', nodes = '';
+    cfg.edges.forEach(([u, v, c, bend = 0, ldx = 0, ldy = 0]) => {
+      const a = N[u], b = N[v];
+      const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+      const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+      const nx = -(b.y - a.y) / len, ny = (b.x - a.x) / len;
+      const cx = mx + nx * bend, cy = my + ny * bend;
+      const cls = 'tr-edge' + (onPath.has(u + '|' + v) ? ' on-path' : '');
+      edges += bend ? `<path class="${cls}" d="M${a.x} ${a.y} Q${cx} ${cy} ${b.x} ${b.y}"/>`
+                    : `<line class="${cls}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`;
+      if (cfg.weighted) {
+        const lx = (bend ? (a.x + 2 * cx + b.x) / 4 : mx) + ldx, ly = (bend ? (a.y + 2 * cy + b.y) / 4 : my) + ldy;
+        labels += `<text class="tr-cost" x="${lx}" y="${ly}">${c}</text>`;
+      }
+    });
+    Object.entries(N).forEach(([id, n]) => {
+      const cls = ['tr-node'];
+      if (id === cfg.goal) cls.push('is-goal');
+      if (done.includes(id)) cls.push('is-expanded');
+      if (inFrontier.has(id)) cls.push('is-frontier');
+      if (s && s.current === id) cls.push('is-current');
+      if (s && s.result && s.result.found && s.result.path.includes(id)) cls.push('on-path');
+      let g = `<g class="${cls.join(' ')}"><circle cx="${n.x}" cy="${n.y}" r="${r}"/>` +
+              `<text class="tr-id" x="${n.x}" y="${n.y}">${id}</text>`;
+      if (n.sub) {
+        const [dx, dy] = n.subAt || [0, -r - 10];
+        g += `<text class="tr-sub" x="${n.x + dx}" y="${n.y + dy}">${n.sub}</text>`;
+      }
+      if (cfg.showH) {
+        const [dx, dy] = n.hAt || [0, r + 18];
+        g += `<text class="tr-h" x="${n.x + dx}" y="${n.y + dy}">h=${n.h}</text>`;
+      }
+      const k = done.indexOf(id);
+      if (k !== -1) {
+        g += `<g class="tr-badge"><circle cx="${n.x + r * 0.85}" cy="${n.y - r * 0.85}" r="10"/>` +
+             `<text x="${n.x + r * 0.85}" y="${n.y - r * 0.85}">${k + 1}</text></g>`;
+      }
+      nodes += g + '</g>';
+    });
+    return `<svg class="tracer-svg" viewBox="${cfg.viewBox}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${cfg.label || 'Search graph'}">${edges}${labels}${nodes}</svg>`;
+  }
+
+  function attachTracers() {
+    $app.querySelectorAll('.tracer[data-tracer]').forEach(box => {
+      let cfg;
+      try { cfg = JSON.parse(box.dataset.tracer); } catch (e) { return; }
+      const adj = tracerAdjacency(cfg);
+      if (cfg.static) { box.innerHTML = tracerSVG(cfg, adj, null) + (box.dataset.caption ? `<div class="diagram-caption">${box.dataset.caption}</div>` : ''); return; }
+      const algos = cfg.algos || ['astar'];
+      let algo = algos[0], steps = [], k = 0;
+      box.innerHTML = `
+        ${algos.length > 1 ? `<div class="tracer-algos" role="group" aria-label="Algorithm">${algos.map(a =>
+          `<button type="button" class="tracer-algo" data-algo="${a}">${TRACER_NAMES[a]}</button>`).join('')}</div>` : ''}
+        <div class="tracer-figure"></div>
+        <ul class="tracer-legend">
+          <li><span class="sw sw-current"></span>Current node</li>
+          <li><span class="sw sw-frontier"></span>In the frontier</li>
+          <li><span class="sw sw-expanded"></span>Expanded (number = order)</li>
+          <li><span class="sw sw-goal"></span>Goal</li>
+        </ul>
+        <div class="tracer-controls">
+          <button type="button" class="btn btn-primary tracer-next">Next step</button>
+          <button type="button" class="btn btn-ghost tracer-reset">Reset</button>
+          <span class="tracer-count"></span>
+        </div>
+        <p class="tracer-msg" aria-live="polite"></p>
+        <div class="tracer-panels">
+          <div class="tp"><span class="tp-label">Current node</span><div class="tp-val tp-current"></div></div>
+          <div class="tp"><span class="tp-label">Frontier — next out first</span><div class="tp-val tp-frontier"></div></div>
+          <div class="tp"><span class="tp-label">Expanded, in order</span><div class="tp-val tp-expanded"></div></div>
+          <div class="tp"><span class="tp-label">Result</span><div class="tp-val tp-result"></div></div>
+        </div>
+        <p class="tracer-rule"></p>
+        ${box.dataset.caption ? `<div class="diagram-caption">${box.dataset.caption}</div>` : ''}`;
+      const $ = sel => box.querySelector(sel);
+      const chip = e => {
+        const val = (algo === 'astar') ? `${e.id} · g ${e.g} + h ${e.h} = f ${e.f}${e.stale ? ' (old)' : ''}` : e.id;
+        return `<span class="tr-chip${e.stale ? ' stale' : ''}">${val}</span>`;
+      };
+      function show() {
+        const s = steps[k];
+        $('.tracer-figure').innerHTML = tracerSVG(cfg, adj, s);
+        $('.tracer-count').textContent = `Step ${k} of ${steps.length - 1}`;
+        $('.tracer-msg').textContent = s.msg;
+        $('.tp-current').textContent = s.current || '—';
+        $('.tp-frontier').innerHTML = s.frontier.length ? s.frontier.map(chip).join('') : '<span class="tp-empty">empty</span>';
+        $('.tp-expanded').textContent = s.expanded.length ? s.expanded.join(' → ') : '—';
+        $('.tp-result').textContent = !s.result ? 'not yet'
+          : s.result.found ? `${s.result.path.join(' → ')} · ${cfg.weighted ? 'cost ' + s.result.cost : s.result.cost + ' steps'}` : 'no solution';
+        $('.tracer-next').disabled = k >= steps.length - 1;
+        box.querySelectorAll('.tracer-algo').forEach(b => {
+          const on = b.dataset.algo === algo;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+      }
+      function load(a) {
+        algo = a; steps = TRACER_RUN[a](cfg, adj); k = 0;
+        $('.tracer-rule').textContent = TRACER_RULES[a];
+        show();
+      }
+      $('.tracer-next').addEventListener('click', () => { if (k < steps.length - 1) { k++; show(); } });
+      $('.tracer-reset').addEventListener('click', () => { k = 0; show(); });
+      box.querySelectorAll('.tracer-algo').forEach(b => b.addEventListener('click', () => load(b.dataset.algo)));
+      load(algo);
+    });
+  }
+
   // ===== ROUTER =====
   function parseRoute() {
     const hash = window.location.hash.slice(1) || 'home';
@@ -721,6 +1021,7 @@
       attachReadButtons(Number(route.param));
       attachQuizHandlers(Number(route.param));
       attachScrollSpy(Number(route.param));
+      attachTracers();
     }
 
     if (typeof renderMathInElement === 'function') {
@@ -738,6 +1039,7 @@
   }
 
   // ===== INIT =====
+  migrateModule3();
   const totalQs = Object.values(QUIZ_BANK).reduce((a, arr) => a + arr.length, 0);
   const statEl = document.getElementById('statQuestions');
   if (statEl) statEl.textContent = totalQs || '—';
