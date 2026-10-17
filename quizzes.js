@@ -267,7 +267,7 @@ const QUIZ_BANK = {
         "The goal test"
       ],
       correct: 2,
-      explanation: "A search problem has five parts: initial state, actions, transition model, goal test, and action cost. A heuristic is extra knowledge that an informed algorithm brings to the problem — it belongs to the solver, not to the problem."
+      explanation: "A search problem has five parts: initial state, actions, transition model, goal test, and action cost. A heuristic is extra knowledge that an informed algorithm brings to the problem — it belongs to the solver, not to the problem (section 3.1)."
     },
     {
       q: "What is the difference between a state and a node?",
@@ -278,18 +278,62 @@ const QUIZ_BANK = {
         "A state is a situation in the world; a node is a record of one path that reached it."
       ],
       correct: 3,
-      explanation: "A node holds a state, the node it came from, the action taken, and the cost so far. One state can appear in many nodes, because several paths can lead to it — which is why graph search keeps a reached table."
+      explanation: "A node holds a state, the node it came from, the action taken, and the cost so far. One state can appear in many nodes, because several paths can lead to it — which is why graph search keeps a reached table (section 3.2)."
+    },
+    {
+      q: "A route planner returns a route of 8 km. To find it, the algorithm created 40 nodes and never held more than 12 of them at once. Which number describes the algorithm's search time?",
+      choices: [
+        "The 8 km of the route it returned.",
+        "The 40 nodes it created.",
+        "The 12 nodes it held at once.",
+        "The number of roads on the route."
+      ],
+      correct: 1,
+      explanation: "Search time is the work the algorithm does, counted in nodes created (or expanded): 40. The 8 km is the path cost — a property of the answer, not of the work. The 12 nodes held at once measure search memory (section 3.3)."
     },
     {
       q: "Under what condition does breadth-first search return the cheapest solution?",
       choices: [
-        "Always, since it expands the shallowest nodes first.",
         "Only when all actions have the same cost.",
+        "Always, since it expands the shallowest nodes first.",
         "Only when a consistent heuristic is available.",
         "Only when the state space contains no cycles."
       ],
+      correct: 0,
+      explanation: "BFS returns the solution with the fewest actions. That is the cheapest solution only when every action costs the same (and b is finite, so BFS is complete). On the delivery map BFS returns S → B → G, 9 km, while S → A → C → G is 8 km. With different costs you need uniform-cost search (section 3.4)."
+    },
+    {
+      q: "A tree has root P. P's children are Q and R; Q's children are S and T; R's only child is U. Children are considered left to right, and the first one goes on top of the stack. In which order does tree-like DFS take the nodes out of the frontier?",
+      choices: [
+        "P, Q, S, T, R, U",
+        "P, Q, R, S, T, U",
+        "P, R, U, Q, T, S",
+        "P, Q, S, R, T, U"
+      ],
+      correct: 0,
+      explanation: "DFS always takes out the newest node, so it finishes Q's whole branch (S, then T) before it comes back to R and then U. P, Q, R, S, T, U is the BFS order, level by level. P, R, U, Q, T, S takes the right child first, which breaks the stated rule (section 3.4)."
+    },
+    {
+      q: "Which statement about depth-first search is correct?",
+      choices: [
+        "It is complete in infinite state spaces because it always goes deeper.",
+        "Tree-like DFS needs only O(bm) memory, and that is its main strength.",
+        "It returns the cheapest path whenever all action costs are equal.",
+        "It expands the node with the lowest path cost first, using a stack."
+      ],
       correct: 1,
-      explanation: "BFS returns the solution with the fewest actions. That is the cheapest solution only when every action costs the same. With different costs you need uniform-cost search, which orders the frontier by path cost g(n)."
+      explanation: "Tree-like DFS stores only the current path and the unexpanded siblings along it: O(bm) memory, linear rather than exponential. A DFS that keeps a reached table of every state loses this advantage. DFS gives no optimality guarantee, and in its tree-like form it is not complete: it can go around a cycle or follow an endless branch (section 3.4)."
+    },
+    {
+      q: "In uniform-cost search, the frontier holds four nodes: G with g = 9 (G is a goal), C with g = 5, D with g = 3, and H with g = 7. Which node does UCS take out next?",
+      choices: [
+        "G, because it is a goal.",
+        "C, because it was created first.",
+        "H, because it was created most recently.",
+        "D, because it has the lowest g."
+      ],
+      correct: 3,
+      explanation: "UCS always takes out the node with the lowest path cost g(n): D, with g = 3. Having G in the frontier only proves that a path exists; UCS returns G only when G itself comes out of the frontier, because a cheaper path to G may still be found through D or C (section 3.4)."
     },
     {
       q: "Why is iterative deepening preferred over breadth-first search when memory is limited and the solution depth is unknown?",
@@ -300,95 +344,51 @@ const QUIZ_BANK = {
         "It never expands the same state twice, unlike BFS."
       ],
       correct: 2,
-      explanation: "IDS repeats the shallow levels, but the deepest level holds most of the nodes, so the extra work is small (about 11% when b = 10). In exchange, memory falls from O(b^d) to O(bd) — and memory is what runs out first."
+      explanation: "IDS repeats the shallow levels, but the deepest level holds most of the nodes, so the extra work is small (about 11% when b = 10, d = 5). In exchange, memory falls from O(b^d) to O(bd) — and memory is what runs out first (section 3.4)."
     },
     {
-      q: "A heuristic h is admissible if:",
+      q: "The frontier holds two nodes. X has g = 2 and h = 6. Y has g = 7 and h = 2. Which node does A* take out next, and which does greedy best-first search take out?",
       choices: [
-        "h(n) never guesses higher than the real cost from n to a goal.",
-        "h(n) is always equal to the real remaining cost.",
-        "h(n) ≥ c + h(n') for every child n' reached at cost c.",
-        "h(n) can be computed in constant time."
+        "A* takes Y; greedy takes X.",
+        "Both take X.",
+        "A* takes X; greedy takes Y.",
+        "Both take Y."
       ],
-      correct: 0,
-      explanation: "Admissible means optimistic: the guess is never higher than the real remaining cost. That is what makes A* return the cheapest path, because f(n) = g(n) + h(n) then never guesses too high for a solution through n. Option C turns the consistency condition the wrong way round."
+      correct: 2,
+      explanation: "f(X) = 2 + 6 = 8 and f(Y) = 7 + 2 = 9, so A* takes X. Greedy looks only at h, and h(Y) = 2 is smaller, so it takes Y — ignoring the 7 already paid to reach Y (section 3.5)."
+    },
+    {
+      q: "On a road map, the real remaining cost from node K to the goal is 12 km. Which value of h(K) would make the heuristic NOT admissible?",
+      choices: [
+        "h(K) = 0",
+        "h(K) = 9",
+        "h(K) = 12",
+        "h(K) = 14"
+      ],
+      correct: 3,
+      explanation: "Admissible means h never guesses higher than the real remaining cost, so h(K) must be at most 12. Equal is allowed, and 0 is admissible but gives no help. 14 guesses too high (section 3.6)."
     },
     {
       q: "h₁ counts misplaced tiles in the 8-puzzle and h₂ sums their Manhattan distances. Both are admissible, and h₂(n) ≥ h₁(n) for every n. What follows from these facts alone?",
       choices: [
         "h₁ is the better choice because it is cheaper to compute.",
-        "h₂ dominates h₁, so A* with h₂ never expands more nodes than with h₁.",
+        "h₂ dominates h₁, so A* with h₂ expands no more nodes, apart from ties.",
         "h₂ may be inadmissible because it produces larger values.",
         "The two heuristics will expand identical numbers of nodes."
       ],
       correct: 1,
-      explanation: "This is dominance: among admissible heuristics, the larger one gives A* a better hint, so it expands no more nodes. On 8-puzzle problems needing 12 moves, A* with h₁ creates about 230 nodes and A* with h₂ about 70."
+      explanation: "This is dominance: h₂ is never smaller and never too high. For consistent heuristics like these, A* with h₂ expands no more nodes than with h₁, apart from ties among nodes whose f equals the best cost. Russell & Norvig report about 230 nodes with h₁ and about 70 with h₂ on 12-move puzzles. Option A describes a real trade-off, but it does not follow from these facts alone (section 3.6)."
     },
     {
-      q: "Greedy best-first search orders the frontier by h(n) alone. What is its main weakness?",
+      q: "An ambulance service plans routes on a city road map. Roads have different travel times, there is plenty of memory, a heuristic is available that never overestimates the remaining time, and the fastest route is required. Which algorithm fits best?",
       choices: [
-        "It ignores the cost already paid, so its path may not be the cheapest.",
-        "It cannot use a heuristic that is only admissible, not consistent.",
-        "It needs more memory than A* on every problem it is given.",
-        "It is slower than uniform-cost search on every problem."
-      ],
-      correct: 0,
-      explanation: "Greedy search drops g(n): it expands whatever looks closest to the goal and never counts what that choice cost. On the Makkah → Riyadh map in section 3.5 it returns a 1460 km route, while A* finds 940 km."
-    },
-    {
-      q: "In A*, why should the goal test be applied when a node is taken out of the frontier, not when it is created?",
-      choices: [
-        "Because taking a node out is faster than creating it.",
-        "Because the heuristic is defined only for nodes taken out.",
-        "Because the reached table is updated only when a node is taken out.",
-        "Because a cheaper path to the same goal may still be in the frontier."
-      ],
-      correct: 3,
-      explanation: "Creating a goal node proves that a path exists, not that it is the cheapest. Only when the goal node is taken out of the frontier is it certain that no node with a smaller f is left."
-    },
-    {
-      q: "What does setting h(n) = 0 for all n turn A* into?",
-      choices: [
+        "A* with that heuristic",
+        "Breadth-first search",
         "Greedy best-first search",
-        "Depth-first search",
-        "Uniform-cost search",
-        "Iterative deepening search"
-      ],
-      correct: 2,
-      explanation: "With h = 0, f(n) = g(n), so A* expands the node with the lowest path cost — exactly uniform-cost search. h = 0 is admissible, but it gives no help, so A* becomes a blind algorithm."
-    },
-    {
-      q: "Your A* pathfinder runs out of memory on the full game world. Which change still returns the cheapest path?",
-      choices: [
-        "Switch to weighted A* with W = 2.",
-        "Switch to beam search with k = 100.",
-        "Switch to greedy best-first search.",
-        "Switch to IDA*."
-      ],
-      correct: 3,
-      explanation: "IDA* keeps the f limit of A*, so it still returns the cheapest path, and it stores only the current path. Weighted A* may return a path up to W times the cheapest. Beam search and greedy search give up optimality, and beam search gives up completeness too."
-    },
-    {
-      q: "Which statement about depth-first search is correct?",
-      choices: [
-        "It is complete in infinite state spaces because it always goes deeper.",
-        "Its memory is O(bm), and that is its main strong point.",
-        "It returns the cheapest path whenever all action costs are equal.",
-        "It expands the node with the lowest path cost first."
-      ],
-      correct: 1,
-      explanation: "DFS stores only the current path and the unexpanded siblings along it: O(bm) memory, linear rather than exponential. It pays for this with no optimality guarantee, and in its tree-like form it is not complete: it can follow an endless branch or go around a cycle forever."
-    },
-    {
-      q: "A search problem has branching factor b = 10 and the shallowest goal is at depth d = 12. Bidirectional search would reduce the node count to roughly:",
-      choices: [
-        "10^6 instead of 10^12",
-        "10^11 instead of 10^12",
-        "12 × 10 instead of 10^12",
-        "It does not reduce the count; it only reduces memory."
+        "Depth-first search"
       ],
       correct: 0,
-      explanation: "Two searches of depth d/2 = 6 each create about b^6 = 10^6 nodes — about two million together — instead of one search creating b^12 = 10^12. The catch: you must be able to search backwards, and you need one known goal state."
+      explanation: "Different travel times rule out BFS, which finds the fewest roads, not the fastest route. Greedy search and DFS give no guarantee of the fastest route. With an admissible heuristic, A* returns the fastest route, and its hint guides the search towards the goal (section 3.7)."
     }
   ],
 

@@ -1152,51 +1152,53 @@ const COURSE_CONTENT = [
     subtitle: "Uninformed and Informed Search Algorithms",
     shortDesc: "The heart of the course. How an agent that does not know the answer can still find it — first blindly, then with a sense of direction.",
     hours: 16,
-    story: "This is the longest module in the course. Search is the first place where a computer does something that really looks like thinking. We start with a problem the agent cannot solve, and we end with A* (said out loud as A-star) — the algorithm inside your maps app, inside game characters, and inside warehouse robots. Take your time here. Every module after this one is search in a different costume.",
+    story: "This is the longest module in the course. Search is the first place where a computer does something that really looks like thinking. We start with a problem the agent cannot solve, and we end with A* (said out loud as A-star) — the idea behind route planning in maps apps, game characters, and warehouse robots. We study a few algorithms deeply rather than many on the surface. Take your time here. Every module after this one is search in a different costume.",
     objectives: [
-      "Turn a real problem into a search problem: states, actions, transition model, goal test, and cost.",
-      "Explain the difference between a state, a node, and the search tree.",
-      "Judge any search algorithm on four things: completeness, optimality, time, and memory.",
-      "Trace BFS, UCS, DFS, DLS, and IDS on a small map.",
-      "Explain what makes a heuristic admissible, and design one for a new problem.",
-      "Trace A* by hand, say why it gives the cheapest path, and write it in Python.",
-      "Pick the right search variant when memory or time runs short."
+      "Explain why a goal-based agent needs search, and turn a real problem into a search problem: initial state, actions, transition model, goal test, and action cost.",
+      "Explain the difference between a state and a node, and between the state space and the search tree.",
+      "Judge a search algorithm on completeness, optimality, time, and memory — without confusing search time with path cost.",
+      "Trace BFS, DFS, and UCS by hand, showing the frontier after each step, and explain how DLS and IDS limit the depth.",
+      "Trace A* on a small map: compute g, h, and f, keep the frontier in order, and explain why it returns a cheapest path.",
+      "Decide whether a heuristic is admissible, compare two heuristics, and design one by relaxing the problem.",
+      "Choose a search algorithm from the step costs, the memory available, and whether a good heuristic exists."
     ],
     terms: [
       { term: "Search problem", meaning: "A problem described by five parts: initial state, actions, transition model, goal test, and action cost." },
-      { term: "State space", meaning: "All the situations you can reach from the start, joined by the actions that move between them. Think of it as the map." },
-      { term: "Solution", meaning: "Any path from the initial state to a goal. An optimal solution is the cheapest one." },
+      { term: "State space", meaning: "Every state that can be reached from the initial state, joined by the actions that move between them. It is produced by the five parts; think of it as the map." },
+      { term: "Solution", meaning: "Any path from the initial state to a goal. An optimal solution is a cheapest one." },
       { term: "Abstraction", meaning: "Keeping only the details of a problem that change the answer, and removing the rest." },
       { term: "Search tree", meaning: "The record of the search: a root node for the initial state, and a child node for each action tried. One state can appear in many nodes." },
       { term: "Node", meaning: "One record in the search tree: a state, the node it came from, the action taken, and the cost so far. Two nodes can hold the same state." },
-      { term: "Frontier", meaning: "The nodes you have created but not expanded yet — the edge of what the search knows." },
+      { term: "Frontier", meaning: "The nodes you have created but not expanded yet — the edge of what the search knows. A queue in BFS, a stack in DFS, a priority queue in UCS and A*." },
+      { term: "Reached table", meaning: "The states the search has reached so far, each with the best node found for it. BFS skips a state already in the table; UCS and A* replace the entry when they find a cheaper path." },
       { term: "Expand", meaning: "To apply every legal action to a node's state and create its child nodes." },
-      { term: "Graph search", meaning: "Search that keeps a reached table of the states it has reached, so it does not go back to a state unless it finds a cheaper path. Tree-like search keeps no such table." },
-      { term: "Branching factor, b", meaning: "How many actions are available at a typical state. With d, the depth of the nearest goal, and m, the deepest level, it measures the time and memory of a search." },
-      { term: "Path cost, g(n)", meaning: "The total cost of the steps taken from the start up to node n." },
+      { term: "Graph search", meaning: "Search that keeps a reached table, so it does not explore the same state again unless it finds a cheaper path to it. Tree-like search keeps no such table." },
+      { term: "Branching factor, b", meaning: "How many actions are available at a typical state. With d, the depth of the shallowest goal, and m, the deepest level, it measures the time and memory of a search." },
+      { term: "Path cost, g(n)", meaning: "The total cost of the steps taken from the start up to node n. It is a property of the answer, not of the work the algorithm did." },
+      { term: "Time complexity, space complexity", meaning: "How much work a search algorithm does (counted as nodes created or expanded) and how much it must store at once (nodes in memory). Not the same as the path cost of its answer." },
+      { term: "Complete", meaning: "The algorithm finds a solution whenever one exists — under stated conditions, such as a finite branching factor." },
+      { term: "Optimal", meaning: "The algorithm finds a cheapest solution, not just any solution. Also called cost-optimal." },
       { term: "Uninformed search", meaning: "Also called blind search. It uses only the five parts of the problem, so it cannot tell which state is closer to the goal." },
-      { term: "Informed search", meaning: "Search that uses a heuristic h(n) to decide which node to expand next." },
-      { term: "Heuristic, h(n)", say: "hyoo-RIS-tik", meaning: "A cheap guess at the cost still remaining from node n to the goal. A hint, not a fact." },
-      { term: "Admissible", meaning: "A heuristic that never guesses higher than the real remaining cost. It is the condition that makes A* return the cheapest path." },
-      { term: "Consistent", meaning: "A stronger condition: one step can never improve the guess by more than that step cost. Every consistent heuristic is also admissible." },
-      { term: "Dominance", meaning: "h₂ dominates h₁ if both are admissible and h₂(n) ≥ h₁(n) for every node. A* with h₂ never expands more nodes than A* with h₁." },
-      { term: "Complete", meaning: "The algorithm always finds a solution if one exists." },
-      { term: "Optimal", meaning: "The algorithm finds the cheapest solution, not just any solution." },
       { term: "BFS", say: "Breadth-First Search", meaning: "Expands the shallowest node first, using a queue. Finds the path with the fewest steps." },
-      { term: "DFS", say: "Depth-First Search", meaning: "Expands the deepest node first, using a stack. Very small memory, no guarantees." },
-      { term: "UCS", say: "Uniform-Cost Search", meaning: "Expands the cheapest node first, ordered by g(n). Also known as Dijkstra's algorithm." },
+      { term: "UCS", say: "Uniform-Cost Search", meaning: "Expands the node with the lowest path cost g(n) first, using a priority queue. The same idea as Dijkstra's algorithm, stopped when the goal is taken out." },
+      { term: "DFS", say: "Depth-First Search", meaning: "Expands the deepest node first, using a stack. Tree-like DFS needs very little memory, but it guarantees neither a solution nor the cheapest one." },
       { term: "DLS", say: "Depth-Limited Search", meaning: "DFS that refuses to go deeper than a fixed limit." },
-      { term: "IDS", say: "Iterative Deepening Search", meaning: "Runs DLS again and again with a limit of 0, 1, 2, 3... until the goal is found." },
-      { term: "Bidirectional search", meaning: "Searches forward from the start and backward from the goal until the two searches meet: O(b^(d/2)) instead of O(b^d)." },
+      { term: "IDS", say: "Iterative Deepening Search", meaning: "Runs DLS again and again with a limit of 0, 1, 2, 3... until the goal is found. Not the same as IDA*, which this course does not cover." },
+      { term: "Informed search", meaning: "Search that uses a heuristic h(n) to decide which node to expand next." },
+      { term: "Heuristic, h(n)", say: "hyoo-RIS-tik", meaning: "A cheap guess at the cost still remaining from node n to the goal. A hint, not a fact — and not one of the five parts of the problem." },
+      { term: "Straight-line distance", meaning: "The distance between two places in a straight line. On a road map it is never longer than the real road, so it is an admissible heuristic when the cost is distance." },
       { term: "Greedy best-first search", meaning: "Expands the node with the smallest h(n) and ignores the cost already paid. It can be fast, but it is not optimal." },
       { term: "A*", say: "A-star", meaning: "The main algorithm of this module. It expands the node with the smallest f(n) = g(n) + h(n): what you already paid, plus what you still expect to pay. The star is part of the name, not a multiplication sign — see section 3.5." },
-      { term: "IDA*", say: "I-D-A-star", meaning: "Iterative deepening A*: the same idea as IDS, but the limit is placed on f instead of on depth. Used when A* runs out of memory." },
-      { term: "Weighted A*", meaning: "A* with f(n) = g(n) + W·h(n), where W > 1. It expands fewer nodes, and the path it finds costs at most W times the cheapest." },
-      { term: "Beam search", meaning: "Keeps only the k best nodes in the frontier and throws the rest away. Fast and small, with no guarantees." }
+      { term: "Admissible", meaning: "A heuristic that never guesses higher than the real remaining cost. It is the condition that makes A* return a cheapest path." },
+      { term: "Consistent", meaning: "A stronger condition: one step can never improve the guess by more than that step costs, h(n) ≤ c + h(n'). Every consistent heuristic is also admissible." },
+      { term: "Misplaced tiles, h₁", meaning: "An 8-puzzle heuristic: the number of tiles that are not in their correct square." },
+      { term: "Manhattan distance, h₂", meaning: "An 8-puzzle heuristic: for every tile, its horizontal plus vertical distance from its correct square, added up." },
+      { term: "Dominance", meaning: "h₂ dominates h₁ if both are admissible and h₂(n) ≥ h₁(n) for every node. With consistent heuristics, A* with h₂ expands no more nodes than A* with h₁, apart from ties." },
+      { term: "Relaxed problem", meaning: "The same problem with some rules removed, so it is easier to solve exactly. Its exact cost is an admissible heuristic for the real problem." }
     ],
     sections: [
       {
-        title: "What does it mean to \"search\" for a solution?",
+        title: "Why AI Needs Search and Problem Formulation",
         body: `
 <p>You already do this every day. You just do not call it search.</p>
 
@@ -1206,63 +1208,54 @@ const COURSE_CONTENT = [
   <p>That is search. The <em>junctions</em> are states. The <em>roads</em> are actions. Jeddah is the goal. The kilometres you drive are the cost.</p>
 </div>
 
-<p>An agent uses search when it knows <strong>what it wants</strong> but not <strong>how to get there</strong>. It is not learning, and it is not guessing. It is trying possibilities in a smart order, and remembering what it already tried.</p>
+<h3>Why does artificial intelligence need search?</h3>
 
-<p>In Module 2 this agent had a name: a <strong>goal-based agent</strong>. This module works in the setting described in section 2.4 &mdash; fully observable, deterministic, static, discrete, single-agent &mdash; and sequential, because a plan is a sequence of actions. So the agent can plan the whole route before it takes the first step.</p>
+<p>In Module 2 we met the <strong>goal-based agent</strong>: it knows what it wants. Knowing the goal is not the same as knowing how to reach it. A delivery app knows the customer's address, but it does not know in advance which sequence of roads reaches that address at the lowest cost &mdash; and with a new order every few minutes, nobody can write those sequences for it beforehand. A simple reflex agent would need a condition&ndash;action rule for every situation it could meet.</p>
+
+<p>Search solves this differently. The agent tries possible action sequences <em>in a model of the world</em>, before it takes any of them in the real world. It is not learning, and it is not guessing. It is trying possibilities in a smart order, and remembering what it already tried.</p>
+
+<div class="diagram compact">
+  <svg viewBox="0 0 320 372" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="From a goal to an action sequence: goal, problem formulation, search, action sequence">
+    <rect x="6" y="6" width="308" height="68" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+    <text x="160" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="var(--accent)">1. Goal</text>
+    <text x="160" y="59" text-anchor="middle" font-size="15" fill="var(--ink-soft)">deliver the order to the customer</text>
+    <path d="M160 74 V 94" stroke="var(--ink-mute)" stroke-width="2"/><path d="M153 90 L160 100 L167 90 z" fill="var(--ink-mute)"/>
+    <rect x="6" y="98" width="308" height="68" rx="8" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/>
+    <text x="160" y="127" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ink)">2. Problem formulation</text>
+    <text x="160" y="151" text-anchor="middle" font-size="15" fill="var(--ink-soft)">write the five parts of the problem</text>
+    <path d="M160 166 V 186" stroke="var(--ink-mute)" stroke-width="2"/><path d="M153 182 L160 192 L167 182 z" fill="var(--ink-mute)"/>
+    <rect x="6" y="190" width="308" height="68" rx="8" fill="var(--bg-elev)" stroke="var(--gold)" stroke-width="2"/>
+    <text x="160" y="219" text-anchor="middle" font-size="18" font-weight="700" fill="var(--gold)">3. Search</text>
+    <text x="160" y="243" text-anchor="middle" font-size="15" fill="var(--ink-soft)">try action sequences in the model</text>
+    <path d="M160 258 V 278" stroke="var(--ink-mute)" stroke-width="2"/><path d="M153 274 L160 284 L167 274 z" fill="var(--ink-mute)"/>
+    <rect x="6" y="282" width="308" height="68" rx="8" fill="var(--bg-elev)" stroke="var(--teal)" stroke-width="2"/>
+    <text x="160" y="311" text-anchor="middle" font-size="18" font-weight="700" fill="var(--teal)">4. Action sequence</text>
+    <text x="160" y="335" text-anchor="middle" font-size="15" fill="var(--ink-soft)">only now does the agent act</text>
+  </svg>
+  <div class="diagram-caption">Steps 2 and 3 happen inside the agent, before it moves. Only the sequence found in step 4 is carried out in the world.</div>
+</div>
+
+<p>This module works in the setting described in section 2.4 &mdash; fully observable, deterministic, static, discrete, single-agent &mdash; and sequential, because a plan is a sequence of actions. So the agent can plan the whole route before it takes the first step.</p>
 
 <h3>Five things define any search problem</h3>
 
-<p>Every search problem in this course — every single one — is described by these five parts:</p>
+<p>We will use one small example for the rest of this module. A restaurant, <strong>S</strong>, must send an order to a customer, <strong>G</strong>. The driver can pass through four other places, A, B, C and D. The numbers on the roads are kilometres, and every road can be driven in both directions.</p>
+
+<div class="tracer tracer-static" data-tracer='{"viewBox":"0 0 480 310","label":"Delivery map: restaurant S, customer G, places A, B, C, D, roads in km","weighted":true,"start":"S","goal":"G","nodes":{"S":{"x":60,"y":150,"h":5,"hAt":[-30,36]},"A":{"x":185,"y":62,"h":4,"hAt":[0,-32]},"B":{"x":200,"y":178,"h":3,"hAt":[-36,34]},"C":{"x":330,"y":80,"h":3,"hAt":[0,-32]},"D":{"x":100,"y":262,"h":6,"hAt":[44,6]},"G":{"x":420,"y":170,"h":0,"hAt":[0,40]}},"edges":[["S","A",3,0,-12,-6],["S","B",2,0,0,-12],["S","D",3,0,-14,0],["A","C",2,0,0,-12],["B","C",4,0,12,4],["B","G",7,60,0,14],["C","G",3,0,12,-6]],"static":true,"showH":false}' data-caption="The delivery map. S is the restaurant and G is the customer. Six places, seven two-way roads, distances in km. Not drawn to scale."></div>
 
 <ol class="steps">
-  <li><strong>Initial state</strong><p>Where the agent starts. For example: <em>In(Makkah)</em>.</p></li>
-  <li><strong>Actions</strong><p>What the agent can do from that state. From Makkah: take Highway 40, take Highway 80, and so on.</p></li>
-  <li><strong>Transition model</strong><p>Where each action takes you: RESULT(In(Makkah), Highway 80) = In(Jeddah). These first three parts together form the <strong>state space</strong>: every state you can reach from the start.</p></li>
-  <li><strong>Goal test</strong><p>A check that answers "am I done?" Sometimes it is one state (<em>In(Jeddah)</em>). Sometimes it is a condition ("no student has two exams at the same time").</p></li>
-  <li><strong>Action cost</strong><p>What one step costs: kilometres, minutes, or riyals. Add the costs along a path and you get the <strong>path cost</strong>. A <strong>solution</strong> is any path from start to goal. An <strong>optimal solution</strong> is the cheapest one. The action cost is where the performance measure from Module 2 enters a search problem.</p></li>
+  <li><strong>Initial state</strong><p>Where the agent starts: <em>In(S)</em>, the driver is at the restaurant.</p></li>
+  <li><strong>Actions</strong><p>What the agent can do in a state. In <em>In(S)</em>: drive to A, drive to B, or drive to D. The actions depend on the state: from D, the only road leads back to S.</p></li>
+  <li><strong>Transition model</strong><p>Where each action leads: RESULT(<em>In(S)</em>, <em>Go(A)</em>) = <em>In(A)</em>.</p></li>
+  <li><strong>Goal test</strong><p>A check that answers "am I done?" Here it is one state, <em>In(G)</em>. Sometimes it is a condition instead, such as "no student has two exams at the same time".</p></li>
+  <li><strong>Action cost</strong><p>What one step costs: here, the kilometres of the road. Add the costs along a path and you get the <strong>path cost</strong>. A <strong>solution</strong> is any path from the initial state to a goal; an <strong>optimal solution</strong> is a cheapest one. The action cost is where the performance measure from Module 2 enters a search problem.</p></li>
 </ol>
 
-<div class="diagram">
-  <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <text x="350" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.08em">ONE PROBLEM, FIVE PARTS</text>
-
-    <circle cx="90" cy="115" r="30" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
-    <text x="90" y="120" text-anchor="middle" font-size="12" fill="var(--accent)" font-weight="700">START</text>
-    <text x="90" y="168" text-anchor="middle" font-size="11" fill="var(--ink-mute)">initial state</text>
-
-    <path d="M125 115 H 235" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#ar1)"/>
-    <text x="180" y="103" text-anchor="middle" font-size="11" fill="var(--ink-soft)">action</text>
-    <text x="180" y="136" text-anchor="middle" font-size="11" fill="var(--gold)">cost 90</text>
-
-    <circle cx="270" cy="115" r="30" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/>
-    <text x="270" y="120" text-anchor="middle" font-size="12" fill="var(--ink)">state 1</text>
-
-    <path d="M305 115 H 415" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#ar1)"/>
-    <text x="360" y="103" text-anchor="middle" font-size="11" fill="var(--ink-soft)">action</text>
-    <text x="360" y="136" text-anchor="middle" font-size="11" fill="var(--gold)">cost 420</text>
-
-    <circle cx="450" cy="115" r="30" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/>
-    <text x="450" y="120" text-anchor="middle" font-size="12" fill="var(--ink)">state 2</text>
-
-    <path d="M485 115 H 595" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#ar1)"/>
-    <text x="540" y="103" text-anchor="middle" font-size="11" fill="var(--ink-soft)">action</text>
-    <text x="540" y="136" text-anchor="middle" font-size="11" fill="var(--gold)">cost 430</text>
-
-    <circle cx="630" cy="115" r="30" fill="var(--accent-soft)" stroke="var(--teal)" stroke-width="3"/>
-    <text x="630" y="120" text-anchor="middle" font-size="12" fill="var(--teal)" font-weight="700">GOAL</text>
-    <text x="630" y="168" text-anchor="middle" font-size="11" fill="var(--ink-mute)">goal test passes</text>
-
-    <text x="350" y="206" text-anchor="middle" font-size="12" fill="var(--ink-soft)">the transition model says which circle each arrow reaches</text>
-    <text x="350" y="230" text-anchor="middle" font-size="13" fill="var(--ink)" font-weight="600">path cost = 90 + 420 + 430 = 940 km</text>
-
-    <defs>
-      <marker id="ar1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
-        <path d="M0,0 L0,6 L9,3 z" fill="var(--ink-mute)"/>
-      </marker>
-    </defs>
-  </svg>
-  <div class="diagram-caption">A solution is a path. An optimal solution is the cheapest path.</div>
+<div class="definition">
+  <p>The five parts are a <strong>description</strong> that you write. The <strong>state space</strong> is what that description produces: every state that can be reached from the initial state, joined by the actions that move between them. The delivery map is small enough to draw its state space: six places and seven roads. The 8-puzzle below has 181,440 reachable states, and nobody draws them &mdash; a search algorithm discovers them one at a time.</p>
 </div>
+
+<p>Notice what is <em>not</em> on the list: a heuristic. A guess about how far the goal is (section 3.5) is extra knowledge that some algorithms bring to the problem. The problem itself is complete without it.</p>
 
 <h3>Writing the problem down is the hard part</h3>
 
@@ -1272,7 +1265,7 @@ const COURSE_CONTENT = [
   <p><strong>States:</strong> which tile is in which square. <strong>Initial state:</strong> any arrangement. <strong>Actions:</strong> move the <em>empty square</em> left, right, up, or down. (Nice trick: describing the empty square is much easier than describing eight tiles.) <strong>Transition model:</strong> the empty square swaps with its neighbour. <strong>Goal test:</strong> tiles in order 1&ndash;8. <strong>Action cost:</strong> 1 per move.</p>
 </div>
 
-<p>Look at what we removed: the colour of the tiles, how long a move takes, whether your hand shakes. This is called <strong>abstraction</strong> — keeping only the details that change the answer. It is the skill that makes AI possible.</p>
+<p>Look at what we removed: the colour of the tiles, how long a move takes, whether your hand shakes. This is called <strong>abstraction</strong> — keeping only the details that change the answer. You will use it in every module of this course.</p>
 
 <div class="aha">
   <div class="aha-label">Formulation is the hard part</div>
@@ -1301,12 +1294,12 @@ const COURSE_CONTENT = [
         return 1
 </code></pre>
 
-<p class="reading-time">6 min read</p>
+<p class="reading-time">8 min read</p>
         `
       },
 
       {
-        title: "The search tree: how the computer explores",
+        title: "State Spaces, Search Trees, and Frontiers",
         body: `
 <p>The state space is the map of the world. The <strong>search tree</strong> is the record of your walk through it. They are not the same thing, and the difference matters in every algorithm that follows.</p>
 
@@ -1327,7 +1320,7 @@ const COURSE_CONTENT = [
 <ol class="steps">
   <li><strong>Start with a frontier</strong><p>The <strong>frontier</strong> holds nodes we have created but not expanded yet. It is the edge of what we know. At the start it holds only the first node.</p></li>
   <li><strong>Take one node out of the frontier</strong><p><em>This is the only line that changes between algorithms.</em> Which node you take — the oldest, the newest, the cheapest, the most promising — decides whether you are running BFS, DFS, UCS, or A*.</p></li>
-  <li><strong>Test it</strong><p>If it is a goal, follow the parent links back to the start and return the path.</p></li>
+  <li><strong>Test it</strong><p>If it is a goal, follow the parent links back to the start and return the path. (BFS can safely test earlier, when a node is created &mdash; section 3.3.)</p></li>
   <li><strong>Expand it</strong><p>To <strong>expand</strong> a node means to make its children: apply every legal action, and add the new nodes to the frontier.</p></li>
   <li><strong>Repeat</strong><p>Until you find a goal, or the frontier is empty — which means there is no solution.</p></li>
 </ol>
@@ -1360,7 +1353,27 @@ const COURSE_CONTENT = [
     <text x="525" y="272" text-anchor="middle" font-size="11" fill="var(--gold)" font-weight="600">D appears twice — two paths, two nodes</text>
     <text x="525" y="300" text-anchor="middle" font-size="11" fill="var(--ink-soft)">5 nodes — grows as you explore</text>
   </svg>
-  <div class="diagram-caption">One state can live in many nodes. That is why we must watch for repeated states.</div>
+  <div class="diagram-caption">One state can live in many nodes. The state space has 4 states; this search tree already has 5 nodes, and it can keep growing.</div>
+</div>
+
+<div class="table-figure">
+  <p class="table-hint">Swipe sideways to see the whole table &rarr;</p>
+  <div class="table-scroll">
+    <table class="env-table" style="white-space: normal;">
+      <thead>
+        <tr><th scope="col">Word</th><th scope="col">What it is</th><th scope="col">On the delivery map</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">State</th><td>a situation in the world</td><td><em>In(C)</em>: the driver is at C</td></tr>
+        <tr><th scope="row">Node</th><td>one record in the search tree: a state, its parent node, the action, the path cost</td><td>"C, reached from A, cost so far 5"</td></tr>
+        <tr><th scope="row">State space</th><td>every reachable state and the actions between them; fixed before the search starts</td><td>6 places, 7 roads</td></tr>
+        <tr><th scope="row">Search tree</th><td>the record of the paths the algorithm has tried; it grows during the search</td><td>C can appear twice: through A (cost 5) and through B (cost 6)</td></tr>
+        <tr><th scope="row">Frontier</th><td>nodes created but not expanded yet</td><td>the places waiting to be explored</td></tr>
+        <tr><th scope="row">Reached table</th><td>the states reached so far, with the best node found for each</td><td>C &rarr; the node with cost 5</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="diagram-caption">Six words that are easy to mix up. The first two are about one situation; the next four are about the whole search.</div>
 </div>
 
 <h3>The repeated-state problem</h3>
@@ -1373,22 +1386,24 @@ const COURSE_CONTENT = [
     <h4>Remember nothing</h4>
     <ul>
       <li>Needs no table of visited states</li>
-      <li>Can loop forever if the map has cycles</li>
+      <li>Can loop forever: a two-way road is already a cycle, A &rarr; B &rarr; A &rarr; B ...</li>
       <li>Repeats the same work many times</li>
-      <li>Fine when the map has no cycles</li>
+      <li>Fine only when no state can be reached in two ways</li>
     </ul>
   </div>
   <div class="ba-col after">
     <span class="ba-label">Graph search</span>
-    <h4>Keep a <em>reached</em> table of visited states</h4>
+    <h4>Keep a <em>reached table</em></h4>
     <ul>
-      <li>Does not go back to a state it already reached, unless the new path is cheaper</li>
-      <li>Always stops, if the map is finite</li>
+      <li>Records every state reached, with the best node found for it</li>
+      <li>Always stops, if the state space is finite</li>
       <li>Costs memory: one entry per state reached</li>
       <li>The default choice in this course</li>
     </ul>
   </div>
 </div>
+
+<p>What happens when graph search reaches a state that is already in the reached table? It depends on the algorithm. <strong>BFS</strong> simply skips it: the first path BFS finds to a state has the fewest steps. <strong>UCS</strong> and <strong>A*</strong> compare costs: if the new path is cheaper, they replace the entry in the table and put the new node in the frontier (sections 3.4 and 3.5).</p>
 
 <pre><code class="language-python">from collections import deque
 
@@ -1418,16 +1433,16 @@ def path(node):
   <p>A map has 6 places. You run a tree-like search and your search tree now holds 40 nodes. Is something broken?</p>
   <details>
     <summary>Show answer</summary>
-    <p><strong>No, this is normal.</strong> Without a reached table, the same place is created again on every path that leads to it, so nodes are many more than states. It wastes work, but the answer is still correct. Graph search would keep the expansions at 6.</p>
+    <p><strong>No, this is normal.</strong> Without a reached table, the same place is created again on every path that leads to it, so nodes are many more than states. It wastes work, but the answer is still correct. Graph search would expand at most 6 nodes, one per state.</p>
   </details>
 </div>
 
-<p class="reading-time">7 min read</p>
+<p class="reading-time">8 min read</p>
         `
       },
 
       {
-        title: "How do we judge a search algorithm?",
+        title: "Evaluating Search Algorithms",
         body: `
 <p>Four questions. Always the same four. Ask them about every algorithm in the rest of this course.</p>
 
@@ -1445,21 +1460,37 @@ def path(node):
     </div>
     <div class="app-card">
       <span class="app-icon">⏱️</span>
-      <strong>Time</strong>
-      <p>How many nodes does it create before it finishes?</p>
+      <strong>Time complexity</strong>
+      <p>How much work does it do? We count the nodes it creates (or expands) before it finishes.</p>
     </div>
     <div class="app-card">
       <span class="app-icon">💾</span>
-      <strong>Memory</strong>
-      <p>How many nodes must it hold at the same time?</p>
+      <strong>Space complexity</strong>
+      <p>How much memory does it need? We count the nodes it must hold at the same time.</p>
     </div>
   </div>
 </div>
 
 <div class="analogy">
-  <span class="analogy-label">Judging a delivery driver in Jeddah</span>
-  <p><em>Complete</em> = he always delivers in the end. <em>Optimal</em> = he takes the shortest route. <em>Time</em> = how long he drives. <em>Memory</em> = how many boxes fit in his car at once.</p>
-  <p>A driver who always takes the shortest route is still useless if his car holds three boxes and you have a thousand.</p>
+  <span class="analogy-label">The dispatcher and the driver</span>
+  <p>At a delivery company, a dispatcher plans each route on a whiteboard, and then a driver drives it. The algorithm is the dispatcher, not the driver. <em>Complete</em>: whenever a route exists, the dispatcher finds one. <em>Optimal</em>: the route found is a shortest one. <em>Time</em>: how many partial routes the dispatcher writes down and checks before answering. <em>Memory</em>: how many partial routes must stay on the whiteboard at the same time.</p>
+  <p>A dispatcher who always finds the shortest route is still useless if the whiteboard is full before the answer comes.</p>
+</div>
+
+<div class="table-figure">
+  <div class="table-scroll">
+    <table class="env-table" style="white-space: normal;">
+      <thead>
+        <tr><th scope="col">Do not mix</th><th scope="col">What it measures</th><th scope="col">Delivery example</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Path cost</th><td>the answer: the cost of the solution path</td><td>the 8 km the driver will drive</td></tr>
+        <tr><th scope="row">Search time</th><td>the algorithm's work: nodes created or expanded</td><td>the partial routes the dispatcher checked</td></tr>
+        <tr><th scope="row">Search memory</th><td>what the algorithm stores while it works: the frontier and the reached table</td><td>the partial routes on the whiteboard at once</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="diagram-caption">The driving distance says nothing about how long the dispatcher took to find it.</div>
 </div>
 
 <h3>Three letters you need</h3>
@@ -1472,7 +1503,7 @@ def path(node):
 
 <div class="diagram">
   <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <text x="350" y="20" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">SEARCHING TO DEPTH d, WITH b = 10</text>
+    <text x="350" y="20" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">THE DEEPEST LEVEL ALONE: b<tspan dy="-5" font-size="10">d</tspan><tspan dy="5"> NODES, b = 10</tspan></text>
     <line x1="60" y1="40" x2="640" y2="40" stroke="var(--rule)"/>
     <text x="90" y="60" font-size="12" fill="var(--ink-soft)" font-weight="600">depth</text>
     <text x="230" y="60" font-size="12" fill="var(--ink-soft)" font-weight="600">nodes</text>
@@ -1487,28 +1518,28 @@ def path(node):
 
     <text x="90" y="125" font-size="12" fill="var(--ink)">8</text>
     <text x="230" y="125" font-size="12" fill="var(--ink)">100 million</text>
-    <text x="400" y="125" font-size="12" fill="var(--gold)">2 minutes</text>
+    <text x="400" y="125" font-size="12" fill="var(--gold)">100 seconds</text>
     <text x="540" y="125" font-size="12" fill="var(--gold)">10 gigabytes</text>
 
     <text x="90" y="155" font-size="12" fill="var(--ink)">12</text>
     <text x="230" y="155" font-size="12" fill="var(--ink)">1 trillion</text>
-    <text x="400" y="155" font-size="12" fill="var(--accent)">13 days</text>
+    <text x="400" y="155" font-size="12" fill="var(--accent)">about 12 days</text>
     <text x="540" y="155" font-size="12" fill="var(--accent)">100 terabytes</text>
 
     <text x="90" y="185" font-size="12" fill="var(--ink)">16</text>
     <text x="230" y="185" font-size="12" fill="var(--ink)">10 quadrillion</text>
-    <text x="400" y="185" font-size="12" fill="var(--accent)">350 years</text>
+    <text x="400" y="185" font-size="12" fill="var(--accent)">about 300 years</text>
     <text x="540" y="185" font-size="12" fill="var(--accent)">1 exabyte</text>
 
     <line x1="60" y1="200" x2="640" y2="200" stroke="var(--rule)"/>
     <text x="350" y="228" text-anchor="middle" font-size="12" fill="var(--ink-soft)">Four more levels of depth = ten thousand times more work.</text>
   </svg>
-  <div class="diagram-caption">Rounded numbers. The shape is the lesson, not the digits.</div>
+  <div class="diagram-caption">One microsecond and 100 bytes per node, counting only the b<sup>d</sup> nodes of the deepest level. Rounded numbers: the shape is the lesson, not the digits.</div>
 </div>
 
 <div class="aha">
   <div class="aha-label">Memory fails first</div>
-  <p>Look at depth 12 again. Waiting 13 days is painful but possible. Finding 100 terabytes of RAM is not. With these numbers, an algorithm that needs exponential <em>memory</em> fails long before one that needs exponential <em>time</em>. This one fact explains why iterative deepening and IDA* exist, and why repeating work can be a smart trade.</p>
+  <p>Look at depth 12 again. Waiting 12 days is painful but possible. Finding 100 terabytes of RAM is not. With these numbers, an algorithm that needs exponential <em>memory</em> fails long before one that needs exponential <em>time</em>. This one fact explains why iterative deepening (section 3.4) exists, and why repeating work can be a smart trade.</p>
 </div>
 
 <div class="callout note">
@@ -1519,14 +1550,14 @@ def path(node):
   </div>
 </div>
 
-<p class="reading-time">5 min read</p>
+<p class="reading-time">6 min read</p>
         `
       },
 
       {
-        title: "Uninformed search strategies",
+        title: "Uninformed Search Algorithms",
         body: `
-<p><strong>Uninformed</strong> (also called blind) means the algorithm knows nothing except the five parts of the problem. It cannot tell which state looks closer to the goal. The only thing it chooses is <em>the order of exploring</em> — and that one choice gives us five different algorithms. A sixth, bidirectional search, changes where the search starts.</p>
+<p><strong>Uninformed</strong> (also called blind) means the algorithm knows nothing except the five parts of the problem. It cannot tell which state looks closer to the goal. The only thing it chooses is <em>the order of exploring</em> — and that one choice gives us five different algorithms.</p>
 
 <div class="analogy">
   <span class="analogy-label">Looking for one office inside a large building</span>
@@ -1536,44 +1567,7 @@ def path(node):
 
 <h3>1. Breadth-First Search (BFS)</h3>
 
-<p>Expand the <strong>shallowest</strong> node first. The frontier is a queue: first in, first out.</p>
-
-<div class="diagram">
-  <svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <text x="175" y="20" text-anchor="middle" font-size="13" fill="var(--accent)" font-weight="700">BFS — level by level</text>
-    <text x="525" y="20" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="700">DFS — branch by branch</text>
-    <line x1="350" y1="30" x2="350" y2="225" stroke="var(--rule)"/>
-
-    <g stroke="var(--ink-mute)" stroke-width="1.5">
-      <line x1="175" y1="62" x2="120" y2="115"/><line x1="175" y1="62" x2="230" y2="115"/>
-      <line x1="120" y1="133" x2="85" y2="180"/><line x1="120" y1="133" x2="155" y2="180"/>
-      <line x1="230" y1="133" x2="200" y2="180"/><line x1="230" y1="133" x2="265" y2="180"/>
-    </g>
-    <circle cx="175" cy="50" r="14" fill="var(--accent)"/><text x="175" y="55" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">1</text>
-    <circle cx="120" cy="124" r="14" fill="var(--accent)"/><text x="120" y="129" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">2</text>
-    <circle cx="230" cy="124" r="14" fill="var(--accent)"/><text x="230" y="129" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">3</text>
-    <circle cx="85" cy="192" r="14" fill="var(--accent)"/><text x="85" y="197" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">4</text>
-    <circle cx="155" cy="192" r="14" fill="var(--accent)"/><text x="155" y="197" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">5</text>
-    <circle cx="200" cy="192" r="14" fill="var(--accent)"/><text x="200" y="197" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">6</text>
-    <circle cx="265" cy="192" r="14" fill="var(--accent)"/><text x="265" y="197" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">7</text>
-
-    <g stroke="var(--ink-mute)" stroke-width="1.5">
-      <line x1="525" y1="62" x2="470" y2="115"/><line x1="525" y1="62" x2="580" y2="115"/>
-      <line x1="470" y1="133" x2="435" y2="180"/><line x1="470" y1="133" x2="505" y2="180"/>
-      <line x1="580" y1="133" x2="550" y2="180"/><line x1="580" y1="133" x2="615" y2="180"/>
-    </g>
-    <circle cx="525" cy="50" r="14" fill="var(--gold)"/><text x="525" y="55" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">1</text>
-    <circle cx="470" cy="124" r="14" fill="var(--gold)"/><text x="470" y="129" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">2</text>
-    <circle cx="580" cy="124" r="14" fill="var(--gold)"/><text x="580" y="129" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">5</text>
-    <circle cx="435" cy="192" r="14" fill="var(--gold)"/><text x="435" y="197" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">3</text>
-    <circle cx="505" cy="192" r="14" fill="var(--gold)"/><text x="505" y="197" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">4</text>
-    <circle cx="550" cy="192" r="14" fill="var(--gold)"/><text x="550" y="197" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">6</text>
-    <circle cx="615" cy="192" r="14" fill="var(--gold)"/><text x="615" y="197" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">7</text>
-
-    <text x="350" y="232" text-anchor="middle" font-size="11" fill="var(--ink-soft)">the numbers show the order of expansion</text>
-  </svg>
-  <div class="diagram-caption">Same tree, same five parts. Only the rule for taking a node out changed.</div>
-</div>
+<p><strong>Rule:</strong> take out the <strong>shallowest</strong> node — the one created earliest. <strong>Frontier:</strong> a queue, first in, first out.</p>
 
 <pre><code class="language-python">from collections import deque
 
@@ -1594,13 +1588,17 @@ def breadth_first_search(problem):
     return None                         # no solution
 </code></pre>
 
-<p><strong>Result:</strong> complete. Optimal <em>only when every step costs the same</em>. Time and memory are both $O(b^d)$. The memory is what kills it: BFS must hold a whole level of the tree at once.</p>
+<p>On the delivery map, BFS returns S &rarr; B &rarr; G: two roads, the fewest possible, but 9 km.</p>
 
-<h3>2. Uniform-Cost Search (UCS), also known as Dijkstra's algorithm</h3>
+<p><strong>Result:</strong> complete when the branching factor $b$ is finite. Optimal <em>only when every step costs the same</em> &mdash; on the delivery map S &rarr; A &rarr; C &rarr; G is only 8 km. Time and memory are both $O(b^d)$. The memory is what hurts most: BFS must hold a whole level of the tree at once.</p>
 
-<p>Expand the node with the <strong>lowest cost so far, g(n)</strong>. The frontier is a priority queue ordered by $g$.</p>
+<h3>2. Uniform-Cost Search (UCS)</h3>
+
+<p><strong>Rule:</strong> take out the node with the <strong>lowest path cost so far, g(n)</strong>. <strong>Frontier:</strong> a priority queue ordered by $g$. It is the same idea as Dijkstra's algorithm, stopped as soon as the goal is taken out.</p>
 
 <p>BFS counts steps. UCS counts cost. As soon as your steps have different costs — 8 km of open highway against 3 km of heavy city traffic — the BFS answer stops being the best one, and UCS becomes the right tool.</p>
+
+<p>On the delivery map, UCS takes out S (0), then B (2), then A (3) and D (3), then C (5), and finally G (8). Along the way it creates G with $g = 9$ when it expands B &mdash; but it does not stop there. It returns S &rarr; A &rarr; C &rarr; G, 8 km.</p>
 
 <div class="callout intuition">
   <div class="callout-icon">i</div>
@@ -1610,19 +1608,25 @@ def breadth_first_search(problem):
   </div>
 </div>
 
-<p><strong>Result:</strong> complete (as long as every step costs more than zero), and always optimal. Its cost depends on the cheapest step size, so with many tiny steps it can be slower than BFS.</p>
+<p><strong>Result:</strong> complete and optimal, provided $b$ is finite and every step costs at least some fixed amount $\\varepsilon > 0$. (If step costs can shrink towards zero, UCS can spend forever on ever-cheaper steps.) Its time and memory depend on $C^*/\\varepsilon$ &mdash; the cost of the best solution divided by the smallest step cost &mdash; and are written $O(b^{1+\\lfloor C^*/\\varepsilon \\rfloor})$. With many tiny steps it can be much slower than BFS.</p>
 
 <h3>3. Depth-First Search (DFS)</h3>
 
-<p>Expand the <strong>deepest</strong> node first. The frontier is a stack: last in, first out.</p>
+<p><strong>Rule:</strong> take out the <strong>deepest</strong> node — the one created most recently. <strong>Frontier:</strong> a stack, last in, first out.</p>
 
-<p>The strong point of DFS is memory. It only remembers the current path and the unexpanded siblings along it: $O(bm)$ instead of $O(b^d)$. If the deepest path has 12 steps ($m = 12$) and $b = 10$, that is about 120 nodes, where BFS at the same depth may need a trillion.</p>
+<p>The strong point of DFS is memory. In its tree-like form it remembers only the current path and the unexpanded siblings along it: $O(bm)$ instead of $O(b^d)$. If the deepest path has 12 steps ($m = 12$) and $b = 10$, that is about 120 nodes, where BFS at the same depth may need a trillion. The saving disappears if DFS keeps a reached table of every state it has seen: the table can grow to the size of the whole state space.</p>
 
-<p><strong>Result:</strong> not optimal, and the tree-like version is not even complete — it can follow an endless branch or go around a cycle forever. Time $O(b^m)$, memory $O(bm)$.</p>
+<p><strong>Result:</strong> not optimal. Tree-like DFS is not even complete: it can go around a cycle forever. If it checks the current path for repeated states, it is complete in a finite state space &mdash; but in an infinite one it can still follow an endless branch. Time $O(b^m)$; memory $O(bm)$ for tree-like DFS.</p>
+
+<h3>BFS and DFS on the same tree</h3>
+
+<p>The two rules give very different orders. Choose an algorithm and press <em>Next step</em>; watch the frontier.</p>
+
+<div class="tracer" data-tracer='{"viewBox":"0 0 400 240","label":"A tree with root A; B and C below it; D, E under B; F, G under C. The goal is F.","directed":true,"weighted":false,"start":"A","goal":"F","algos":["bfs","dfs"],"nodes":{"A":{"x":200,"y":40},"B":{"x":110,"y":120},"C":{"x":290,"y":120},"D":{"x":60,"y":200},"E":{"x":160,"y":200},"F":{"x":240,"y":200},"G":{"x":340,"y":200}},"edges":[["A","B",1],["A","C",1],["B","D",1],["B","E",1],["C","F",1],["C","G",1]]}' data-caption="Same tree, same goal F. Only the rule for taking a node out changes. Switch between BFS and DFS, then step through each."></div>
 
 <h3>4. Depth-Limited Search (DLS)</h3>
 
-<p>DFS with a hard limit: never go deeper than $\\ell$ levels. This stops the endless branch, but creates a new problem — if the goal is deeper than the limit, you will never find it. Time $O(b^{\\ell})$, memory $O(b\\ell)$.</p>
+<p><strong>Rule:</strong> DFS with a hard limit: never go deeper than $\\ell$ levels. <strong>Frontier:</strong> a stack. This stops the endless branch, but creates a new problem — if the goal is deeper than the limit, you will never find it. Time $O(b^{\\ell})$, memory $O(b\\ell)$.</p>
 
 <p>Sometimes the problem gives you a good limit for free. On a map with 20 cities, no sensible route uses more than 19 roads.</p>
 
@@ -1630,7 +1634,7 @@ def breadth_first_search(problem):
 
 <p>The clever one. Run DLS with limit 0. Fail. Run it again with limit 1. Fail. Limit 2. Limit 3. Keep going until you find the goal.</p>
 
-<p>A natural objection: <em>"but you throw away all the work every time!"</em> Here are the real numbers, for $b = 10$ and a goal at depth 5:</p>
+<p>A natural objection: <em>"but you throw away all the work every time!"</em> Here are the real numbers, for $b = 10$ and a goal at depth 5, not counting the start node:</p>
 
 <div class="diagram">
   <svg viewBox="0 0 700 190" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
@@ -1652,66 +1656,30 @@ def breadth_first_search(problem):
 
 <div class="aha">
   <div class="aha-label">Why the repeated work does not matter</div>
-  <p>In a tree with branching factor 10, the deepest level holds about 90% of all nodes. Repeating levels 0 to 4 costs you about one eighth of a single pass over level 5. You pay about 11% more time and save about 99.9% of the memory. That is why IDS — not BFS — is the standard blind search when you do not know how deep the goal is.</p>
+  <p>In a tree with branching factor 10, the deepest level holds about 90% of all nodes. Levels 1 to 4 are generated again and again, and all that repetition costs about one eighth of a single pass over level 5. You pay about 11% more time and save about 99.9% of the memory. That is why IDS — not BFS — is the standard blind search when you do not know how deep the goal is.</p>
 </div>
 
-<p><strong>Result:</strong> complete. Optimal when all steps cost the same. Time $O(b^d)$, memory $O(bd)$. It has the memory of DFS and the guarantees of BFS.</p>
-
-<h3>6. Bidirectional Search</h3>
-
-<p>Search forward from the start and backward from the goal until the two searches meet. Two trees of depth $d/2$ are much smaller than one tree of depth $d$: $O(b^{d/2})$ instead of $O(b^d)$. With $b = 10$ and $d = 12$, that is two million nodes instead of a trillion.</p>
-
-<p><strong>The catch:</strong> you must be able to search backwards, you need one known goal state (not just a condition), and detecting the meeting point is harder than it sounds.</p>
+<p><strong>Result:</strong> complete when $b$ is finite. Optimal when all steps cost the same. Time $O(b^d)$, memory $O(bd)$. It has the memory of DFS and the guarantees of BFS.</p>
 
 <h3>The table to memorise</h3>
 
-<div class="diagram">
-  <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <line x1="30" y1="40" x2="670" y2="40" stroke="var(--rule)"/>
-    <text x="40" y="30" font-size="12" fill="var(--ink-soft)" font-weight="700">Algorithm</text>
-    <text x="200" y="30" font-size="12" fill="var(--ink-soft)" font-weight="700">Complete?</text>
-    <text x="320" y="30" font-size="12" fill="var(--ink-soft)" font-weight="700">Optimal?</text>
-    <text x="460" y="30" font-size="12" fill="var(--ink-soft)" font-weight="700">Time</text>
-    <text x="570" y="30" font-size="12" fill="var(--ink-soft)" font-weight="700">Memory</text>
-
-    <text x="40" y="70" font-size="12" fill="var(--ink)" font-weight="600">BFS</text>
-    <text x="200" y="70" font-size="12" fill="var(--teal)">Yes</text>
-    <text x="320" y="70" font-size="12" fill="var(--gold)">If equal costs</text>
-    <text x="460" y="70" font-size="12" fill="var(--ink)">O(b^d)</text>
-    <text x="570" y="70" font-size="12" fill="var(--accent)">O(b^d)</text>
-
-    <text x="40" y="100" font-size="12" fill="var(--ink)" font-weight="600">UCS</text>
-    <text x="200" y="100" font-size="12" fill="var(--teal)">Yes</text>
-    <text x="320" y="100" font-size="12" fill="var(--teal)">Yes, always</text>
-    <text x="460" y="100" font-size="12" fill="var(--ink)">depends on costs</text>
-    <text x="570" y="100" font-size="12" fill="var(--accent)">large</text>
-
-    <text x="40" y="130" font-size="12" fill="var(--ink)" font-weight="600">DFS (tree-like)</text>
-    <text x="200" y="130" font-size="12" fill="var(--accent)">No</text>
-    <text x="320" y="130" font-size="12" fill="var(--accent)">No</text>
-    <text x="460" y="130" font-size="12" fill="var(--ink)">O(b^m)</text>
-    <text x="570" y="130" font-size="12" fill="var(--teal)">O(bm)</text>
-
-    <text x="40" y="160" font-size="12" fill="var(--ink)" font-weight="600">DLS</text>
-    <text x="200" y="160" font-size="12" fill="var(--gold)">If limit ≥ d</text>
-    <text x="320" y="160" font-size="12" fill="var(--accent)">No</text>
-    <text x="460" y="160" font-size="12" fill="var(--ink)">O(b^ℓ)</text>
-    <text x="570" y="160" font-size="12" fill="var(--teal)">O(bℓ)</text>
-
-    <text x="40" y="190" font-size="12" fill="var(--ink)" font-weight="600">IDS</text>
-    <text x="200" y="190" font-size="12" fill="var(--teal)">Yes</text>
-    <text x="320" y="190" font-size="12" fill="var(--gold)">If equal costs</text>
-    <text x="460" y="190" font-size="12" fill="var(--ink)">O(b^d)</text>
-    <text x="570" y="190" font-size="12" fill="var(--teal)">O(bd)</text>
-
-    <text x="40" y="220" font-size="12" fill="var(--ink)" font-weight="600">Bidirectional</text>
-    <text x="200" y="220" font-size="12" fill="var(--teal)">Yes</text>
-    <text x="320" y="220" font-size="12" fill="var(--gold)">If equal costs</text>
-    <text x="460" y="220" font-size="12" fill="var(--teal)">O(b^(d/2))</text>
-    <text x="570" y="220" font-size="12" fill="var(--gold)">O(b^(d/2))</text>
-    <line x1="30" y1="236" x2="670" y2="236" stroke="var(--rule)"/>
-  </svg>
-  <div class="diagram-caption">b = branching factor · d = depth of nearest goal · m = deepest level · ℓ = depth limit</div>
+<div class="table-figure">
+  <p class="table-hint">Swipe sideways to see the whole table &rarr;</p>
+  <div class="table-scroll">
+    <table class="env-table">
+      <thead>
+        <tr><th scope="col">Algorithm</th><th scope="col">Takes out</th><th scope="col">Frontier</th><th scope="col">Complete?</th><th scope="col">Optimal?</th><th scope="col">Time</th><th scope="col">Memory</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">BFS</th><td>shallowest</td><td>queue</td><td>Yes¹</td><td>If equal costs</td><td>O(b<sup>d</sup>)</td><td>O(b<sup>d</sup>)</td></tr>
+        <tr><th scope="row">UCS</th><td>lowest g(n)</td><td>priority queue</td><td>Yes²</td><td>Yes²</td><td>O(b<sup>1+⌊C*/ε⌋</sup>)</td><td>O(b<sup>1+⌊C*/ε⌋</sup>)</td></tr>
+        <tr><th scope="row">DFS, tree-like</th><td>deepest</td><td>stack</td><td>No³</td><td>No</td><td>O(b<sup>m</sup>)</td><td>O(bm)</td></tr>
+        <tr><th scope="row">DLS</th><td>deepest, down to ℓ</td><td>stack</td><td>If ℓ ≥ d</td><td>No</td><td>O(b<sup>ℓ</sup>)</td><td>O(bℓ)</td></tr>
+        <tr><th scope="row">IDS</th><td>DLS with ℓ = 0, 1, 2, …</td><td>stack</td><td>Yes¹</td><td>If equal costs</td><td>O(b<sup>d</sup>)</td><td>O(bd)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="diagram-caption">¹ when b is finite · ² when b is finite and every step costs at least ε &gt; 0 · ³ yes in a finite state space if it checks the current path for repeated states. b = branching factor · d = depth of the shallowest goal · m = deepest level · ℓ = depth limit · C* = cost of the best solution.</div>
 </div>
 
 <div class="checkpoint">
@@ -1723,12 +1691,12 @@ def breadth_first_search(problem):
   </details>
 </div>
 
-<p class="reading-time">10 min read</p>
+<p class="reading-time">12 min read</p>
         `
       },
 
       {
-        title: "Informed search: greedy best-first and A*",
+        title: "Informed Search and A*",
         body: `
 <p>Every algorithm so far has been blind. Now we give the agent a hint.</p>
 
@@ -1745,16 +1713,19 @@ def breadth_first_search(problem):
 
 <p>How do we use the hint? There are two ways. The first is quick, but it can return an expensive path. The second is A*.</p>
 
+
 <h3>Greedy best-first search: follow your nose</h3>
 
-<p>Always expand the node that <em>looks</em> closest to the goal. Order the frontier by $h(n)$ only, and ignore what you already spent.</p>
+<p><strong>Rule:</strong> take out the node with the smallest $h(n)$ &mdash; the one that <em>looks</em> closest to the goal &mdash; and ignore what you already spent. <strong>Frontier:</strong> a priority queue ordered by $h$.</p>
 
 <div class="analogy">
   <span class="analogy-label">Walking towards a mountain you can see</span>
   <p>You always take the path that points most directly at the peak. It works well — until your path meets a deep valley, while the path that curved away had a bridge. Greedy search never looks back at what it spent. It only looks forward at what it hopes is left.</p>
 </div>
 
-<p><strong>Result:</strong> can be fast with a good heuristic, but <em>not optimal</em>. In its tree-like form it is not even complete, because it can bounce between two states that both look good. Worst case $O(b^m)$.</p>
+<p>On the delivery map, B looks closest to the customer: its straight-line distance is only 3 km. Greedy search drives to B, finds G there with $h = 0$, and returns S &rarr; B &rarr; G: 9 km. The road from B to G winds for 7 km, and greedy search never checked.</p>
+
+<p><strong>Result:</strong> can be fast with a good heuristic, but <em>not optimal</em>. In its tree-like form it is not even complete, because it can bounce between two states that both look good; with a reached table it is complete in a finite state space. Worst case $O(b^m)$.</p>
 
 <h3>A*: the algorithm you will remember from this course</h3>
 
@@ -1767,21 +1738,151 @@ def breadth_first_search(problem):
 </div>
 
 <div class="definition">
-  <p>A* expands the node with the smallest $f(n) = g(n) + h(n)$, where $g(n)$ is the cost <em>already paid</em> to reach $n$, and $h(n)$ is the guess for the cost <em>still to pay</em>. So $f(n)$ is a guess at the total cost of the best solution passing through $n$.</p>
+  <p>A* expands the node with the smallest $f(n) = g(n) + h(n)$, where $g(n)$ is the cost <em>already paid</em> to reach $n$, and $h(n)$ is the guess for the cost <em>still to pay</em>. So $f(n)$ is a guess at the total cost of the best solution passing through $n$. <strong>Frontier:</strong> a priority queue ordered by $f$.</p>
 </div>
+
+<p>Before the formula, one number. In the delivery map, the node for B has $g = 2$: the driver has already driven 2 km. Its $h = 3$: the customer is 3 km away in a straight line. So $f = 2 + 3 = 5$: "a route through B will cost at least about 5 km." Both numbers are kilometres, so adding them makes sense. If $g$ were in kilometres and $h$ in minutes, the sum would mean nothing.</p>
 
 <div class="aha">
   <div class="aha-label">A* is not really a new algorithm</div>
   <p>Set $h(n) = 0$ and A* becomes uniform-cost search. Ignore $g(n)$ and it becomes greedy search. A* is just UCS that was given a hint. The whole idea is adding one guess to one running total — and the famous guarantee comes straight from that: if the guess is never too high, then $f$ is never too high either, so A* cannot settle for an expensive goal while a cheaper one is still reachable.</p>
 </div>
 
-<h3>Worked example: Makkah to Riyadh</h3>
+<h3>Worked example: A* on the delivery map</h3>
 
-<p>A real map, with real cities. The numbers on the roads are approximate driving distances in kilometres. The number inside each circle is $h$ — the straight-line distance from that city to Riyadh, which we can compute from coordinates before the search starts.</p>
+<p>Each circle now also shows $h$: the straight-line distance in kilometres from that place to the customer. The table follows A* one step at a time. In every step A* takes out the node with the smallest $f$, tests it, and, if it is not the goal, expands it.</p>
 
+<div class="table-figure">
+  <p class="table-hint">Swipe sideways to see the whole table &rarr;</p>
+  <div class="table-scroll">
+    <table class="env-table trace-table">
+      <thead>
+        <tr><th scope="col">Step</th><th scope="col">Taken out</th><th scope="col">What A* does</th><th scope="col">Frontier after the step, smallest f first</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">0</th><td>&mdash;</td><td>Start.</td><td>S (0 + 5 = 5)</td></tr>
+        <tr><th scope="row">1</th><td>S, f = 5</td><td>Creates A, B and D.</td><td>B (2 + 3 = 5) · A (3 + 4 = 7) · D (3 + 6 = 9)</td></tr>
+        <tr><th scope="row">2</th><td>B, f = 5</td><td>Creates C with g = 6, and G with g = 9. G is the goal, but A* tests only the nodes it takes out.</td><td>A (3 + 4 = 7) · D (3 + 6 = 9) · C (6 + 3 = 9) · G (9 + 0 = 9)</td></tr>
+        <tr><th scope="row">3</th><td>A, f = 7</td><td>Reaches C again, now with g = 3 + 2 = 5, less than 6. Updates the reached table and adds the cheaper C.</td><td>C (5 + 3 = 8) · D (9) · C (9, old) · G (9)</td></tr>
+        <tr><th scope="row">4</th><td>C, f = 8</td><td>Reaches G again, now with g = 5 + 3 = 8, less than 9. Updates G.</td><td>G (8 + 0 = 8) · D (9) · C (9, old) · G (9, old)</td></tr>
+        <tr><th scope="row">5</th><td>G, f = 8</td><td>G is the goal. Return S &rarr; A &rarr; C &rarr; G, cost 8 km.</td><td>D (9) · C (9, old) · G (9, old) &mdash; never taken out</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="diagram-caption">When two nodes have the same f, the one that entered the frontier first comes out first. "Old" marks an entry whose state was later reached more cheaply.</div>
+</div>
+
+<p>Three things to notice:</p>
+
+<ol class="steps">
+  <li><strong>The goal appeared early</strong><p>G entered the frontier at step 2 with $g = 9$. Had A* tested nodes when it created them, it would have returned the 9 km route. Testing when a node is taken out gave the cheaper path through C time to arrive.</p></li>
+  <li><strong>Cheaper paths replace dearer ones</strong><p>At steps 3 and 4, A* reached C and G again more cheaply. It updated the reached table and added the new nodes. The old entries stay in the frontier; if one ever reaches the front, A* skips it.</p></li>
+  <li><strong>The hint saved work</strong><p>A* never expanded D: $f(D) = 3 + 6 = 9$ is larger than the cost of the solution, 8. Uniform-cost search, which ignores $h$, expands D before C (section 3.4).</p></li>
+</ol>
+
+<p>Now step through the same search yourself. The table above is the full record; the tracer shows one step at a time on the map.</p>
+
+<div class="tracer" data-tracer='{"viewBox":"0 0 480 310","label":"Delivery map: restaurant S, customer G, places A, B, C, D, roads in km","weighted":true,"start":"S","goal":"G","nodes":{"S":{"x":60,"y":150,"h":5,"hAt":[-30,36]},"A":{"x":185,"y":62,"h":4,"hAt":[0,-32]},"B":{"x":200,"y":178,"h":3,"hAt":[-36,34]},"C":{"x":330,"y":80,"h":3,"hAt":[0,-32]},"D":{"x":100,"y":262,"h":6,"hAt":[44,6]},"G":{"x":420,"y":170,"h":0,"hAt":[0,40]}},"edges":[["S","A",3,0,-12,-6],["S","B",2,0,0,-12],["S","D",3,0,-14,0],["A","C",2,0,0,-12],["B","C",4,0,12,4],["B","G",7,60,0,14],["C","G",3,0,12,-6]],"showH":true,"algos":["astar"]}' data-caption="Same map, now with h: the straight-line distance in km from each place to the customer, G. Press Next step to follow A*; the steps match the table above."></div>
+
+<h3>Admissible: when A* returns the cheapest path</h3>
+
+<div class="definition">
+  <p>$h(n)$ is <strong>admissible</strong> if it <em>never guesses too high</em>. The guess must be less than or equal to the real remaining cost. An admissible heuristic is an optimist: it may think the goal is nearer than it is, but never further.</p>
+</div>
+
+<div class="before-after">
+  <div class="ba-col before">
+    <span class="ba-label">Not admissible (too pessimistic)</span>
+    <h4>What goes wrong</h4>
+    <ul>
+      <li>Guesses higher than the real cost somewhere</li>
+      <li>A* may reject the true best route as "too expensive"</li>
+      <li>You may still get an answer, but not always the cheapest one</li>
+      <li>It can expand fewer nodes, and some systems accept that trade on purpose</li>
+    </ul>
+  </div>
+  <div class="ba-col after">
+    <span class="ba-label">Admissible (optimistic)</span>
+    <h4>What you gain</h4>
+    <ul>
+      <li>Never guesses higher than the real cost</li>
+      <li>A* is guaranteed to return a cheapest path</li>
+      <li>The closer the guess, the fewer nodes expanded</li>
+      <li>h(n) = 0 is admissible but gives no help — A* becomes UCS</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Consistent: the stronger version</h3>
+
+<div class="definition">
+  <p>$h$ is <strong>consistent</strong> if, for every node $n$ and every child $n'$ reached by a step of cost $c$: $h(n) \\le c + h(n')$. In words: taking one step should never improve your guess by more than that step actually cost.</p>
+</div>
+
+<p>Every consistent heuristic is also admissible. The opposite is not always true. With a consistent $h$, the first time A* takes a state out of the frontier it has already found the cheapest way there, so it never has to expand that state again. With an $h$ that is admissible but not consistent, the code below still returns a cheapest path, but it may have to expand some states a second time.</p>
+
+<p>Straight-line distance is consistent: no road from $n$ to $n'$ is shorter than the straight line between them, so $h(n) \\le c + h(n')$ always holds. Measured in kilometres, it is also admissible &mdash; which is why A* returned the cheapest route on the delivery map.</p>
+
+<h3>A* in Python</h3>
+
+<pre><code class="language-python">import heapq
+
+def a_star(problem, h):
+    """A* = best-first search using f(n) = g(n) + h(n)."""
+    start = Node(problem.initial)
+    frontier = [(h(start.state), 0, start)]   # (f, tie-breaker, node)
+    reached = {problem.initial: start}        # best node found for each state
+    counter = 0
+
+    while frontier:
+        _, _, node = heapq.heappop(frontier)
+        if node.path_cost &gt; reached[node.state].path_cost:
+            continue                          # old entry: a cheaper path was found later
+
+        if problem.is_goal(node.state):       # test on the way OUT
+            return node
+
+        for child in expand(problem, node):
+            s = child.state
+            # keep the child if it is new, or cheaper than the path we had
+            if s not in reached or child.path_cost &lt; reached[s].path_cost:
+                reached[s] = child
+                counter += 1
+                f = child.path_cost + h(s)
+                heapq.heappush(frontier, (f, counter, child))
+    return None                               # frontier empty: no solution
+</code></pre>
+
+<p>Four details make this code correct. The <code>counter</code> breaks ties in $f$: the node pushed first comes out first, which is the rule used in the table. The first check skips old entries, so a state is never expanded through a path that is already known to be too expensive. The goal test comes after the node is taken out, not when it is created. And the returned node carries its parent links, so <code>path(node)</code> from section 3.2 rebuilds the route. Run on the delivery map with the straight-line $h$, it returns the node for G with <code>path_cost</code> 8, and <code>path</code> gives the actions to A, to C, to G.</p>
+
+<h3>What A* guarantees</h3>
+
+<div class="applications">
+  <div class="app-grid">
+    <div class="app-card">
+      <span class="app-icon">✅</span>
+      <strong>Complete</strong>
+      <p>When the branching factor is finite and every step costs at least some fixed amount ε &gt; 0.</p>
+    </div>
+    <div class="app-card">
+      <span class="app-icon">🏆</span>
+      <strong>Optimal</strong>
+      <p>Under the same conditions, with an admissible h. With a consistent h, it also never has to expand a state twice.</p>
+    </div>
+    <div class="app-card">
+      <span class="app-icon">💾</span>
+      <strong>Hungry for memory</strong>
+      <p>A* keeps every node it creates. On hard problems it fills the memory before it runs out of time.</p>
+    </div>
+  </div>
+</div>
+
+<div class="checkpoint">
+  <span class="checkpoint-label">Check yourself</span>
+  <p>A real map. Road numbers are driving distances in kilometres; the number in each circle is $h$, the straight-line distance to Riyadh. Which route does greedy best-first search return, and which does A* return? For A*, compute $f$ for the first two choices out of Makkah.</p>
 <div class="diagram">
-  <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <text x="350" y="20" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">MAKKAH → RIYADH — TWO ANSWERS</text>
+  <svg viewBox="0 0 700 305" role="img" aria-label="Road map from Makkah to Riyadh with distances and straight-line values" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
+    <text x="350" y="20" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">MAKKAH → RIYADH</text>
 
     <g stroke="var(--ink-mute)" stroke-width="2" fill="none">
       <line x1="95" y1="205" x2="255" y2="85"/>
@@ -1823,130 +1924,48 @@ def breadth_first_search(problem):
     <text x="590" y="166" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">Riyadh</text>
     <text x="590" y="180" text-anchor="middle" font-size="10" fill="var(--ink-mute)">h=0</text>
 
-    <line x1="50" y1="310" x2="650" y2="310" stroke="var(--rule)"/>
-    <text x="50" y="336" font-size="12" fill="var(--gold)" font-weight="700">Greedy (h only):</text>
-    <text x="205" y="336" font-size="12" fill="var(--ink)">Makkah → Madinah → Buraydah → Riyadh</text>
-    <text x="545" y="336" font-size="12" fill="var(--gold)" font-weight="700">1460 km</text>
-    <text x="50" y="362" font-size="12" fill="var(--teal)" font-weight="700">A* (g + h):</text>
-    <text x="205" y="362" font-size="12" fill="var(--ink)">Makkah → Taif → Afif → Riyadh</text>
-    <text x="545" y="362" font-size="12" fill="var(--teal)" font-weight="700">940 km</text>
   </svg>
   <div class="diagram-caption">Road distances are approximate. Straight-line values were computed from city coordinates.</div>
+
+  <details>
+    <summary>Show answer</summary>
+    <p><strong>Greedy</strong> looks only at $h$. Madinah (714) really is closer to Riyadh in a straight line than Taif (746), so greedy goes north: Makkah &rarr; Madinah &rarr; Buraydah &rarr; Riyadh, <strong>1460 km</strong>.</p>
+    <p><strong>A*</strong> adds what it already paid. Through Taif: $g = 90$, $h = 746$, so $f = 836$. Through Madinah: $g = 450$, $h = 714$, so $f = 1164$. A* expands Taif first, then Afif ($g = 510$, $f = 510 + 391 = 901$), and creates Riyadh with $g = f = 940$. Riyadh comes out before Madinah (1164), so A* returns Makkah &rarr; Taif &rarr; Afif &rarr; Riyadh, <strong>940 km</strong>, without ever expanding Madinah.</p>
+  </details>
 </div>
 
-<p>Watch the trap. In a straight line, Madinah (714 km) really is closer to Riyadh than Taif (746 km). Greedy search looks only at that number, drives north, and ends up 520 km worse off — because the roads from Madinah to Riyadh are long, while the road from Makkah to Taif is only 90 km.</p>
-
-<p>A* does the arithmetic instead. From Makkah it compares two options:</p>
-
-<ul class="steps">
-  <li><strong>Through Taif</strong><p>$g = 90$, $h = 746$, so $f = 836$.</p></li>
-  <li><strong>Through Madinah</strong><p>$g = 450$, $h = 714$, so $f = 1164$.</p></li>
-</ul>
-
-<p>836 is smaller, so A* expands Taif first. Then Afif: $g = 90 + 420 = 510$, $f = 510 + 391 = 901$ — still smaller than Madinah's 1164, so A* expands Afif next. From Afif, Riyadh appears with $g = 940$ and $f = 940$. That is still below 1164, so A* takes it out of the frontier and returns the 940 km route. It never even expanded Madinah.</p>
-
-<h3>Admissible: when A* returns the cheapest path</h3>
-
-<div class="definition">
-  <p>$h(n)$ is <strong>admissible</strong> if it <em>never guesses too high</em>. The guess must be less than or equal to the real remaining cost. An admissible heuristic is an optimist: it may think the goal is nearer than it is, but never further.</p>
-</div>
-
-<div class="before-after">
-  <div class="ba-col before">
-    <span class="ba-label">Not admissible (too pessimistic)</span>
-    <h4>What goes wrong</h4>
-    <ul>
-      <li>Guesses higher than the real cost somewhere</li>
-      <li>A* may reject the true best route as "too expensive"</li>
-      <li>You still get an answer, but not the cheapest one</li>
-      <li>It can be faster — weighted A* (section 3.7) does this on purpose</li>
-    </ul>
-  </div>
-  <div class="ba-col after">
-    <span class="ba-label">Admissible (optimistic)</span>
-    <h4>What you gain</h4>
-    <ul>
-      <li>Never guesses higher than the real cost</li>
-      <li>A* is guaranteed to return the cheapest path</li>
-      <li>The closer the guess, the fewer nodes expanded</li>
-      <li>h(n) = 0 is admissible but gives no help — A* becomes UCS</li>
-    </ul>
-  </div>
-</div>
-
-<h3>Consistent: the stronger version</h3>
-
-<div class="definition">
-  <p>$h$ is <strong>consistent</strong> if, for every node $n$ and every child $n'$ reached by a step of cost $c$: $h(n) \\le c + h(n')$. In words: taking one step should never improve your guess by more than that step actually cost.</p>
-</div>
-
-<p>Every consistent heuristic is also admissible. The opposite is not always true. With a consistent $h$, the first time A* expands a state it has already found the cheapest way there, so it never has to go back and fix it. With an $h$ that is admissible but not consistent, the code below still returns the cheapest path, but it may have to expand some states a second time.</p>
-
-<p>Straight-line distance is consistent: no road from $n$ to $n'$ is shorter than the straight line between them, so $h(n) \\le c + h(n')$ always holds. Measured in kilometres, it is also admissible &mdash; which is why A* returned the cheapest route in the example above.</p>
-
-<h3>A* in Python</h3>
-
-<pre><code class="language-python">import heapq
-
-def a_star(problem, h):
-    """A* = best-first search using f(n) = g(n) + h(n)."""
-    start = Node(problem.initial)
-    frontier = [(h(start.state), 0, start)]   # (f, tie-breaker, node)
-    reached = {problem.initial: start}
-    counter = 0
-
-    while frontier:
-        _, _, node = heapq.heappop(frontier)
-
-        if problem.is_goal(node.state):       # test on the way OUT
-            return node
-
-        for child in expand(problem, node):
-            s = child.state
-            # keep the child if it is new, or cheaper than the path we had
-            if s not in reached or child.path_cost &lt; reached[s].path_cost:
-                reached[s] = child
-                counter += 1
-                f = child.path_cost + h(s)
-                heapq.heappush(frontier, (f, counter, child))
-    return None
-</code></pre>
-
-<h3>What A* guarantees</h3>
-
-<div class="applications">
-  <div class="app-grid">
-    <div class="app-card">
-      <span class="app-icon">✅</span>
-      <strong>Complete</strong>
-      <p>As long as the branching factor is finite and every step costs more than zero.</p>
-    </div>
-    <div class="app-card">
-      <span class="app-icon">🏆</span>
-      <strong>Optimal</strong>
-      <p>With an admissible h. With a consistent h, it also never has to expand a state twice.</p>
-    </div>
-    <div class="app-card">
-      <span class="app-icon">⚡</span>
-      <strong>The best you can do</strong>
-      <p>With a consistent h, no other optimal algorithm that searches from the start with the same h is guaranteed to expand fewer nodes.</p>
-    </div>
-    <div class="app-card">
-      <span class="app-icon">💾</span>
-      <strong>Hungry for memory</strong>
-      <p>A* keeps every node it creates. On hard problems it fills the RAM before it runs out of time.</p>
-    </div>
-  </div>
-</div>
-
-<p class="reading-time">12 min read</p>
+<p class="reading-time">14 min read</p>
         `
       },
 
       {
-        title: "Heuristic functions: where good guesses come from",
+        title: "Designing and Evaluating Heuristics",
         body: `
-<p>A* is only as good as its hint. This section is about the hints themselves: how to compare two of them, and how to invent one for a new problem.</p>
+<p>A* is only as good as its hint. This section is about the hints themselves: how to check one, how to compare two of them, and how to invent one for a new problem.</p>
+
+<h3>Is this h too high? Check it against the real cost</h3>
+
+<p>Admissibility is a promise about every node: $h(n)$ is never larger than the real cost of the cheapest path from $n$ to a goal. On a small map you can check the promise by hand. Here are the straight-line values from the delivery map, next to the real remaining cost of the cheapest road route:</p>
+
+<div class="table-figure">
+  <div class="table-scroll">
+    <table class="env-table" style="white-space: normal;">
+      <thead>
+        <tr><th scope="col">Place</th><th scope="col">h(n)</th><th scope="col">Real remaining cost</th><th scope="col">Too high?</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">S</th><td>5</td><td>8 (S &rarr; A &rarr; C &rarr; G)</td><td>No</td></tr>
+        <tr><th scope="row">A</th><td>4</td><td>5 (A &rarr; C &rarr; G)</td><td>No</td></tr>
+        <tr><th scope="row">B</th><td>3</td><td>7 (B &rarr; G, or B &rarr; C &rarr; G)</td><td>No</td></tr>
+        <tr><th scope="row">C</th><td>3</td><td>3 (C &rarr; G)</td><td>No &mdash; equal is allowed</td></tr>
+        <tr><th scope="row">D</th><td>6</td><td>11 (D &rarr; S, then 8 more)</td><td>No</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="diagram-caption">Every value is at or below the real cost, so this h is admissible.</div>
+</div>
+
+<p>Now suppose someone sets $h(B) = 8$, because "B's road to the customer is long". The real remaining cost from B is 7, and 8 is larger: this $h$ is <strong>not admissible</strong>. On this map the damage happens to be invisible, because the best route avoids B anyway. But the guarantee is gone: on another map, a guess that is too high can hide the best route.</p>
 
 <h3>Two heuristics for the 8-puzzle</h3>
 
@@ -1955,35 +1974,45 @@ def a_star(problem, h):
     <div class="app-card">
       <span class="app-icon">🔢</span>
       <strong>h₁ — misplaced tiles</strong>
-      <p>For the 8-puzzle: count the tiles that are not in the right square. Each one needs at least one move.</p>
+      <p>Count the tiles that are not in their correct square. Each one needs at least one move.</p>
     </div>
     <div class="app-card">
       <span class="app-icon">🗺️</span>
       <strong>h₂ — Manhattan distance</strong>
-      <p>For the 8-puzzle: for every tile, add its horizontal and vertical distance from its correct square. Sharper than h₁, and still never too high.</p>
+      <p>For every tile, add its horizontal and vertical distance from its correct square. Each tile needs at least that many moves.</p>
     </div>
   </div>
 </div>
 
-<h3>Dominance: when one heuristic is simply better</h3>
+<h3>Dominance: comparing two admissible heuristics</h3>
 
-<p>If $h_2(n) \\ge h_1(n)$ for every node, and both are admissible, we say $h_2$ <strong>dominates</strong> $h_1$. A* with $h_2$ never expands more nodes than A* with $h_1$. Bigger is better, as long as you stay under the real cost.</p>
+<p>If both are admissible and $h_2(n) \\ge h_1(n)$ for every node, we say $h_2$ <strong>dominates</strong> $h_1$. That is a precise statement about the two functions: $h_2$ is never smaller, and never too high.</p>
 
-<p>Russell &amp; Norvig measured this on 8-puzzle problems needing 12 moves. Iterative deepening, with no hint, creates about 3.6 million nodes. A* with $h_1$ creates about 230. A* with $h_2$ creates about 70. From no hint to a good hint: about four orders of magnitude. From $h_1$ to $h_2$: about three times fewer nodes.</p>
+<p>What does it mean for the search? With consistent heuristics, such as these two, every node that A* expands with $h_2$ is also expanded with $h_1$ &mdash; except possibly some nodes whose $f$ equals the cost of the best solution, where the order of ties decides. So A* with $h_2$ expands no more nodes than A* with $h_1$, apart from ties. It is a guarantee about the number of nodes, not about seconds: $h_2$ may cost more to compute at each node.</p>
+
+<p>How large is the difference in practice? Russell &amp; Norvig (3rd edition) report averages over 100 random 8-puzzle problems that need 12 moves: iterative deepening, with no hint, created about 3.6 million nodes; A* with $h_1$ about 230; A* with $h_2$ about 70. Your own counts will differ with the implementation and the tie-breaking rule.</p>
 
 <h3>Where do heuristics come from?</h3>
 
 <ol class="steps">
-  <li><strong>Remove a rule from the problem</strong><p>Solve an easier version exactly. If a tile could jump anywhere, the cost is the number of misplaced tiles — that is $h_1$. If a tile could slide onto a full square, the cost is the Manhattan distance — that is $h_2$. The exact cost of an easier problem is always an admissible heuristic for the real one, because every real solution also solves the easier version.</p></li>
+  <li><strong>Relax the problem: remove a rule</strong><p>A <strong>relaxed problem</strong> is the same problem with fewer rules, so it is easier to solve exactly. If a tile could jump anywhere, the exact cost is the number of misplaced tiles — that is $h_1$. If a tile could slide onto any neighbouring square, even a full one, the exact cost is the Manhattan distance — that is $h_2$. The exact cost of a relaxed problem is always an admissible heuristic for the real one, because every real solution is also a solution of the relaxed problem.</p></li>
   <li><strong>Solve part of the problem exactly</strong><p>Compute in advance the exact cost of putting tiles 1 to 4 in place, ignoring the others, and save it in a table. Then just look it up during the search.</p></li>
-  <li><strong>Take the largest of several</strong><p>If $h_a$ and $h_b$ are both admissible, then $\\max(h_a, h_b)$ is admissible too, and it is better than both. You pay to compute both, so do this only when each one is cheap.</p></li>
+  <li><strong>Take the largest of several</strong><p>If $h_a$ and $h_b$ are both admissible, then $\\max(h_a, h_b)$ is admissible too, and it dominates both. You pay to compute both, so do this only when each one is cheap.</p></li>
 </ol>
 
 <div class="callout warning">
   <div class="callout-icon">!</div>
   <div class="callout-body">
-    <div class="callout-title">A heuristic is not free</div>
+    <div class="callout-title">Accuracy against computation cost</div>
     <p>A perfect heuristic would walk you straight to the goal — but computing it exactly means solving the problem first, so you gained nothing. The real engineering question is the balance: is this guess accurate enough to be worth its cost at every node?</p>
+  </div>
+</div>
+
+<div class="callout note">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">Further exploration: learned heuristics (not in the quiz)</div>
+    <p>Some modern systems learn $h$ from data: a model is trained on problems that were already solved, and it predicts the remaining cost of new states. A learned guess can be sharp, but nothing forces it to stay at or below the real cost. It is not automatically admissible, so A*'s guarantee of a cheapest path does not come with it.</p>
   </div>
 </div>
 
@@ -1996,88 +2025,36 @@ def a_star(problem, h):
   </details>
 </div>
 
-<p class="reading-time">5 min read</p>
+<p class="reading-time">7 min read</p>
         `
       },
 
       {
-        title: "Variants of A* for limited memory and time",
+        title: "Applications of Search",
         body: `
-<p>A* is optimal and efficient, but it stores every node it creates. On a hard problem, such as the 15-puzzle, it can fill the memory long before it finishes. Each version below answers the same question in a different way: <em>what do we give up to fit in memory, or in time?</em></p>
-
-<h3>IDA* — iterative deepening on f</h3>
-
-<p>Run a depth-first search that cuts off any node whose $f$ is above a limit. If no goal is found, raise the limit to the smallest $f$ you cut off, and run again. Same idea as IDS, but the limit is on $f$ instead of depth.</p>
-
-<p><strong>You give up:</strong> some repeated work. <strong>You gain:</strong> memory drops from exponential to $O(bd)$, because only the current path is stored. This is how the 15-puzzle was first solved optimally.</p>
-
-<h3>Weighted A* — buy speed with a small, known loss</h3>
-
-<p>Use $f(n) = g(n) + W \\cdot h(n)$ with $W &gt; 1$. Making the guess bigger pushes the search straight at the goal, so it expands far fewer nodes.</p>
-
-<div class="callout intuition">
-  <div class="callout-icon">i</div>
-  <div class="callout-body">
-    <div class="callout-title">The guarantee you keep</div>
-    <p>The answer is no longer the cheapest, but the damage has a limit: the cost is at most $W$ times the best possible cost. With $W = 1.5$, the route found is at most 50% longer than the best one. That is a worst case: the route found can be much closer to the best.</p>
-  </div>
-</div>
-
-<h3>Beam search — keep only the best k</h3>
-
-<p>After each expansion, throw away everything except the $k$ best nodes in the frontier. Memory becomes constant, $O(k)$. You may throw away the only node on the path to the goal, so you lose both completeness and optimality. Speech recognition and machine translation systems have accepted this trade for decades.</p>
-
-<h3>Choosing in practice</h3>
-
-<div class="diagram">
-  <svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <line x1="30" y1="42" x2="670" y2="42" stroke="var(--rule)"/>
-    <text x="40" y="30" font-size="12" fill="var(--ink-soft)" font-weight="700">Your situation</text>
-    <text x="400" y="30" font-size="12" fill="var(--ink-soft)" font-weight="700">Use</text>
-
-    <text x="40" y="72" font-size="12" fill="var(--ink)">No heuristic, all steps cost the same</text>
-    <text x="400" y="72" font-size="12" fill="var(--accent)" font-weight="600">BFS, or IDS if memory is tight</text>
-
-    <text x="40" y="102" font-size="12" fill="var(--ink)">No heuristic, steps have different costs</text>
-    <text x="400" y="102" font-size="12" fill="var(--accent)" font-weight="600">Uniform-cost search</text>
-
-    <text x="40" y="132" font-size="12" fill="var(--ink)">Good heuristic, you need the cheapest path</text>
-    <text x="400" y="132" font-size="12" fill="var(--accent)" font-weight="600">A*</text>
-
-    <text x="40" y="162" font-size="12" fill="var(--ink)">Good heuristic, but A* fills the memory</text>
-    <text x="400" y="162" font-size="12" fill="var(--accent)" font-weight="600">IDA*</text>
-
-    <text x="40" y="192" font-size="12" fill="var(--ink)">You need an answer in 16 milliseconds (one game frame)</text>
-    <text x="400" y="192" font-size="12" fill="var(--accent)" font-weight="600">Weighted A* or beam search</text>
-    <line x1="30" y1="208" x2="670" y2="208" stroke="var(--rule)"/>
-  </svg>
-  <div class="diagram-caption">There is no "best" search algorithm. There is only the best fit for your limits.</div>
-</div>
-
-<div class="checkpoint">
-  <span class="checkpoint-label">Check yourself</span>
-  <p>Your A* pathfinder works on a small test map, but crashes with an out-of-memory error on the full game world. Give two fixes that still return a usable route, and say what each one costs you.</p>
-  <details>
-    <summary>Show answer</summary>
-    <p><strong>IDA*</strong> — keeps the cheapest path and cuts memory to the current path, but repeats work, so it costs CPU time. <strong>Weighted A*</strong> (or beam search) — expands far fewer nodes and answers fast, but the route may be longer: at most W times the best for weighted A*, with no limit for beam search. A third practical option: make the map coarser (search room to room first, then inside the chosen room).</p>
-  </details>
-</div>
-
-<p class="reading-time">5 min read</p>
-        `
-      },
-
-      {
-        title: "Applications of search",
-        body: `
-<p>Search is not only a classroom exercise. It is running right now on the phone in your pocket.</p>
+<p>Search is not only a classroom exercise. It is part of services you use every week.</p>
 
 <div class="applications">
   <div class="app-grid">
     <div class="app-card">
       <span class="app-icon">🧭</span>
-      <strong>Maps and navigation</strong>
-      <p>Your maps app runs improved versions of A* and Dijkstra over road graphs with millions of edges, and re-plans when traffic changes.</p>
+      <strong>Route planning</strong>
+      <p>Maps apps find routes over road graphs with millions of edges, using improved versions of Dijkstra's algorithm and A*, and plan again when traffic changes.</p>
+    </div>
+    <div class="app-card">
+      <span class="app-icon">🚚</span>
+      <strong>Delivery services</strong>
+      <p>Delivery apps in Saudi cities decide which driver takes which order, and in which order to visit the stops: a search over possible routes and orders.</p>
+    </div>
+    <div class="app-card">
+      <span class="app-icon">📅</span>
+      <strong>Scheduling</strong>
+      <p>Assigning exams to rooms and time slots at a university is a search through a huge space of possible timetables.</p>
+    </div>
+    <div class="app-card">
+      <span class="app-icon">🤖</span>
+      <strong>Warehouse robots</strong>
+      <p>Robots in large warehouses search for a path to the shelf they need that avoids collisions with shelves and with other robots.</p>
     </div>
     <div class="app-card">
       <span class="app-icon">🕋</span>
@@ -2085,63 +2062,74 @@ def a_star(problem, h):
       <p>Planning safe walking routes and gate assignments for very large crowds is a search over paths with capacity limits.</p>
     </div>
     <div class="app-card">
-      <span class="app-icon">🎮</span>
-      <strong>Game characters</strong>
-      <p>A game character that walks around an obstacle to reach you can find its way with A* on a navigation mesh: a map of the places where it can walk.</p>
-    </div>
-    <div class="app-card">
-      <span class="app-icon">🤖</span>
-      <strong>Robots and self-driving</strong>
-      <p>Warehouse robots and self-driving cars search for a path that reaches the target without collisions.</p>
-    </div>
-    <div class="app-card">
-      <span class="app-icon">🚚</span>
-      <strong>Delivery and logistics</strong>
-      <p>Delivery companies search the space of possible routes and orders to cut driving time and fuel.</p>
-    </div>
-    <div class="app-card">
-      <span class="app-icon">📅</span>
-      <strong>Exam timetables</strong>
-      <p>Assigning exams to rooms and time slots at a university is a search through a huge space of possible timetables.</p>
-    </div>
-    <div class="app-card">
-      <span class="app-icon">🌐</span>
-      <strong>Network routing</strong>
-      <p>Internet routing protocols such as OSPF run Dijkstra to build their forwarding tables.</p>
-    </div>
-    <div class="app-card">
       <span class="app-icon">🧠</span>
       <strong>Assistants that plan their own steps</strong>
       <p>What industry calls <em>agentic AI</em> (Module 2) are systems that pursue a goal with little step-by-step human direction — and choosing their sequence of steps is a search problem.</p>
     </div>
-    <div class="app-card">
-      <span class="app-icon">🧩</span>
-      <strong>Puzzles and proofs</strong>
-      <p>Rubik's cube solvers, Sudoku solvers, and automatic theorem provers are all search with strong heuristics.</p>
-    </div>
   </div>
+</div>
+
+<h3>Choosing a search algorithm</h3>
+
+<p>Three questions decide most choices in this module: do all steps cost the same, is memory tight, and do you have a good heuristic?</p>
+
+<div class="table-figure">
+  <p class="table-hint">Swipe sideways to see the whole table &rarr;</p>
+  <div class="table-scroll">
+    <table class="env-table" style="white-space: normal;">
+      <thead>
+        <tr><th scope="col">Your situation</th><th scope="col">Choose</th><th scope="col">Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">All steps cost the same, enough memory</th><td>BFS</td><td>Fewest steps is then the cheapest path.</td></tr>
+        <tr><th scope="row">All steps cost the same, memory is tight, depth unknown</th><td>IDS</td><td>The guarantees of BFS with the memory of DFS.</td></tr>
+        <tr><th scope="row">A safe depth limit is known in advance</th><td>DLS</td><td>The limit stops endless branches.</td></tr>
+        <tr><th scope="row">Steps have different costs, no heuristic</th><td>UCS</td><td>Takes out the lowest path cost first.</td></tr>
+        <tr><th scope="row">Steps have different costs, an admissible heuristic exists</th><td>A*</td><td>Still a cheapest path; with a consistent h it never expands more nodes than UCS, apart from ties.</td></tr>
+        <tr><th scope="row">Any path will do, quickly, and a heuristic exists</th><td>Greedy best-first</td><td>Follows h only: fast, but with no guarantee of a cheapest path.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="diagram-caption">There is no "best" search algorithm. There is only the best fit for the costs, the memory, and the knowledge you have.</div>
 </div>
 
 <h3>The whole module in one paragraph</h3>
 
-<p>Describe your problem with five parts. Explore it with a frontier, and remember the states you reached. Judge every algorithm on completeness, optimality, time, and memory — and expect memory to be the limit that stops you. With no hint, use BFS or UCS when you can afford the memory, and IDS when you cannot. With a hint, add it to the cost you already paid, and you have A*, which returns the cheapest path whenever the hint is never too high. When A* is too slow or too big, trade something away: time with IDA* (to save memory), optimality with weighted A*, and both completeness and optimality with beam search.</p>
-
-<div class="aha">
-  <div class="aha-label">Where this takes you next</div>
-  <p>Every remaining module is this module in a costume. Local search (Module 4) focuses on improving candidate solutions rather than finding paths to goals, so it usually does not keep the path that led to an answer. Some of its methods work with a single candidate; others keep a population of candidates. Adversarial search (Module 5) searches a tree where an opponent chooses every second move. Constraint satisfaction (Module 6) searches partial assignments, and its heuristics choose which variable to try next. Logical agents (Module 7) search a space of conclusions instead of a space of places.</p>
-</div>
+<p>Describe your problem with five parts. Explore it with a frontier, and remember the states you reached. Judge every algorithm on completeness, optimality, time, and memory — and expect memory to be the limit that stops you. With no hint, use BFS when all steps cost the same, UCS when they do not, and IDS when memory is tight. With a hint, add it to the cost you already paid, and you have A*, which returns a cheapest path whenever the hint is never too high.</p>
 
 <div class="checkpoint">
   <span class="checkpoint-label">Check yourself</span>
-  <p>You are assigning 400 exams to rooms and time slots at the university, with rules about room capacity and students who must not have two exams at once. What are the five parts here — and what makes this different from finding a route?</p>
+  <p>You are assigning 400 exams to rooms and time slots at the university. No student may have two exams at the same time, and you would like as few students as possible to have two exams on the same day. Write the five parts if you build the timetable one exam at a time. Then ask: does the order in which you placed the exams matter to anyone?</p>
   <details>
     <summary>Show answer</summary>
-    <p><strong>States:</strong> partial timetables (some exams placed, some not). <strong>Actions:</strong> place the next exam in a legal room and slot. <strong>Transition model:</strong> the timetable with that exam added. <strong>Goal test:</strong> all exams placed and no rule broken. <strong>Cost:</strong> a thing to improve (Module 2) among the legal timetables — fewer exam days, or less walking between rooms. Notice that this cost belongs to the final timetable, not to the steps.</p>
-    <p>The difference: here <em>the path does not matter</em>. Nobody cares in which order you placed the exams, only what the final timetable looks like. That single observation is what leads to Modules 4 and 6.</p>
+    <p><strong>As a path search.</strong> <strong>States:</strong> partial timetables (some exams placed, some not). <strong>Actions:</strong> place the next exam in a legal room and slot. <strong>Transition model:</strong> the timetable with that exam added. <strong>Goal test:</strong> all exams placed and no hard requirement broken. <strong>Action cost:</strong> what each placement adds to the thing to improve (Module 2) — for example, one point for each student who now has two exams on the same day.</p>
+    <p>With that cost, the path cost is the score of the finished timetable, and UCS or A* would find a cheapest sequence of placements. That is already optimization: path search can aim at the best answer too.</p>
+    <p><strong>But the order does not matter to anyone.</strong> Students see only the final timetable. When only the final result counts, we can stop building paths and work directly with complete timetables, improving them one change at a time.</p>
   </details>
 </div>
 
-<p class="reading-time">6 min read</p>
+<div class="callout note">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">Further exploration: AI search and search engines (not in the quiz)</div>
+    <p>The word <em>search</em> has a second meaning in computing. This module searches for a <em>sequence of actions</em> that reaches a goal. A search engine performs <em>information retrieval</em>: it looks for <em>documents</em> that are relevant to a query.</p>
+    <ul>
+      <li><strong>Input.</strong> AI search: a problem &mdash; initial state, actions, goal. Information retrieval: a query &mdash; words or a question.</li>
+      <li><strong>Output.</strong> AI search: a path, that is, a sequence of actions. Information retrieval: a ranked list of documents.</li>
+      <li><strong>Judged by.</strong> AI search: reaching the goal, and the path cost. Information retrieval: how relevant the top results are.</li>
+      <li><strong>Example.</strong> AI search: S &rarr; A &rarr; C &rarr; G, 8 km. Information retrieval: the university pages about exam rules.</li>
+    </ul>
+    <p><em>Semantic search</em> ranks documents by meaning rather than by exact words, by comparing number vectors (embeddings) of the query and of each document. <em>Retrieval-augmented generation</em> (RAG) joins retrieval and text generation: a retrieval step finds relevant passages, and a large language model writes an answer from them. Neither plans a sequence of actions, so neither is the search of this module.</p>
+  </div>
+</div>
+
+<div class="aha">
+  <div class="aha-label">Where this takes you next</div>
+  <p>What if we only care about the quality of the final solution, not the path used to construct it? That question opens Module 4, local search and optimization. Local search improves candidate solutions instead of finding paths to a goal, so it usually does not keep the path that led to an answer.</p>
+  <p>The later modules reuse this module too. Adversarial search (Module 5) searches a tree where an opponent chooses every second move, and constraint satisfaction (Module 6) searches partial assignments, like the timetable above.</p>
+</div>
+
+<p class="reading-time">7 min read</p>
         `
       }
     ],
@@ -2154,63 +2142,71 @@ def a_star(problem, h):
           "<strong>Transition model</strong> — where each action leads",
           "<strong>Goal test</strong> — how to know you are done",
           "<strong>Action cost</strong> — the price of one step; add them for the path cost",
-          "<strong>Solution</strong> = any path from start to goal · <strong>optimal solution</strong> = the cheapest one"
+          "<strong>Solution</strong> = any path from start to goal · <strong>optimal solution</strong> = a cheapest one",
+          "A <strong>heuristic</strong> is not one of the five parts: it is extra knowledge for the solver"
+        ]
+      },
+      {
+        group: "Three numbers not to mix",
+        items: [
+          "<strong>Path cost</strong> — the cost of the answer (the 8 km the driver drives)",
+          "<strong>Search time</strong> — the algorithm's work: nodes created or expanded",
+          "<strong>Search memory</strong> — what it stores at once: frontier and reached table"
         ]
       },
       {
         group: "Formulas to memorise",
         items: [
           "<code>g(n)</code> = cost already paid from the start to n",
-          "<code>h(n)</code> = guessed cost from n to the goal",
+          "<code>h(n)</code> = guessed cost from n to the goal, in the same unit as g",
           "<code>f(n) = g(n) + h(n)</code> — this is A*",
           "<code>h(n) = 0</code> → A* becomes UCS",
           "ignore <code>g(n)</code> → A* becomes greedy search",
           "Admissible: <code>h(n) ≤ real remaining cost</code>",
           "Consistent: <code>h(n) ≤ c + h(n')</code>",
-          "Dominance: both admissible and <code>h₂(n) ≥ h₁(n)</code> → A* with h₂ expands no more nodes",
-          "Weighted A*: <code>f(n) = g(n) + W·h(n)</code> → cost at most W × the cheapest"
+          "Dominance: both admissible and <code>h₂(n) ≥ h₁(n)</code> → A* with h₂ expands no more nodes, apart from ties"
         ]
       },
       {
         group: "Which algorithm, when",
         items: [
-          "Equal step costs, no hint → <strong>BFS</strong>",
+          "Equal step costs, enough memory → <strong>BFS</strong>",
+          "Equal step costs, memory is tight, depth unknown → <strong>IDS</strong>",
           "Different step costs, no hint → <strong>UCS</strong>",
-          "Memory is tight, depth unknown → <strong>IDS</strong>",
-          "Good hint, need cheapest path → <strong>A*</strong>",
-          "A* fills the memory → <strong>IDA*</strong>",
-          "Answer needed in milliseconds → <strong>weighted A*</strong> or <strong>beam search</strong>"
+          "Admissible hint, need a cheapest path → <strong>A*</strong>",
+          "Any path, quickly, with a hint → <strong>greedy best-first</strong> (no guarantee)"
         ]
       },
       {
         group: "Complexity table",
         items: [
-          "BFS — complete; optimal if equal costs; time and memory <code>O(b^d)</code>",
-          "UCS — complete; always optimal; cost depends on the smallest step",
-          "DFS — not complete (tree-like), not optimal; time <code>O(b^m)</code>, memory <code>O(bm)</code>",
-          "DLS — complete only if limit ≥ d; time <code>O(b^ℓ)</code>, memory <code>O(bℓ)</code>",
-          "IDS — complete; optimal if equal costs; time <code>O(b^d)</code>, memory <code>O(bd)</code>",
-          "Bidirectional — <code>O(b^(d/2))</code> instead of <code>O(b^d)</code>"
+          "BFS — queue; complete if b is finite; optimal if equal costs; time and memory <code>O(b^d)</code>",
+          "UCS — priority queue by g; complete and optimal if b is finite and every step costs at least ε &gt; 0",
+          "DFS — stack; tree-like: not complete, not optimal; time <code>O(b^m)</code>, memory <code>O(bm)</code>",
+          "DLS — complete only if ℓ ≥ d; time <code>O(b^ℓ)</code>, memory <code>O(bℓ)</code>",
+          "IDS — complete if b is finite; optimal if equal costs; time <code>O(b^d)</code>, memory <code>O(bd)</code>"
+        ]
+      },
+      {
+        group: "A* on the delivery map",
+        items: [
+          "Takes out S (f 5), B (f 5), A (f 7), C (f 8), then G (f 8)",
+          "G is created at step 2 with g = 9, but is not returned: the goal is tested when taken out",
+          "C and G are reached again more cheaply; the old entries are skipped",
+          "D is never expanded: f(D) = 9 is more than the solution cost, 8",
+          "<strong>Answer: S → A → C → G, 8 km.</strong> Greedy and BFS both return S → B → G, 9 km"
         ]
       },
       {
         group: "Mistakes that cost marks",
         items: [
           "Saying BFS is always optimal — it is not, unless all steps cost the same",
+          "Calling the driving distance the search time — path cost belongs to the answer, search time to the algorithm",
           "Testing the goal when a node is <em>created</em> in UCS or A* instead of when it is <em>taken out</em>",
           "Confusing a state with a node: one state can appear in many nodes",
-          "Using an average speed to turn distance into time — it breaks admissibility; use the maximum speed",
+          "Giving O(bm) memory to a DFS that keeps a reached table of every state",
+          "Adding g in kilometres to h in minutes — g and h must use the same unit",
           "Forgetting the reached table and then wondering why the search never stops"
-        ]
-      },
-      {
-        group: "The Makkah → Riyadh example",
-        items: [
-          "Greedy uses h only → Madinah looks nearer (714 &lt; 746) → 1460 km",
-          "A* uses g + h → Taif f = 90 + 746 = 836, Madinah f = 450 + 714 = 1164",
-          "A* expands Taif, then Afif (f = 901), then reaches Riyadh at f = 940",
-          "<strong>A* answer: 940 km. Greedy answer: 1460 km.</strong>",
-          "Lesson: a good-looking guess is not enough — you must count what you already spent"
         ]
       }
     ],
@@ -2271,6 +2267,7 @@ def a_star(problem, h):
       { term: "Random-restart hill climbing", meaning: "Running hill climbing many times from new random starting solutions and keeping the best result. With success probability p per run, about 1/p runs are needed on average." },
       { term: "Stopping criterion", meaning: "The rule that ends a search loop: no neighbour is better (hill climbing), the step is tiny or a step limit is reached (gradient descent), or the best fitness stops improving (genetic algorithm)." },
       { term: "Simulated annealing", say: "a-NEE-ling", meaning: "Optional reading. A variant of hill climbing that sometimes accepts a worse neighbour on purpose, often at first and rarely later, to escape a local optimum." },
+      { term: "Nature-inspired optimization", meaning: "Optimization methods that take their main idea from a process in nature: biological evolution (genetic algorithms), swarms (particle swarm and ant colony optimization) or physical annealing (simulated annealing). Some keep a population and some keep one solution at a time; a natural origin does not make a method better." },
       { term: "Genetic algorithm", meaning: "Population-based optimization: score the population with a fitness function, select parents, apply crossover and mutation, and repeat with the new generation." },
       { term: "Population", meaning: "The group of candidate solutions a genetic algorithm holds at one time. Each round of the cycle produces a new generation." },
       { term: "Chromosome (individual)", meaning: "How one candidate solution is written in a genetic algorithm, often as a string such as 1010. One member of the population is called an individual." },
@@ -2751,10 +2748,49 @@ def a_star(problem, h):
         body: `
 <p><em>What if we explore several candidate solutions at once, instead of improving only one?</em> This is the population-based side of the comparison in section 4.1.</p>
 
-<div class="analogy">
-  <span class="analogy-label">Breeding date palms</span>
-  <p>A farmer crosses a palm with excellent fruit and a palm that survives any heat, hoping for offspring with the good traits of both. Most offspring are ordinary. A few are better than either parent, and those become the parents of the next generation.</p>
+<div class="callout note">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">Nature-Inspired Optimization: Learning from Nature</div>
+    <p>Some optimization methods take their main idea from a process in nature. This is called <strong>nature-inspired optimization</strong>. Three examples, each from a different source:</p>
+    <ul>
+      <li>Genetic algorithms (GA) take their idea from biological evolution: fitter individuals are more likely to pass their parts on to the next generation.</li>
+      <li>Particle swarm optimization (PSO) and ant colony optimization (ACO) take theirs from swarm intelligence: many simple members, such as birds in a flock or ants leaving trails, share what they find.</li>
+      <li>Simulated annealing (SA) takes its idea from physical annealing, where metal cooled slowly settles well (the optional box in section 4.2).</li>
+    </ul>
+    <p>Nature-inspired does not mean population-based. GA, PSO and ACO keep a population of candidate solutions; simulated annealing improves one solution at a time. So two separate questions describe a method: <em>how many candidate solutions does it hold</em> (section 4.1), and <em>where did its idea come from</em>? A natural origin does not make a method better: like any method, it is judged by how well it fits the problem.</p>
+  </div>
 </div>
+
+<div class="diagram">
+  <svg viewBox="0 0 700 232" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Three sources of inspiration: evolutionary (genetic algorithms, population-based, studied in this section), swarm (particle swarm and ant colony optimization, population-based), and physics-inspired (simulated annealing, single-solution).">
+    <text x="350" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">NATURE-INSPIRED OPTIMIZATION: THREE SOURCES</text>
+    <rect x="16" y="48" width="208" height="150" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/>
+    <text x="120" y="74" text-anchor="middle" font-size="12" fill="var(--ink-mute)" font-weight="700" letter-spacing="0.06em">EVOLUTIONARY</text>
+    <text x="120" y="96" text-anchor="middle" font-size="11" fill="var(--ink-soft)">inspired by biological evolution</text>
+    <text x="120" y="126" text-anchor="middle" font-size="13" fill="var(--accent)" font-weight="700">Genetic algorithm (GA)</text>
+    <rect x="60" y="164" width="120" height="22" rx="11" fill="none" stroke="var(--teal)" stroke-width="1.5"/>
+    <text x="120" y="179" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">population-based</text>
+    <text x="120" y="218" text-anchor="middle" font-size="11" fill="var(--accent)" font-weight="700">studied in this section</text>
+    <rect x="246" y="48" width="208" height="150" rx="10" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+    <text x="350" y="74" text-anchor="middle" font-size="12" fill="var(--ink-mute)" font-weight="700" letter-spacing="0.06em">SWARM</text>
+    <text x="350" y="96" text-anchor="middle" font-size="11" fill="var(--ink-soft)">inspired by flocks and ant colonies</text>
+    <text x="350" y="126" text-anchor="middle" font-size="13" fill="var(--ink)" font-weight="700">Particle swarm (PSO)</text><text x="350" y="146" text-anchor="middle" font-size="13" fill="var(--ink)" font-weight="700">Ant colony (ACO)</text>
+    <rect x="290" y="164" width="120" height="22" rx="11" fill="none" stroke="var(--teal)" stroke-width="1.5"/>
+    <text x="350" y="179" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">population-based</text>
+    <text x="350" y="218" text-anchor="middle" font-size="11" fill="var(--ink-mute)" font-weight="400">not studied in detail</text>
+    <rect x="476" y="48" width="208" height="150" rx="10" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+    <text x="580" y="74" text-anchor="middle" font-size="12" fill="var(--ink-mute)" font-weight="700" letter-spacing="0.06em">PHYSICS-INSPIRED</text>
+    <text x="580" y="96" text-anchor="middle" font-size="11" fill="var(--ink-soft)">inspired by metal cooling slowly</text>
+    <text x="580" y="126" text-anchor="middle" font-size="13" fill="var(--ink)" font-weight="700">Simulated annealing (SA)</text>
+    <rect x="520" y="164" width="120" height="22" rx="11" fill="none" stroke="var(--gold)" stroke-width="1.5"/>
+    <text x="580" y="179" text-anchor="middle" font-size="11" fill="var(--gold)" font-weight="700">single-solution</text>
+    <text x="580" y="218" text-anchor="middle" font-size="11" fill="var(--ink-mute)" font-weight="400">optional box in 4.2</text>
+  </svg>
+  <div class="diagram-caption">Each family takes its idea from a different part of nature. The label under each one answers the other question: how many candidates it holds.</div>
+</div>
+
+<p>This section studies one of these methods in detail: the genetic algorithm.</p>
 
 <div class="definition">
   <p>A <strong>genetic algorithm</strong> keeps a <strong>population</strong> of candidate solutions. Each candidate is written as a <strong>chromosome</strong>, often a string such as <code>1010</code>; one member of the population is called an individual. A <strong>fitness function</strong> scores each chromosome, and higher fitness means better.</p>
@@ -3141,7 +3177,8 @@ gradient_descent(lambda x: 2 * (x - 3), x=0)   # about 2.996
         items: [
           "<strong>Hill climbing</strong> — single-solution: move to the best neighbour; stop when none is better",
           "<strong>Genetic algorithm</strong> — population-based: fitness → selection → crossover → mutation → next generation",
-          "<strong>Gradient descent</strong> — continuous: <code>x ← x − α·f′(x)</code>"
+          "<strong>Gradient descent</strong> — continuous: <code>x ← x − α·f′(x)</code>",
+          "<strong>Nature-inspired optimization</strong> — a source of ideas, not a type: GA and swarms keep a population; simulated annealing keeps one solution"
         ]
       },
       {
