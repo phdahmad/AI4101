@@ -2415,7 +2415,14 @@ a.lf-card:hover { transform: translateY(-2px); border-color: var(--accent); }
   align-self: start;
 }
 @media (max-width: 1000px) {
-  .sidebar { position: fixed; overflow-y: auto; max-height: none; }
+  /* The drawer must fill the screen exactly, or it grows with its content
+     and can't scroll (the rule above sets top: 108px for desktop). */
+  .sidebar {
+    position: fixed; top: 0; bottom: 0;
+    height: 100vh; height: 100dvh; max-height: none;
+    overflow-y: auto; overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* =========================================================
