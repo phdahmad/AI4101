@@ -618,9 +618,9 @@ const COURSE_CONTENT = [
       { term: "Sensor", meaning: "The channel through which the agent perceives its environment: a camera, a thermometer, a microphone — or, for a software agent, the chat input that receives messages or the interface that reads a database. The sensor is the channel, not the information it brings in: the camera is the sensor, the image is the percept." },
       { term: "Action", meaning: "What the agent does to its environment through its actuators: opening a valve, turning a wheel, sending a message, booking a room." },
       { term: "Actuator", say: "AK-choo-ay-tor", meaning: "The channel that carries out an action: a motor, a valve, a screen — or, for a software agent, the chat window that sends a reply or the interface that writes to a database or calls an API. The actuator is the channel, not the action itself." },
-      { term: "Rational agent", meaning: "An agent that chooses, for each percept sequence, the action expected to maximise its performance measure, given what it has perceived and what it knows. Rational does not mean perfect or always successful." },
+      { term: "Rational agent", meaning: "An agent that chooses, for each percept sequence, the action expected to maximize its performance measure, given what it has perceived and what it knows. Rational does not mean perfect or always successful." },
       { term: "Autonomy", meaning: "How far an agent relies on its own percepts and experience, rather than only on the knowledge its designer built in. Learning is what makes it possible." },
-      { term: "Performance measure", meaning: "How the agent's success is evaluated. It is rarely a single number: some parts are hard requirements, some are things to improve, and some pull against each other. An agent built to maximise it will optimise exactly what you write." },
+      { term: "Performance measure", meaning: "How the agent's success is evaluated. It is rarely a single number: some parts are hard requirements, some are things to improve, and some pull against each other. An agent built to maximize it will optimize exactly what you write." },
       { term: "Hard requirement", meaning: "A rule that must always be true. A solution that breaks it is not accepted, however good it is in other ways. Example: no student has two exams at the same time. Compare with a thing to improve: the fewer rooms, the better. Module 6 calls these hard constraints." },
       { term: "Thing to improve", meaning: "A part of P where more (or less) is better, but no exact value is required. Example: exams spread as evenly as possible." },
       { term: "Environment", meaning: "The same idea as in Module 1 — what lies outside the agent and can affect it or be affected by its actions." },
@@ -746,7 +746,7 @@ const COURSE_CONTENT = [
 <p>Students often think a rational agent is one that always gets a good result. That is not the definition, and the difference matters.</p>
 
 <div class="definition">
-  <p>A <strong>rational agent</strong> chooses, for each percept sequence, the action that is <em>expected</em> to maximise its <strong>performance measure</strong>, given what it has perceived and what it knows.</p>
+  <p>A <strong>rational agent</strong> chooses, for each percept sequence, the action that is <em>expected</em> to maximize its <strong>performance measure</strong>, given what it has perceived and what it knows.</p>
 </div>
 
 <div class="analogy">
@@ -763,7 +763,7 @@ const COURSE_CONTENT = [
   <div class="callout-icon">!</div>
   <div class="callout-body">
     <div class="callout-title">The classic trap</div>
-    <p>Reward a cleaning robot for the amount of dust collected, and a clever agent learns to dump the dust back on the floor and collect it again. It scores brilliantly and cleans nothing. The agent did not cheat: it optimised exactly what you wrote. Measure the <em>clean floor</em>, not the <em>dust collected</em>.</p>
+    <p>Reward a cleaning robot for the amount of dust collected, and a clever agent learns to dump the dust back on the floor and collect it again. It scores brilliantly and cleans nothing. The agent did not cheat: it optimized exactly what you wrote. Measure the <em>clean floor</em>, not the <em>dust collected</em>. This is the lesson of section 1.6: a system pursues the objective it was given, not the one you had in mind.</p>
   </div>
 </div>
 
@@ -944,7 +944,7 @@ const COURSE_CONTENT = [
 <div class="aha">
   <div class="aha-label">Why these six questions matter</div>
   <p>These properties are not just labels. They help us decide how an agent should solve its task.</p>
-  <p>When the task environment is fully observable, deterministic, static, discrete and single-agent, the agent can perceive what matters and predict the result of each action, so it can plan a whole solution before it acts. That is the setting of Module 3. Change a property and the problem changes with it. Some problems involve continuous variables; when the goal is to optimize a differentiable objective (one whose slope we can compute), methods such as gradient descent (Module 4) may be useful. An opponent calls for the adversarial search of Module 5. Missing information and uncertain outcomes need tools that go beyond this course.</p>
+  <p>When the task environment is fully observable, deterministic, static, discrete and single-agent, the agent can perceive what matters and predict the result of each action, so it can plan a whole solution before it acts. That is the setting of Module 3. Change a property and the problem changes with it. Some problems involve continuous variables; when the goal is to optimize a differentiable objective (one whose slope we can compute), methods such as gradient descent (Module 4) may be useful. An opponent calls for the adversarial search of Module 5. Chance in a game, such as dice, returns in Module 5. Missing information needs tools that go beyond this course.</p>
   <p>That is why we describe the task environment before choosing an AI technique.</p>
 </div>
 
@@ -1080,7 +1080,7 @@ const COURSE_CONTENT = [
         items: [
           "<strong>Performance measure</strong> = how the agent's success is evaluated — it defines success",
           "<strong>Utility function</strong> = assigns values to outcomes so the agent can compare them — it helps the agent choose",
-          "<strong>Rational action</strong> = the action expected to maximise the performance measure, given what the agent has perceived and knows",
+          "<strong>Rational action</strong> = the action expected to maximize the performance measure, given what the agent has perceived and knows",
           "Judged on the <strong>decision</strong>, not on the luck of the outcome",
           "Depends on four things: the measure, built-in knowledge, available actions, percepts so far",
           "Rational ≠ all-knowing, and rational ≠ perfect",
