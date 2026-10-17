@@ -2240,6 +2240,7 @@ def a_star(problem, h):
       "Trace one generation of a genetic algorithm — fitness, selection, crossover, mutation — and handle a child that breaks a constraint.",
       "Apply gradient descent to a function of one variable and explain the effect of the learning rate."
     ],
+    collapseTerms: true,
     terms: [
       { term: "Optimization", meaning: "Finding the best possible solution according to a defined objective, while satisfying any constraints that apply." },
       { term: "Decision variable", meaning: "Something whose value we choose, such as the time slot of each exam. A solution gives a value to every decision variable." },
@@ -2259,7 +2260,7 @@ def a_star(problem, h):
       { term: "Population-based optimization", meaning: "Methods that hold and improve a group of candidate solutions at a time, such as genetic algorithms. The members are candidate solutions, not agents." },
       { term: "Landscape", meaning: "A picture of a problem: each position is a candidate solution, and the height is its objective value." },
       { term: "Global optimum", meaning: "The best feasible solution in the whole problem: the global maximum when maximizing, the global minimum when minimizing." },
-      { term: "Local optimum", meaning: "A solution that no neighbour improves, but that is not the best overall. It is a local maximum or a local minimum, depending on the direction." },
+      { term: "Local optimum", meaning: "A solution that no neighbour improves. It may also be the global optimum, or a better solution may exist elsewhere. It is a local maximum or a local minimum, depending on the direction." },
       { term: "Plateau", say: "pla-TOH", meaning: "A flat area where all neighbours have the same value, so the search has no direction to follow." },
       { term: "Ridge", meaning: "A narrow line along which the objective improves, but every single move the neighbourhood allows makes it worse, so the search stops early." },
       { term: "Hill climbing", meaning: "Single-solution local search: move to the best neighbour, and stop when no neighbour is better. Better means higher when maximizing, lower when minimizing." },
@@ -2276,7 +2277,7 @@ def a_star(problem, h):
       { term: "Crossover", meaning: "Making children by cutting two parent chromosomes at the same point and swapping the tails. It does not guarantee a better child." },
       { term: "Mutation", meaning: "A small random change to a chromosome, such as flipping one bit. It keeps variety in the population, and can make a child better or worse." },
       { term: "Derivative (gradient)", meaning: "The slope of the objective at the current point: which way is uphill and how steep. With one variable it is f′(x); with many it is the gradient ∇f(x)." },
-      { term: "Gradient descent", meaning: "Continuous optimization that repeats x ← x − α·f′(x): a step against the slope, so the objective goes down." },
+      { term: "Gradient descent", meaning: "Continuous optimization that repeats x ← x − α·f′(x): a step against the slope. With a suitable learning rate the objective goes down; with one that is too large it can go up." },
       { term: "Learning rate", meaning: "α, the size of each step in gradient descent. Too small is slow; too large jumps over the minimum and may never settle." }
     ],
     sections: [
@@ -2597,11 +2598,11 @@ def a_star(problem, h):
 
 <div class="checkpoint">
   <span class="checkpoint-label">Check yourself</span>
-  <p>The Red Crescent in Jeddah has 10 possible sites for new ambulance stations. The budget allows at most 3 new stations. They want the average time to reach a caller to be as small as possible. Name the decision variables, the search space, the constraint, the objective function and its direction, and the type of problem. Then: what changes if a station may be placed at any point on the map?</p>
+  <p>The Red Crescent in Jeddah has 10 possible sites for new ambulance stations. At least one station must be built, and the budget allows at most 3. They want the average time to reach a caller to be as small as possible. Name the decision variables, the search space, the constraint, the objective function and its direction, and the type of problem. Then: what changes if a station may be placed at any point on the map?</p>
   <details>
     <summary>Show answer</summary>
-    <p><strong>Decision variables:</strong> for each of the 10 sites, build a station there: yes or no. <strong>Search space:</strong> all yes/no choices for the 10 sites, 2<sup>10</sup> = 1024 candidates. <strong>Constraint:</strong> at most 3 stations, so the feasible region holds only 176 of the 1024 candidates. <strong>Objective function:</strong> the average time to reach a caller; <strong>direction:</strong> minimize. <strong>Type:</strong> discrete optimization.</p>
-    <p>If a station may be placed anywhere, its decision variables become two real coordinates, and the problem becomes continuous optimization.</p>
+    <p><strong>Decision variables:</strong> for each of the 10 sites, build a station there: yes or no. <strong>Search space:</strong> all yes/no choices for the 10 sites, 2<sup>10</sup> = 1024 candidates. <strong>Constraint:</strong> at least 1 and at most 3 stations, so the feasible region holds only 175 of the 1024 candidates (10 with one station, 45 with two, 120 with three). <strong>Objective function:</strong> the average time to reach a caller; <strong>direction:</strong> minimize. <strong>Type:</strong> discrete optimization.</p>
+    <p>Now suppose you will build exactly 3 stations, and each may be placed anywhere on the map. Each station needs its own pair of coordinates (x, y), so you choose three pairs: six real numbers. The problem becomes continuous optimization.</p>
   </details>
 </div>
 
@@ -2631,6 +2632,8 @@ def a_star(problem, h):
     current = problem.initial_solution()
     while True:
         neighbours = problem.neighbours(current)
+        if not neighbours:
+            return current          # no neighbours at all: stop
         best = min(neighbours, key=problem.cost)
         if problem.cost(best) &gt;= problem.cost(current):
             return current          # no neighbour is better: stop
@@ -2690,7 +2693,7 @@ def a_star(problem, h):
 <p>A picture like this is called a <strong>landscape</strong>: each position is a candidate solution, and the height is its objective value. Hill climbing only knows the ground under its feet, never the whole map. It stops in three typical places:</p>
 
 <ol class="steps">
-  <li><strong>Local optimum</strong><p>No neighbour is better, but a better solution exists elsewhere, like the penalty-3 timetable above. The best of all is the <strong>global optimum</strong>. When maximizing, they are called a local maximum and a global maximum; when minimizing, a local minimum and a global minimum.</p></li>
+  <li><strong>Local optimum</strong><p>No neighbour is better. It may also be the best solution of all, but a better solution may exist elsewhere, like the penalty-3 timetable above. The best of all is the <strong>global optimum</strong>, and it is always a local optimum too. When maximizing, they are called a local maximum and a global maximum; when minimizing, a local minimum and a global minimum.</p></li>
   <li><strong>Plateau</strong><p>A flat area: all neighbours have the same value, so there is no direction to follow. The search stops, or wanders if it accepts equal moves.</p></li>
   <li><strong>Ridge</strong><p>The objective improves along a narrow line, but every single move the neighbourhood allows makes it slightly worse. The search stops, although better solutions lie further along the ridge.</p></li>
 </ol>
@@ -2712,7 +2715,7 @@ def a_star(problem, h):
     <div class="app-card">
       <span class="app-icon">🎯</span>
       <strong>Stochastic hill climbing</strong>
-      <p>Pick randomly among the improving moves instead of always the best one. Slower per step, but it explores more. Here <em>stochastic</em> describes the algorithm's own random choices, not the environment (section 2.4).</p>
+      <p>Pick randomly among the improving moves instead of always the best one. It may need more steps to reach a top, but it explores more of the landscape. Here <em>stochastic</em> describes the algorithm's own random choices, not the environment (section 2.4).</p>
     </div>
   </div>
 </div>
@@ -2748,17 +2751,22 @@ def a_star(problem, h):
         body: `
 <p><em>What if we explore several candidate solutions at once, instead of improving only one?</em> This is the population-based side of the comparison in section 4.1.</p>
 
+<div class="analogy">
+  <span class="analogy-label">Breeding date palms</span>
+  <p>A farmer crosses a palm with excellent fruit and a palm that survives any heat, hoping for offspring with the good traits of both. Most offspring are ordinary. A few are better than either parent, and those become the parents of the next generation.</p>
+</div>
+
 <div class="callout note">
   <div class="callout-icon">i</div>
   <div class="callout-body">
     <div class="callout-title">Nature-Inspired Optimization: Learning from Nature</div>
-    <p>Some optimization methods take their main idea from a process in nature. This is called <strong>nature-inspired optimization</strong>. Three examples, each from a different source:</p>
+    <p>The farmer's idea is not only an analogy. Some optimization methods take their main idea from a process in nature; this is called <strong>nature-inspired optimization</strong>. Three families, each from a different source:</p>
     <ul>
-      <li>Genetic algorithms (GA) take their idea from biological evolution: fitter individuals are more likely to pass their parts on to the next generation.</li>
-      <li>Particle swarm optimization (PSO) and ant colony optimization (ACO) take theirs from swarm intelligence: many simple members, such as birds in a flock or ants leaving trails, share what they find.</li>
-      <li>Simulated annealing (SA) takes its idea from physical annealing, where metal cooled slowly settles well (the optional box in section 4.2).</li>
+      <li><em>Evolutionary algorithms</em> copy biological evolution: fitter individuals pass on their parts more often. Example: the genetic algorithm (GA).</li>
+      <li><em>Swarm intelligence</em> copies simple members that share what they find, like birds in a flock or ants leaving trails. Examples: particle swarm optimization (PSO) and ant colony optimization (ACO).</li>
+      <li><em>Physics-inspired methods</em> copy physical processes. Example: simulated annealing (SA), from metal that settles well when cooled slowly (the optional box in 4.2).</li>
     </ul>
-    <p>Nature-inspired does not mean population-based. GA, PSO and ACO keep a population of candidate solutions; simulated annealing improves one solution at a time. So two separate questions describe a method: <em>how many candidate solutions does it hold</em> (section 4.1), and <em>where did its idea come from</em>? A natural origin does not make a method better: like any method, it is judged by how well it fits the problem.</p>
+    <p>Nature-inspired does not mean population-based. GA, PSO and ACO keep a population of candidate solutions; simulated annealing improves one solution at a time. So two separate questions describe a method: <em>how many candidates does it hold</em> (section 4.1), and <em>where did its idea come from</em>? A natural origin does not make a method better or guarantee the global optimum; like any method, it is judged by how well it fits the problem.</p>
   </div>
 </div>
 
@@ -2923,6 +2931,7 @@ def a_star(problem, h):
 <h4>Generation 1</h4>
 
 <div class="table-figure">
+  <p class="table-hint">Swipe sideways to see all columns &rarr;</p>
   <div class="table-scroll">
     <table class="env-table" style="white-space: normal;">
       <thead>
@@ -2932,7 +2941,7 @@ def a_star(problem, h):
         <tr><th scope="row">0101</th><td>A + C crossover</td><td>50</td><td>35</td></tr>
         <tr><th scope="row">1010</th><td>C + A crossover</td><td>90</td><td>75</td></tr>
         <tr><th scope="row">0110</th><td>A + B crossover gave 0100; mutation flipped bit 3</td><td>80</td><td>70</td></tr>
-        <tr><th scope="row">1110</th><td>B + A crossover</td><td>120: over budget</td><td>0</td></tr>
+        <tr><th scope="row">1110</th><td>B + A crossover</td><td>120: over budget</td><td>0 (penalized)</td></tr>
       </tbody>
     </table>
   </div>
@@ -2953,9 +2962,9 @@ def a_star(problem, h):
 <p>Child <code>1110</code> costs 120 thousand riyals, more than the budget. A genetic algorithm needs a rule for such children. Three common rules:</p>
 
 <ol class="steps">
-  <li><strong>Reject it</strong><p>Give it fitness 0, as we did. It will almost never be selected.</p></li>
+  <li><strong>Penalize it</strong><p>Keep it in the population, but give it a low fitness. We gave it fitness 0, so with selection in proportion to fitness it has no chance of becoming a parent. It still takes one place in the population.</p></li>
+  <li><strong>Reject it</strong><p>Throw it away before it joins the population, and make a new child in its place. Then every member of the population is feasible.</p></li>
   <li><strong>Repair it</strong><p>Change it until it is feasible. For example, drop the funded project with the lowest benefit until the cost fits: <code>1110</code> drops P2 and becomes <code>1010</code>, cost 90.</p></li>
-  <li><strong>Check feasibility before you keep it</strong><p>Test every child against the constraints, and create a new child in place of any that fails.</p></li>
 </ol>
 
 <p>The choice of representation matters as much as the rule. Crossover helps most when parts of the chromosome are meaningful building blocks on their own, such as the funding decision for one project. If the positions have no independent meaning, cutting and swapping mostly breaks good solutions.</p>
@@ -3117,7 +3126,7 @@ gradient_descent(lambda x: 2 * (x - 3), x=0)   # about 2.996
   <div class="callout-icon">i</div>
   <div class="callout-body">
     <div class="callout-title">When gradient descent fits</div>
-    <p>It needs continuous decision variables and an objective whose slope we can compute (a differentiable function). For (x − 3)² there is only one valley, so gradient descent reaches the global minimum. A function with several valleys can trap it in a local minimum, just as a local optimum traps hill climbing.</p>
+    <p>It needs continuous decision variables and an objective whose slope we can compute (a differentiable function). For (x − 3)² there is only one valley, so with a suitable learning rate (0.1 here) gradient descent approaches the global minimum; with α = 1.1 it does not. A function with several valleys can trap it in a local minimum, just as a local optimum traps hill climbing.</p>
   </div>
 </div>
 
@@ -3167,7 +3176,7 @@ gradient_descent(lambda x: 2 * (x - 3), x=0)   # about 2.996
         group: "Landscape vocabulary",
         items: [
           "<strong>Global optimum</strong> — the best feasible solution overall",
-          "<strong>Local optimum</strong> — no neighbour is better, but it is not the best overall",
+          "<strong>Local optimum</strong> — no neighbour is better; it may or may not be the global optimum",
           "<strong>Plateau</strong> — flat area, no direction to follow",
           "<strong>Ridge</strong> — improves along a line, but every allowed move makes it worse"
         ]
@@ -3205,9 +3214,9 @@ gradient_descent(lambda x: 2 * (x - 3), x=0)   # about 2.996
           "Treating the search space as the feasible region",
           "Writing a constraint as a soft preference, or a soft preference as a constraint",
           "Saying crossover or mutation always improves a child — they can make it worse",
-          "Scoring a child that is over budget by its benefit — reject it or repair it",
+          "Scoring a child that is over budget by its benefit — penalize it (fitness 0), reject it, or repair it",
           "Saying gradient descent is hill climbing — it uses the derivative instead of listing neighbours",
-          "Saying gradient descent always finds the global minimum — with several valleys, it finds a local one"
+          "Saying gradient descent always finds the global minimum — it needs a suitable learning rate, and with several valleys it may stop in a local one"
         ]
       }
     ],
