@@ -25,7 +25,7 @@ const COURSE_CONTENT = [
     ],
     collapseTerms: true,
     terms: [
-      { term: "Artificial Intelligence (AI)", meaning: "A branch of Computer Science concerned with building systems that perform tasks associated with intelligence. This course emphasizes the rational-agent view: systems that perceive their environment, make decisions, and act to achieve goals." },
+      { term: "Artificial Intelligence (AI)", meaning: "A branch of Computer Science concerned with building systems that perform tasks associated with intelligence. This course emphasizes the rational agent view: systems that perceive their environment, make decisions, and act to achieve goals." },
       { term: "Agent", meaning: "A system that perceives its environment and acts upon that environment. A thermostat, an automatic door, a robot, or a program that acts on websites, files, or people can all be agents." },
       { term: "Environment", meaning: "What lies outside the agent and can affect it or be affected by its actions: a room or a road for a robot; websites, files, databases, other programs, or people for a software agent." },
       { term: "Computation", meaning: "Turning inputs into outputs without perceiving or acting on an outside environment, such as a formula that only recalculates its own sheet." },
@@ -64,7 +64,7 @@ const COURSE_CONTENT = [
 
 <p>There is no single agreed definition. Russell and Norvig organize the main ones around two questions: does the system <em>think</em> or <em>act</em>? And does it do so <em>like a human</em> or <em>rationally</em>? (Section 1.7 lays the four out, for those who want them.)</p>
 
-<p>In this course we place particular emphasis on the <strong>rational-agent view</strong>: intelligent systems perceive their environment, make decisions, and act to achieve goals. It is the foundation of most of what you will study here — search, optimization, games, constraint solving, and logical reasoning — and it remains the frame for modern AI agents too.</p>
+<p>In this course we place particular emphasis on the <strong>rational agent view</strong>: intelligent systems perceive their environment, make decisions, and act to achieve goals. It is the foundation of most of what you will study here — search, optimization, games, constraint solving, and logical reasoning — and it remains the frame for modern AI agents too.</p>
 
 <div class="aha">
   <div class="aha-label">The idea behind everything in this course</div>
@@ -188,7 +188,7 @@ const COURSE_CONTENT = [
 
 <h3>Back to our definition</h3>
 
-<p>In section 1.1 we said that this course places particular emphasis on the <strong>rational-agent view</strong>. At that point the words were not yet available. Now that <em>agent</em>, <em>intelligent agent</em>, and <em>goal</em> each have a precise meaning, we can state it properly:</p>
+<p>In section 1.1 we said that this course places particular emphasis on the <strong>rational agent view</strong>. At that point the words were not yet available. Now that <em>agent</em>, <em>intelligent agent</em>, and <em>goal</em> each have a precise meaning, we can state it properly:</p>
 
 <div class="definition">
   <p><strong>Artificial Intelligence (AI)</strong> is a field of <strong>Computer Science</strong> concerned with the study and design of <strong>intelligent agents</strong> &mdash; systems that <strong>perceive</strong> their environment, <strong>make decisions</strong>, and <strong>take actions</strong> to achieve <strong>goals</strong>.</p>
@@ -475,7 +475,7 @@ const COURSE_CONTENT = [
   </div>
 </div>
 
-<p>The rational-agent view you met in sections 1.1 and 1.2 — AI as the study of intelligent agents that perceive, decide, and act towards goals — is one of several. The many definitions in textbooks fall into a 2×2 box, and the two questions are: do we care about <em>thinking</em> or about <em>acting</em>? And do we compare the system to <em>a human</em> or to <em>the ideal answer</em>?</p>
+<p>The rational agent view you met in sections 1.1 and 1.2 — AI as the study of intelligent agents that perceive, decide, and act towards goals — is one of several. The many definitions in textbooks fall into a 2×2 box, and the two questions are: do we care about <em>thinking</em> or about <em>acting</em>? And do we compare the system to <em>a human</em> or to <em>the ideal answer</em>?</p>
 
 <div class="diagram">
   <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
@@ -533,7 +533,7 @@ const COURSE_CONTENT = [
           "An <strong>intelligent agent</strong> perceives, decides, and acts towards a <strong>goal</strong>",
           "<strong>AI</strong> is the branch of Computer Science that builds systems doing tasks associated with intelligence",
           "In this course's language: <strong>AI</strong> studies and designs <strong>intelligent agents</strong>",
-          "Several definitions exist; this course emphasizes the <strong>rational-agent view</strong>",
+          "Several definitions exist; this course emphasizes the <strong>rational agent view</strong>",
           "Quick test: does the system <strong>choose between options in order to reach a goal?</strong>",
           "How to judge whether it chooses <em>well</em> — that is rationality, in Module 2",
           "<strong>Learning</strong> is a capability some agents have — not part of the definition of an agent"
