@@ -9,95 +9,95 @@ const QUIZ_BANK = {
   // ==================== MODULE 1 ====================
   1: [
     {
-      q: "An agent crosses a road after looking both ways and is hit by an object falling from a plane. Was the agent rational?",
+      q: "An automatic door opens whenever someone steps in front of it. Which description fits it best?",
       choices: [
-        "No — a rational agent never gets a bad outcome.",
-        "Yes — rationality is judged on the decision made with the available evidence, not on luck.",
-        "No — it should have predicted the falling object.",
-        "The question cannot be answered without knowing the agent's code."
+        "An intelligent agent, because it perceives people and acts on the door.",
+        "Not an agent, because it has no software inside it.",
+        "An agent but not an intelligent one: it perceives and acts, but decides nothing.",
+        "An intelligent agent, because its goal is to let people pass through."
       ],
-      correct: 1,
-      explanation: "Rationality means choosing the action expected to do best given what you know. Expecting a good outcome every time is expecting omniscience, which no agent has."
+      correct: 2,
+      explanation: "It perceives someone in front of it and acts by opening, so it is an agent. But one input always gives the same fixed response: it never chooses between options to reach a goal, so it is not an intelligent agent (section 1.2). Being an agent does not need software or a robot body."
     },
     {
       q: "What is the Turing test?",
       choices: [
-        "A benchmark that measures how fast an AI system runs.",
-        "A test where a human judge cannot reliably tell a machine from a human in written conversation.",
-        "A proof that machines cannot think.",
-        "The standard evaluation used for modern AI systems in industry."
+        "A benchmark that measures how quickly an AI system answers questions.",
+        "A proof, published by Turing in 1950, that machines will never be able to think.",
+        "The standard test that companies use today to approve new AI systems.",
+        "A judge chats in writing with a hidden human and a hidden machine and tries to tell them apart."
       ],
-      correct: 1,
-      explanation: "Turing proposed it in 1950 as a thought experiment. Engineers rarely aim at it, because it rewards imitating humans — including human errors and human slowness."
+      correct: 3,
+      explanation: "Turing proposed it in 1950 (section 1.4): a judge exchanges written messages with a hidden human and a hidden machine. If the judge cannot reliably tell which is which, the machine passes. It is a famous thought experiment, not a proof and not an industry benchmark."
     },
     {
       q: "Which statement about machine learning and AI is correct?",
       choices: [
-        "They are two names for the same field.",
         "Machine learning is one part of AI; search, logic, and planning are other parts.",
+        "They are two names for the same field.",
         "AI is one part of machine learning.",
         "Machine learning replaced all earlier AI methods after 2012."
       ],
-      correct: 1,
-      explanation: "ML is a sub-field of AI. Classical methods are still in daily use: your maps app runs search, timetables run constraint solving, and chess engines run alpha-beta."
+      correct: 0,
+      explanation: "ML is a subfield of AI. Classical methods are still in daily use: your maps app runs search, timetables run constraint solving, and leading chess engines use alpha-beta search."
     },
     {
-      q: "What caused the two AI winters?",
+      q: "According to section 1.4, what lay behind the AI winters?",
       choices: [
-        "Computers were physically destroyed.",
-        "Researchers promised general intelligence and delivered narrow tools, so funding collapsed.",
-        "The mathematics behind AI was proved wrong.",
-        "Companies moved their money to space research."
+        "Several causes: limited computing power, scarce data, and promises the systems could not keep.",
+        "One cause only: a proof in the 1970s showed that the mathematics behind AI was wrong.",
+        "One cause only: governments moved all research money from computing to space programmes.",
+        "One cause only: computers became cheap, so nobody would pay for AI research any more."
       ],
-      correct: 1,
-      explanation: "Both winters followed the same pattern: large promises, narrow results, lost confidence. It is the reason to describe honestly what your system does and where it fails."
+      correct: 0,
+      explanation: "Section 1.4 lists several causes: limited computing power, scarce data, problems that proved harder than expected, and expectations that exceeded what the systems could deliver. The lesson is to describe honestly what a system can and cannot do."
     },
     {
       q: "\"Narrow AI\" means:",
       choices: [
-        "An AI system that runs on small devices.",
-        "A system that is good at one task and cannot transfer that ability to another.",
-        "An AI system that uses a small amount of data.",
-        "A system built by a small team."
+        "An AI system small enough to run on a phone or a watch.",
+        "An AI system trained on only a small amount of data.",
+        "An AI system built for one job or one limited domain.",
+        "An AI system built and maintained by a small team."
       ],
-      correct: 1,
-      explanation: "A model that reads X-rays cannot book a flight. Narrow means built for one job, and it is the shape of essentially every system in use today. Whether any current system is approaching general intelligence is a separate question, and one researchers still argue over."
+      correct: 2,
+      explanation: "A model that reads X-rays cannot book a flight. Narrow means built for one job or one limited domain. Whether any current system is approaching general intelligence is a separate question, and one researchers still argue over."
     },
     {
       q: "A recruitment model is trained on a company's past hiring decisions and starts rejecting qualified applicants from a group that was rarely hired before. This is mainly:",
       choices: [
         "A coding bug in the model.",
-        "Bias inherited from the training data.",
         "A hardware limitation.",
-        "Evidence that those applicants are less qualified."
+        "Evidence that those applicants are less qualified.",
+        "Bias inherited from the training data."
       ],
-      correct: 1,
-      explanation: "The model faithfully repeats the pattern in its data, including past unfairness. Bias is usually a data or goal problem, not a bug in the code."
+      correct: 3,
+      explanation: "The model faithfully repeats the pattern in its data, including past unfairness. Bias can come from the data, the design, the objective the system was given, or the way it is used — not from a bug in the code."
     },
     {
-      q: "Which sub-field of AI does exam timetabling belong to?",
+      q: "Which subfield of AI does exam timetabling belong to?",
       choices: [
         "Computer vision",
-        "Search, planning, and constraint solving",
+        "Search and planning",
         "Natural language processing",
         "Robotics"
       ],
       correct: 1,
-      explanation: "Timetabling assigns exams to rooms and slots under rules. That is constraint satisfaction — Module 6 — which is a form of search."
+      explanation: "Section 1.5 places schedules under search and planning. Timetabling assigns exams to rooms and slots so that every rule holds; Module 6 solves it as constraint satisfaction, which is a form of search."
     },
     {
       q: "Why is \"explainability\" important for a system that decides on loan or admission applications?",
       choices: [
-        "It makes the model more accurate.",
-        "The person affected deserves a reason, and the organisation must be able to check that the reason is legitimate.",
-        "It reduces the training time.",
-        "It is only needed for deep learning models."
+        "The person affected deserves a reason, and the organization must be able to check that reason.",
+        "It makes the model more accurate, because each decision is checked twice.",
+        "It reduces the training time, because the model has fewer rules to learn.",
+        "It lets the model make decisions without any human signing them off."
       ],
-      correct: 1,
+      correct: 0,
       explanation: "\"The model said so\" is not a reason. Without an explanation, neither the applicant nor the institution can tell a valid decision from an unfair one."
     },
     {
-      q: "A language model can write essays, translate between languages, summarise documents, and produce working code. Does doing many tasks make it general intelligence?",
+      q: "A language model can write essays, translate between languages, summarize documents, and produce working code. Does doing many tasks make it general intelligence?",
       choices: [
         "Yes — handling many different tasks is what general intelligence means.",
         "No — breadth of tasks measures coverage, not the ability to transfer to genuinely new problems.",
@@ -105,15 +105,15 @@ const QUIZ_BANK = {
         "The question cannot be answered, because general intelligence has no meaning."
       ],
       correct: 1,
-      explanation: "A model trained on an enormous amount of human text covers many tasks partly because those tasks appeared in that text. More useful questions than counting tasks: can it transfer to a genuinely new kind of problem, learn a new domain from a handful of examples, and recognise its own limits? Researchers disagree about where today's systems sit on those three — but counting tasks is weak evidence either way."
+      explanation: "A model trained on an enormous amount of human text covers many tasks partly because those tasks appeared in that text. More useful questions than counting tasks: can it transfer to a genuinely new kind of problem, learn a new domain from a handful of examples, and recognize its own limits? Researchers disagree about where today's systems sit on those three — but counting tasks is weak evidence either way."
     },
     {
       q: "Which of these is the clearest example of an agent?",
       choices: [
-        "A spreadsheet containing student grades.",
+        "A spreadsheet that stores the grades of every student in a course.",
         "A thermostat that reads the temperature and switches the cooling on or off.",
-        "A printed exam timetable.",
-        "A folder of training images."
+        "A printed exam timetable pinned on the noticeboard of the college.",
+        "A folder of training images collected for a vision model."
       ],
       correct: 1,
       explanation: "An agent perceives its environment and acts upon it. The thermostat is the clearest agent here: it perceives the temperature of its environment and acts on that environment by switching the cooling. A spreadsheet that only stores or recalculates values is better viewed here as computation rather than an agent; the timetable and the image folder hold data and act on nothing. Note that being an agent is not the same as being an intelligent one: the thermostat follows one fixed rule and decides nothing."

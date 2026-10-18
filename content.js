@@ -17,18 +17,20 @@ const COURSE_CONTENT = [
     hours: 4,
     story: "Before we write a single algorithm, we should agree on what we are trying to build. This module is the map of the whole course: what AI means, where it came from, what it can and cannot do today, and what we owe the people who will use our systems.",
     objectives: [
-      "Describe what makes a system \"artificially intelligent\", and recognise one when you see it.",
+      "Describe what makes a system \"artificially intelligent\", and recognize one when you see it.",
       "Distinguish an agent from an intelligent agent, and give an example of each.",
+      "Explain, from the history of AI, why a system's abilities and limits should be described precisely.",
       "Name the main areas of AI and give a real application for each.",
       "Discuss the responsibilities that come with building systems whose predictions and decisions affect people."
     ],
     collapseTerms: true,
     terms: [
-      { term: "Artificial Intelligence (AI)", meaning: "A branch of Computer Science concerned with building systems that perform tasks associated with intelligence. This course emphasises the rational-agent view: systems that perceive their environment, make decisions, and act to achieve goals." },
+      { term: "Artificial Intelligence (AI)", meaning: "A branch of Computer Science concerned with building systems that perform tasks associated with intelligence. This course emphasizes the rational-agent view: systems that perceive their environment, make decisions, and act to achieve goals." },
       { term: "Agent", meaning: "A system that perceives its environment and acts upon that environment. A thermostat, an automatic door, a robot, or a program that acts on websites, files, or people can all be agents." },
       { term: "Environment", meaning: "What lies outside the agent and can affect it or be affected by its actions: a room or a road for a robot; websites, files, databases, other programs, or people for a software agent." },
+      { term: "Computation", meaning: "Turning inputs into outputs without perceiving or acting on an outside environment, such as a formula that only recalculates its own sheet." },
       { term: "Intelligent agent", meaning: "An agent that perceives its environment, makes decisions, and takes actions to achieve goals." },
-      { term: "Rational", meaning: "Choosing the action expected to produce the best outcome, given the information available to the agent. Rational does not mean perfect, and it does not mean always successful." },
+      { term: "Rational", meaning: "Choosing the action expected to give the best performance, given what the agent has perceived and knows. Module 2 makes this precise. Rational does not mean perfect, and it does not mean always successful." },
       { term: "Turing test", say: "TOO-ring", meaning: "A test proposed by Alan Turing in 1950: a judge exchanges written messages with a hidden human and a hidden machine. If the judge cannot reliably tell which is which, the machine passes." },
       { term: "Machine Learning (ML)", meaning: "A subfield of AI in which systems learn patterns from data to improve at a task, rather than relying only on explicitly programmed rules." },
       { term: "Deep Learning", meaning: "A subfield of machine learning based on neural networks with multiple layers that learn representations from data." },
@@ -37,9 +39,10 @@ const COURSE_CONTENT = [
       { term: "NLP", say: "Natural Language Processing", meaning: "A subfield of AI concerned with enabling computers to process, understand, and generate human language, in text and in speech — including Arabic." },
       { term: "AI winter", meaning: "A period of sharply reduced interest, investment, and funding in AI, following unmet expectations and limits in the technology of the time." },
       { term: "AGI", say: "Artificial General Intelligence", meaning: "Intelligence across tasks, comparable to a human's. No system today is agreed to have it." },
-      { term: "LLM", say: "Large Language Model", meaning: "A model trained on very large amounts of text, able to read and generate language. It is the engine inside most of today's AI assistants." },
-      { term: "Narrow AI", meaning: "AI designed to perform specific tasks or work within a limited domain, rather than having general-purpose intelligence comparable to a human." },
-      { term: "Bias", meaning: "A systematic pattern in a system that can lead to unfair or unequal outcomes. It can arise from the data, the system design, the objective it was given, or the way it is used." }
+      { term: "LLM", say: "Large Language Model", meaning: "A model trained on very large amounts of text, able to read and generate language. Today's chat assistants are built around one." },
+      { term: "Narrow AI", meaning: "AI built for one job or one limited domain, rather than having general-purpose intelligence comparable to a human." },
+      { term: "Bias", meaning: "A systematic pattern in a system that can lead to unfair or unequal outcomes. It can arise from the data, the system design, the objective it was given, or the way it is used." },
+      { term: "Data minimization", meaning: "Collecting only the personal data a system actually needs, and keeping it only as long as it is needed." }
     ],
     sections: [
       {
@@ -59,7 +62,7 @@ const COURSE_CONTENT = [
   <p><strong>Artificial Intelligence (AI)</strong> is a branch of <strong>Computer Science</strong> concerned with building systems that perform tasks associated with intelligence: perceiving, reasoning, solving problems, understanding language, making decisions, and acting in an environment.</p>
 </div>
 
-<p>There is no single agreed definition. Russell and Norvig organise the main ones around two questions: does the system <em>think</em> or <em>act</em>? And does it do so <em>like a human</em> or <em>rationally</em>? (Section 1.7 lays the four out, for those who want them.)</p>
+<p>There is no single agreed definition. Russell and Norvig organize the main ones around two questions: does the system <em>think</em> or <em>act</em>? And does it do so <em>like a human</em> or <em>rationally</em>? (Section 1.7 lays the four out, for those who want them.)</p>
 
 <p>In this course we place particular emphasis on the <strong>rational-agent view</strong>: intelligent systems perceive their environment, make decisions, and act to achieve goals. It is the foundation of most of what you will study here — search, optimization, games, constraint solving, and logical reasoning — and it remains the frame for modern AI agents too.</p>
 
@@ -197,7 +200,7 @@ const COURSE_CONTENT = [
   <div class="callout-icon">!</div>
   <div class="callout-body">
     <div class="callout-title">What about learning?</div>
-    <p>Some intelligent agents also <strong>learn</strong> — they improve their own decisions from experience. Learning is a powerful capability an agent may have; it is not part of what makes it an agent. Most of the systems in this course decide very well and never learn anything: the route planner in Module 3, the game player in Module 5, the timetable solver in Module 6. Module 2 shows exactly where learning fits: not as a separate way of choosing actions, but as an ability that can be added to any agent design.</p>
+    <p>Some intelligent agents also <strong>learn</strong> — they improve their own decisions from experience. Learning is a powerful capability an agent may have; it is not part of what makes it an agent. The route planner of Module 3, the game player of Module 5, and the timetable solver of Module 6 all decide well and never learn anything. Module 2 shows exactly where learning fits: not as a separate way of choosing actions, but as an ability that can be added to any agent design.</p>
   </div>
 </div>
 
@@ -272,13 +275,13 @@ const COURSE_CONTENT = [
 <p>AI is about seventy years old. Its history is a repeating cycle: a breakthrough, big promises, disappointment, then a quiet period of real work.</p>
 
 <ol class="steps">
-  <li><strong>1950 — the question</strong><p>Alan Turing asks whether machines can think, and proposes his test.</p></li>
+  <li><strong>1950 — the question</strong><p>Alan Turing asks whether machines can think, and proposes his test: a judge exchanges written messages with a hidden human and a hidden machine; if the judge cannot reliably tell which is which, the machine passes.</p></li>
   <li><strong>1956 — the field gets a name</strong><p>A summer workshop at Dartmouth College gives "artificial intelligence" its name. The mood is very optimistic.</p></li>
-  <li><strong>1956&ndash;1974 — early success, then the first winter</strong><p>Programs prove theorems and play simple games. But they fail on anything realistic, because the search space explodes — exactly the problem you will meet in Module 3. Funding collapses.</p></li>
-  <li><strong>1980s — expert systems</strong><p>Industry buys systems full of human expert rules. They work well in narrow areas, but they are expensive to update and cannot learn. A second winter follows.</p></li>
+  <li><strong>1956&ndash;1974 — early success, then the first winter</strong><p>Programs prove theorems and play simple games. But they struggle with realistic problems: the number of possibilities explodes — the problem you will meet in Module 3 — and computers are slow. Funding collapses in the mid-1970s: the first AI winter.</p></li>
+  <li><strong>1980s — expert systems</strong><p>Industry buys systems full of human expert rules. They work well in narrow areas, but they are expensive to update and cannot learn. A second winter follows in the late 1980s.</p></li>
   <li><strong>1990s&ndash;2000s — learning from data</strong><p>The field turns to statistics and machine learning. In 1997 Deep Blue beats the world chess champion — using search, with alpha-beta pruning, which is Module 5.</p></li>
   <li><strong>2012 onwards — deep learning</strong><p>Big data, powerful GPUs, and deep neural networks transform vision and speech.</p></li>
-  <li><strong>2017 onwards — the Transformer and large language models</strong><p>A new architecture makes models that read and write language at a level that surprised everyone, including the researchers — the first widely used systems that <strong>generate</strong> language rather than only classify it.</p></li>
+  <li><strong>2017 onwards — the Transformer and large language models</strong><p>A new architecture, the Transformer, leads to large language models (LLMs), which read and write language far better than earlier systems. Generating text, not only classifying it, becomes part of everyday tools.</p></li>
 </ol>
 
 <div class="callout intuition">
@@ -287,7 +290,7 @@ const COURSE_CONTENT = [
     <div class="callout-title">What this history teaches you</div>
     <p>AI winters had several causes: limited computing power, scarce data, problems that proved harder than expected, and expectations that exceeded what the systems could actually deliver. One pattern is worth noticing: success in a narrow domain can raise expectations of much broader intelligence.</p>
     <p>The lesson is simple: <strong>doing one task well is not general intelligence.</strong></p>
-    <p>So be precise about what a system can do, what it cannot do, and the conditions it needs. Say "this model recognises five diseases across three plant species from clear images", not "our AI diagnoses plant diseases" — good practice means being clear about capabilities <em>and</em> limitations.</p>
+    <p>So be precise about what a system can do, what it cannot do, and the conditions it needs. Say "this model recognizes five diseases across three plant species from clear images", not "our AI diagnoses plant diseases" — good practice means being clear about capabilities <em>and</em> limitations.</p>
 
     <div class="ar-note" dir="rtl" lang="ar">
       <span class="ar-label">بالعربية</span>
@@ -300,7 +303,7 @@ const COURSE_CONTENT = [
 
 <div class="aha">
   <div class="aha-label">The classical methods did not die</div>
-  <p>It is easy to think that deep learning replaced everything older. It did not. Your maps app still runs search. Airline and exam schedules still run constraint solving. Chess engines still run alpha-beta. Modern systems usually combine a learned part with a classical part — which is exactly why this course teaches you the classical half properly.</p>
+  <p>It is easy to think that deep learning replaced everything older. It did not. Your maps app still runs search. Airline and exam schedules still run constraint solving. Leading chess engines still use alpha-beta search. Modern systems can combine a learned part with a classical part — which is exactly why this course teaches you the classical half properly.</p>
 </div>
 
 <p class="reading-time">5 min read</p>
@@ -319,7 +322,7 @@ const COURSE_CONTENT = [
     <div class="app-card">
       <span class="app-icon">🔍</span>
       <strong>Search and planning</strong>
-      <p>Finding a sequence of actions that reaches a goal: routes, schedules, robot plans. Modules 3 to 6 of this course.</p>
+      <p>Finding a sequence of actions that reaches a goal, or the best choice among many possibilities: routes, schedules, robot plans. Modules 3 to 6 of this course.</p>
     </div>
     <div class="app-card">
       <span class="app-icon">🧠</span>
@@ -394,7 +397,7 @@ const COURSE_CONTENT = [
 </div>
 
 <div class="definition">
-  <p>Everything above is <strong>narrow AI</strong>: a system built for one job. A model that reads X-rays cannot book a flight. General intelligence across tasks — often called AGI — is a much stronger claim than doing many tasks well, and whether anything today is approaching it is still argued over.</p>
+  <p>Each application above is an example of <strong>narrow AI</strong>: a system built for one job or one limited domain. A model that reads X-rays cannot book a flight. General intelligence across tasks — often called AGI — is a much stronger claim than doing many tasks well, and whether anything today is approaching it is still argued over.</p>
 </div>
 
 <div class="checkpoint">
@@ -427,9 +430,9 @@ const COURSE_CONTENT = [
 <h3>Four questions to ask about any system you build</h3>
 
 <ol class="steps">
-  <li><strong>Who could this system treat unfairly?</strong> <span class="q-tag">bias &amp; fairness</span><p>A learning system reflects the patterns in the data it was trained on — including the unfair ones. An Arabic speech model trained mostly on one dialect may perform poorly for speakers of other dialects. A hiring filter trained on past hiring repeats the past, including its mistakes. That is one form of <strong>bias</strong>. Bias can come from the data, from the way the system is designed — which features you use, how the examples are labelled, what you tell it to maximise — or from how it is later used.</p></li>
+  <li><strong>Who could this system treat unfairly?</strong> <span class="q-tag">bias &amp; fairness</span><p>A learning system reflects the patterns in the data it was trained on — including the unfair ones. An Arabic speech model trained mostly on one dialect may perform poorly for speakers of other dialects. A hiring filter trained on past hiring repeats the past, including its mistakes. That is one form of <strong>bias</strong>. Bias can come from the data, from the way the system is designed — which features you use, how the examples are labelled, what you tell it to maximize — or from how it is later used.</p></li>
   <li><strong>Can I explain its decisions?</strong> <span class="q-tag">explainability &amp; transparency</span><p>If your system recommends denying someone a loan or a university place, that person deserves a reason — whoever signs off on the decision. "The model said so" is not a reason. Some methods are easier to <strong>interpret</strong> — logic rules and decision trees show you the path they took. Others are much harder, and then the explanation has to be designed in from the start, not added at the end.</p></li>
-  <li><strong>What data am I collecting, and do I need it?</strong> <span class="q-tag">privacy &amp; data protection</span><p>Ask this before the first record is stored, not afterwards. Personal data should be collected only when it is needed, kept only as long as it is needed, and protected while you hold it. The principle has a name worth knowing: <strong>data minimisation</strong> — collect only what you actually need. Collecting "everything, just in case" is a risk you create for your users and then carry yourself.</p></li>
+  <li><strong>What data am I collecting, and do I need it?</strong> <span class="q-tag">privacy &amp; data protection</span><p>Ask this before the first record is stored, not afterwards. Personal data should be collected only when it is needed, kept only as long as it is needed, and protected while you hold it. The principle has a name worth knowing: <strong>data minimization</strong> — collect only what you actually need. Collecting "everything, just in case" is a risk you create for your users and then carry yourself.</p></li>
   <li><strong>What happens when the system gets it wrong?</strong> <span class="q-tag">safety, accountability &amp; human oversight</span><p>Every system can fail. <strong>Design for failure</strong>: keep a human in the loop for high-impact decisions, give people a clear way to appeal, say plainly who is accountable, and monitor the system after launch instead of assuming the test results hold forever.</p></li>
 </ol>
 
@@ -444,7 +447,7 @@ const COURSE_CONTENT = [
 
 <div class="aha">
   <div class="aha-label">The objective you choose shapes the behaviour you get</div>
-  <p>A system pursues the objective it was actually given, not the one you had in mind. If the measure does not capture what you really want, the behaviour will not either. Ask a delivery system to minimise driving time and it may route drivers through school zones at closing time. Ask a content system to maximise watching time and it may learn that anger keeps people watching. This is the deepest lesson in this course, and you will meet it again in Module 2 under the name <em>performance measure</em>.</p>
+  <p>A system pursues the objective it was actually given, not the one you had in mind. If the measure does not capture what you really want, the behaviour will not either. Ask a delivery system to minimize driving time and it may route drivers through school zones at closing time. Ask a content system to maximize watching time and it may learn that anger keeps people watching. This is one of the most important lessons in this course, and you will meet it again in Module 2 under the name <em>performance measure</em>.</p>
 </div>
 
 <div class="checkpoint">
@@ -523,13 +526,14 @@ const COURSE_CONTENT = [
     ],
     cheatsheet: [
       {
-        group: "The mental model to memorise",
+        group: "The mental model to memorize",
         items: [
           "An <strong>agent</strong> perceives and acts",
           "<strong>Environment</strong> — what lies outside the agent and can affect it or be affected by its actions",
-          "An <strong>intelligent agent</strong> chooses its actions towards a <strong>goal</strong>",
+          "An <strong>intelligent agent</strong> perceives, decides, and acts towards a <strong>goal</strong>",
           "<strong>AI</strong> is the branch of Computer Science that builds systems doing tasks associated with intelligence",
-          "Several definitions exist; this course emphasises the <strong>rational-agent view</strong>",
+          "In this course's language: <strong>AI</strong> studies and designs <strong>intelligent agents</strong>",
+          "Several definitions exist; this course emphasizes the <strong>rational-agent view</strong>",
           "Quick test: does the system <strong>choose between options in order to reach a goal?</strong>",
           "How to judge whether it chooses <em>well</em> — that is rationality, in Module 2",
           "<strong>Learning</strong> is a capability some agents have — not part of the definition of an agent"
@@ -562,7 +566,7 @@ const COURSE_CONTENT = [
           "Machine learning · natural language processing",
           "Computer vision · robotics",
           "Areas overlap — generative AI cuts across NLP, vision, and speech",
-          "Every application in this module is <strong>narrow AI</strong> — each built for one job"
+          "Each application in section 1.5 is <strong>narrow AI</strong> — built for one job or one limited domain"
         ]
       },
       {
