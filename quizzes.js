@@ -125,10 +125,10 @@ const QUIZ_BANK = {
     {
       q: "What is the difference between an agent function and an agent program?",
       choices: [
-        "The agent function is the code; the agent program is the hardware.",
-        "There is no difference; they are two names for the same thing.",
-        "The agent function maps any percept sequence to an action; the agent program is the code that produces that behaviour.",
-        "The agent function works only in static environments."
+        "The agent function is the code that runs; the agent program is the hardware it runs on.",
+        "There is no real difference; both are names for the code inside the agent.",
+        "The agent function maps percept sequences to actions; the agent program is the code that produces it.",
+        "The agent function is used only in static environments; the agent program in dynamic ones."
       ],
       correct: 2,
       explanation: "The function describes the behaviour, possibly as a huge table. The program is the real implementation. Very different programs can produce the same function, with very different memory and speed."
@@ -158,10 +158,10 @@ const QUIZ_BANK = {
     {
       q: "Driving a taxi in a busy city is partially observable mainly because:",
       choices: [
-        "The cameras have a limited resolution.",
-        "The agent cannot perceive everything it needs to make a decision, such as what other drivers intend to do.",
-        "GPS signals are sometimes lost.",
-        "The road map may be out of date."
+        "The cameras have a limited resolution, so the images are never sharp enough.",
+        "The agent cannot perceive everything it needs, such as what other drivers intend to do.",
+        "GPS signals are sometimes lost between tall buildings and in tunnels.",
+        "The road map stored in the taxi may be out of date after road works."
       ],
       correct: 1,
       explanation: "Partial observability means the sensors do not reveal the full state. Other drivers' intentions are part of the state that decides the right action, and no sensor can read them."
@@ -180,10 +180,10 @@ const QUIZ_BANK = {
     {
       q: "A robot vacuum follows the rule \"do not clean the kitchen twice before cleaning the bedroom\". What does it need, and what is the simplest design that provides it?",
       choices: [
-        "Only its current percept — a simple reflex agent.",
-        "An internal state recording which rooms it has already cleaned — a model-based reflex agent.",
-        "A value for each possible outcome — a utility-based agent.",
-        "Experience collected over many days — a learning agent."
+        "Only its current percept of the room it is in — a simple reflex agent.",
+        "An internal state of which rooms it has cleaned — a model-based reflex agent.",
+        "A value for each possible outcome, to compare them — a utility-based agent.",
+        "Experience collected over many days of cleaning — a learning agent."
       ],
       correct: 1,
       explanation: "The rooms it already cleaned are not in its current percept, so it must keep them in an internal state — that is what a model-based reflex agent adds. Goal-based and utility-based agents keep a model too, but they add more than this rule needs."
@@ -191,10 +191,10 @@ const QUIZ_BANK = {
     {
       q: "What does a utility-based agent add beyond simply having a goal?",
       choices: [
-        "The ability to perceive the environment.",
-        "The ability to remember previous percepts.",
-        "A way to assign values to outcomes and compare the trade-offs between them.",
-        "The ability to use condition–action rules."
+        "The ability to perceive the environment through more sensors.",
+        "The ability to remember previous percepts in an internal state.",
+        "A way to give outcomes values and compare the trade-offs between them.",
+        "The ability to act through condition–action rules alone."
       ],
       correct: 2,
       explanation: "A goal tells the agent what it wants to achieve, but not how desirable each outcome is. A utility function assigns values to outcomes, so the agent can weigh speed against comfort, or safety against cost, and handle uncertainty by expected utility."
@@ -214,9 +214,9 @@ const QUIZ_BANK = {
       q: "An agent is more autonomous when:",
       choices: [
         "It relies on its own experience to correct what its designer assumed.",
-        "It has more sensors.",
-        "It runs without an internet connection.",
-        "It has a larger lookup table."
+        "It has more sensors, so it can perceive more of its environment.",
+        "It runs without an internet connection or any outside server.",
+        "It has a larger lookup table built in by its designer."
       ],
       correct: 0,
       explanation: "Autonomy is about the source of the agent's knowledge. A system that can only follow built-in assumptions fails when reality differs from what the designer imagined."
@@ -224,10 +224,10 @@ const QUIZ_BANK = {
     {
       q: "You need an agent to open a valve whenever a tank level drops below a threshold, in a simple and fully observable setting. Which is the simplest suitable agent design?",
       choices: [
-        "A learning agent, because learning is always better.",
-        "A simple reflex agent: the current percept is enough to choose the right action.",
-        "A utility-based agent, so it can weigh options.",
-        "A goal-based agent with full search."
+        "A learning agent, because learning always gives better results.",
+        "A simple reflex agent: the current percept is enough to select the action.",
+        "A utility-based agent, so it can weigh the possible outcomes.",
+        "A goal-based agent that searches for a full plan."
       ],
       correct: 1,
       explanation: "When the current percept is enough, a condition–action rule solves the task exactly. Other designs could also work, but they add complexity the task does not need."
@@ -235,10 +235,10 @@ const QUIZ_BANK = {
     {
       q: "An agent chooses the action expected to give the best result, given everything it has perceived and knows. The outcome is bad because of something it could not predict. Was the action necessarily irrational?",
       choices: [
-        "No. Rationality depends on the information available when the decision was made.",
-        "Yes, because a rational action always succeeds.",
-        "Yes, because rational agents know what will happen.",
-        "No, because outcomes never matter."
+        "No. Rationality depends on what the agent could know when it decided.",
+        "Yes, because a rational action always leads to a good outcome.",
+        "Yes, because a rational agent knows in advance what will happen.",
+        "No, because the outcome never matters when we judge an agent."
       ],
       correct: 0,
       explanation: "Rationality is judged on the decision, not on the luck of the outcome. Outcomes still matter — the performance measure evaluates them — but a bad outcome alone does not make a decision irrational."

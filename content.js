@@ -637,12 +637,12 @@ const COURSE_CONTENT = [
       { term: "Discrete", meaning: "States and actions come in countable steps, as in chess. Otherwise the environment is continuous, as with steering angle and speed." },
       { term: "Single-agent", meaning: "No other agent's actions affect what happens. Otherwise it is multi-agent, and the other agents may cooperate, compete, or both — as other drivers do in traffic." },
       { term: "Condition–action rule", meaning: "A rule that links a situation to an action: if the soil is dry, then open the valve." },
-      { term: "Simple reflex agent", meaning: "Chooses an action from the current percept only, using condition–action rules." },
+      { term: "Simple reflex agent", meaning: "Selects an action from the current percept only, using condition–action rules." },
       { term: "Model-based reflex agent", meaning: "Keeps an internal state — a picture of the parts of the world it cannot perceive right now — and uses it with condition–action rules." },
       { term: "Goal-based agent", meaning: "Chooses actions by asking which ones lead towards a goal. This is where search and planning become useful." },
       { term: "Utility-based agent", say: "yoo-TIL-ity", meaning: "Uses a utility function to compare outcomes, so it can weigh goals against each other and trade them off." },
       { term: "Utility function", meaning: "A function that assigns values to outcomes so the agent can compare them. It should agree with the performance measure, but it is not the same thing. Under uncertainty, the agent chooses the action with the best expected utility." },
-      { term: "Learning agent", meaning: "Improves its own behaviour over time from experience and feedback. Learning is not a separate way of choosing actions: it can be added to any of the other designs." },
+      { term: "Learning agent", meaning: "Improves its own behaviour over time from experience and feedback. Learning is not a separate way of selecting actions: it can be added to any of the other designs." },
       { term: "Agentic AI", meaning: "A commonly used modern term, not a sixth agent design: AI systems that pursue goals with little step-by-step human direction — deciding steps, using tools, observing results, and deciding again. The LLM-based agent of Module 1 is one example." }
     ],
     sections: [
@@ -700,7 +700,7 @@ const COURSE_CONTENT = [
   <div class="callout-body">
     <div class="callout-title">Decide or act?</div>
     <p><strong>Deciding</strong> is choosing one option from several: which driver gets the order, which road to take. <strong>Acting</strong> is doing what was chosen: sending the order, turning the wheel.</p>
-    <p>Every agent acts. Only an intelligent agent decides.</p>
+    <p>Every agent acts. Only an intelligent agent decides — and it decides towards a goal.</p>
     <p>Quick test: &ldquo;decide&rdquo; answers <em>which one?</em> &mdash; &ldquo;act&rdquo; answers <em>what did it do?</em></p>
   </div>
 </div>
@@ -899,6 +899,8 @@ const COURSE_CONTENT = [
 
 <p>Some agents are software but use physical parts, such as a smart car-park guide that reads fixed cameras and lights up signs. Place each part by what it does, not by what kind of agent it is.</p>
 
+<p>More practice: <a href="peas-made-simple.html">PEAS Made Simple</a> has four worked examples, eight self-check questions, and short notes in Arabic.</p>
+
 <div class="aha">
   <div class="aha-label">PEAS is where projects are won or lost</div>
   <p>A perfect algorithm cannot rescue a wrong PEAS. A performance measure that rewards the wrong thing, or sensors that cannot perceive what the decision actually needs, will defeat any algorithm you put behind them. Write the PEAS before you write any code — and show it to the person who asked for the system, because they will correct the P immediately.</p>
@@ -959,12 +961,12 @@ const COURSE_CONTENT = [
       {
         title: "Five agent designs",
         body: `
-<p>All agents receive percepts and produce actions. What differs is how they choose those actions. Some <strong>react</strong> directly, some <strong>remember</strong> what has happened, some <strong>plan</strong> towards goals, some <strong>compare</strong> possible outcomes, and some can <strong>learn</strong> from experience. In the language of section 2.1, these are five ways to write the agent program.</p>
+<p>All agents receive percepts and produce actions. What differs is how they select those actions. Some <strong>react</strong> directly, some <strong>remember</strong> what has happened, some <strong>plan</strong> towards goals, some <strong>compare</strong> possible outcomes, and some can <strong>learn</strong> from experience. In the language of section 2.1, these are five ways to write the agent program.</p>
 
 <h3>1. Simple reflex agent</h3>
 
 <p>Looks at the current percept only, and matches it against condition&ndash;action rules: <em>if soil is dry, then open the valve</em>.</p>
-<p><strong>Good:</strong> tiny, fast, easy to test. <strong>Bad:</strong> blind to anything it cannot perceive right now. If the moisture sensor breaks and reads "dry" forever, the agent floods the field and never notices. It works well only when the current percept is enough to choose the right action &mdash; for example, in a fully observable environment.</p>
+<p><strong>Good:</strong> tiny, fast, easy to test. <strong>Bad:</strong> blind to anything it cannot perceive right now. If the moisture sensor breaks and reads "dry" forever, the agent floods the field and never notices. It works well only when the current percept is enough to select the right action &mdash; for example, in a fully observable environment.</p>
 
 <h3>2. Model-based reflex agent</h3>
 
@@ -984,7 +986,7 @@ const COURSE_CONTENT = [
 
 <h3>5. Learning agent</h3>
 
-<p>A learning agent improves its behaviour from experience. Learning is not a completely separate way of choosing actions: it can be added to the designs above.</p>
+<p>A learning agent improves its behaviour from experience. Learning is not a completely separate way of selecting actions: it can be added to the designs above.</p>
 <p>For example, a goal-based route planner may learn from previous journeys and improve its estimates of travel time. It still plans towards a goal, but now its behaviour can improve with experience.</p>
 
 <div class="diagram">
@@ -1042,7 +1044,7 @@ const COURSE_CONTENT = [
   <div class="callout-body">
     <div class="callout-title">How this connects to Module 1</div>
     <p>In Module 1, we used a simple introductory distinction: an agent perceives and acts, while an intelligent agent perceives, decides, and acts towards a goal. The five designs here answer a different question: <strong>how is the action selected?</strong> Simple and model-based reflex agents mainly follow condition–action rules. Goal-based and utility-based agents explicitly evaluate actions in relation to goals or preferences. A learning agent can improve the way any of these designs behaves.</p>
-    <p>Rationality is a separate idea: it asks <strong>how well</strong> an agent chooses its actions according to its performance measure. In a simple enough environment, even a simple reflex agent can be rational.</p>
+    <p>Rationality is a separate idea: it asks <strong>how well</strong> an agent selects its actions according to its performance measure. In a simple enough environment, even a simple reflex agent can be rational.</p>
   </div>
 </div>
 
