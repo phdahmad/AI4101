@@ -292,15 +292,15 @@ const QUIZ_BANK = {
       explanation: "Search time is the work the algorithm does, counted in nodes created (or expanded): 40. The 8 km is the path cost — a property of the answer, not of the work. The 12 nodes held at once measure search memory (section 3.3)."
     },
     {
-      q: "Under what condition does breadth-first search return the cheapest solution?",
+      q: "When is BFS guaranteed to find a least-cost solution?",
       choices: [
-        "Only when all actions have the same cost.",
+        "When every action has the same cost.",
         "Always, since it expands the shallowest nodes first.",
-        "Only when a consistent heuristic is available.",
-        "Only when the state space contains no cycles."
+        "Whenever a consistent heuristic is available.",
+        "Whenever the state space contains no cycles."
       ],
       correct: 0,
-      explanation: "BFS returns the solution with the fewest actions. That is the cheapest solution only when every action costs the same (and b is finite, so BFS is complete). On the delivery map BFS returns S → B → G, 9 km, while S → A → C → G is 8 km. With different costs you need uniform-cost search (section 3.4)."
+      explanation: "Equal action costs are what make the guarantee hold: then the path with the fewest actions is also a cheapest one (with b finite, so that BFS finds a solution). With different costs, BFS may still happen to find a cheapest path in a particular problem, but nothing guarantees it: on the delivery map it returns S → B → G, 9 km, while S → A → C → G is 8 km. UCS gives that guarantee when costs differ (section 3.4)."
     },
     {
       q: "A tree has root P. P's children are Q and R; Q's children are S and T; R's only child is U. Children are considered left to right, and the first one goes on top of the stack. In which order does tree-like DFS take the nodes out of the frontier?",
@@ -372,12 +372,12 @@ const QUIZ_BANK = {
       q: "h₁ counts misplaced tiles in the 8-puzzle and h₂ sums their Manhattan distances. Both are admissible, and h₂(n) ≥ h₁(n) for every n. What follows from these facts alone?",
       choices: [
         "h₁ is the better choice because it is cheaper to compute.",
-        "h₂ dominates h₁, so A* with h₂ expands no more nodes, apart from ties.",
+        "h₂ dominates h₁: it is never smaller, and it is still admissible.",
         "h₂ may be inadmissible because it produces larger values.",
         "The two heuristics will expand identical numbers of nodes."
       ],
       correct: 1,
-      explanation: "This is dominance: h₂ is never smaller and never too high. For consistent heuristics like these, A* with h₂ expands no more nodes than with h₁, apart from ties among nodes whose f equals the best cost. Russell & Norvig report about 230 nodes with h₁ and about 70 with h₂ on 12-move puzzles. Option A describes a real trade-off, but it does not follow from these facts alone (section 3.6)."
+      explanation: "The stem gives exactly the definition of dominance, so that is what follows. What dominance does for A* is a further claim that needs more facts: if both heuristics are also consistent (these two are, but the stem does not say so), A* with h₂ expands no more nodes than with h₁, apart from ties. Nothing here is about seconds, since h₂ costs more to compute. Option A describes a real trade-off, but it does not follow from these facts alone (section 3.6)."
     },
     {
       q: "An ambulance service plans routes on a city road map. Roads have different travel times, there is plenty of memory, a heuristic is available that never overestimates the remaining time, and the fastest route is required. Which algorithm fits best?",
@@ -388,7 +388,7 @@ const QUIZ_BANK = {
         "Depth-first search"
       ],
       correct: 0,
-      explanation: "Different travel times rule out BFS, which finds the fewest roads, not the fastest route. Greedy search and DFS give no guarantee of the fastest route. With an admissible heuristic, A* returns the fastest route, and its hint guides the search towards the goal (section 3.7)."
+      explanation: "Different travel times rule out BFS, which finds the fewest roads, not the fastest route. Greedy search and DFS give no guarantee of the fastest route. On a city map with finitely many roads and positive travel times, an admissible heuristic makes A* return the fastest route, and its hint guides the search towards the goal (section 3.7)."
     }
   ],
 

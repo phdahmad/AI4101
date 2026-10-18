@@ -864,6 +864,8 @@
         (notes.length ? `It ${notes.join('; it ')}.` : 'Every neighbour was already reached at a lower or equal cost.') + tail,
         frontier.length ? undefined : { found: false }));
     }
+    // The last entry taken out may have been an old one: still report that there is no solution.
+    if (!steps[steps.length - 1].result) steps.push(snap(null, 'The frontier is now empty: there is no solution.', { found: false }));
     return steps;
   }
   const TRACER_RUN = { bfs: runBFS, dfs: runDFS, astar: runAStar };

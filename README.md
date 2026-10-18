@@ -37,17 +37,17 @@
 
 ## حالة المحتوى
 
-**المقرر مكتمل: 7 وحدات · 40 قسماً · 110 مصطلحاً · 7 بطاقات مراجعة · 72 سؤالاً · 32 مصدراً.**
+**المقرر مكتمل: 7 وحدات · 38 قسماً · 166 مصطلحاً · 7 بطاقات مراجعة · 74 سؤالاً · 32 مصدراً.**
 
-| # | الوحدة | ساعات | أقسام | أسئلة |
-|---|---|---|---|---|
-| 1 | Introduction to Artificial Intelligence | 4 | 7 | 10 |
-| 2 | Intelligent Agents and Their Environments | 8 | 5 | 10 |
-| 3 | Problem Solving by Search | 16 | 8 | 12 |
-| 4 | Local Search and Optimization | 8 | 5 | 10 |
-| 5 | Adversarial Search | 8 | 5 | 10 |
-| 6 | Constraint Satisfaction Problems | 8 | 5 | 10 |
-| 7 | Logical Agents | 8 | 5 | 10 |
+| # | الوحدة | ساعات | أقسام | مصطلحات | أسئلة | مصادر |
+|---|---|---|---|---|---|---|
+| 1 | Introduction to Artificial Intelligence | 4 | 7 | 18 | 10 | 4 |
+| 2 | Intelligent Agents and Their Environments | 8 | 5 | 30 | 12 | 4 |
+| 3 | Problem Solving by Search | 16 | 7 | 32 | 12 | 11 |
+| 4 | Local Search and Optimization | 8 | 4 | 37 | 10 | 3 |
+| 5 | Adversarial Search | 8 | 5 | 16 | 10 | 4 |
+| 6 | Constraint Satisfaction Problems | 8 | 5 | 15 | 10 | 3 |
+| 7 | Logical Agents | 8 | 5 | 18 | 10 | 3 |
 
 الساعات مطابقة لتوصيف المقرر المعتمد (60 ساعة اتصال).
 
@@ -108,9 +108,11 @@
 | `.before-after` > `.ba-col before` / `.ba-col after` | مقارنة قبل/بعد |
 | `.checkpoint` + `<details>` | سؤال تحقّق بإجابة مطويّة |
 | `p.reading-time` | "6 min read" في نهاية القسم |
+| `<pre><code class="language-python">` | كود بايثون مع تلوين |
+| `.table-figure` > `.table-scroll` > `table.env-table` | جدول يُمرَّر أفقياً على الجوال؛ أضف `style="white-space: normal;"` للخلايا الطويلة |
+| `<div class="tracer" data-tracer='{...}'>` | متتبّع خطوة بخطوة (BFS / DFS / A*) بزرَّي Next step وReset — يبنيه `attachTracers()` في `app.js` |
 
 زر **Mark as read** وتسمية **Section 3.4** يضيفهما `app.js` تلقائياً لكل قسم — لا تكتبهما داخل `body`.
-| `<pre><code class="language-python">` | كود بايثون مع تلوين |
 
 **مهم في رسوم SVG:** استخدم متغيّرات CSS للألوان (`fill="var(--accent)"`) لا قيَماً ثابتة، وإلا لن تعمل مع الثيم الداكن. وداخل نص JS استخدم `&lt;` بدل `<` في الكود البرمجي.
 
@@ -119,6 +121,10 @@
 ## ملاحظات فنية
 
 - تتبّع التقدّم في `localStorage` تحت المفتاح `ai4101_progress_v2`، والثيم تحت `ai4101_theme`. صيغة التقدّم: `{ "3": { read: [0,1,2], score: 9, total: 12 } }` — نسبة الوحدة = الأقسام المقروءة ÷ عدد أقسامها، والنسبة العامة = متوسط نسب الوحدات السبع.
+- **ترحيل تقدّم الوحدة 3:** بعد إعادة بنائها من 8 أقسام إلى 7، يحوّل `migrateModule3()` فهارس الأقسام المقروءة مرة واحدة، وينقل درجة الاختبار القديمة إلى `legacyQuiz`، ويعلّم السجل بـ`layout: "7-sections"` حتى لا يتكرر الترحيل. لا تغيّر عدد أقسام وحدة منشورة دون ترحيل مماثل.
+- `collapseTerms: true` في كائن الوحدة يطوي لوحة المصطلحات الطويلة خلف زر (الوحدات 1 و3 و4).
+- الكود داخل `body` يُحقن بـ`innerHTML`، فوسوم `<script>` لا تعمل؛ التفاعل يكون بمكوّن مثل المتتبّع يبنيه `app.js`.
+- رقم `?v=` في `index.html` يُرفع مع كل تحديث لكسر ذاكرة المتصفح.
 - أسماء أصناف CSS تستخدم `module-` لا `unit-`؛ إن نسخت قوالب من موقع ADL فأعد التسمية.
 - الرياضيات تُكتب بين `$...$` أو `$$...$$` ويصيّرها KaTeX.
 - جميع روابط الفيديو والمصادر في الوحدة 3 تم التحقّق منها فعلياً.

@@ -1168,6 +1168,7 @@ const COURSE_CONTENT = [
       "Decide whether a heuristic is admissible, compare two heuristics, and design one by relaxing the problem.",
       "Choose a search algorithm from the step costs, the memory available, and whether a good heuristic exists."
     ],
+    collapseTerms: true,
     terms: [
       { term: "Search problem", meaning: "A problem described by five parts: initial state, actions, transition model, goal test, and action cost." },
       { term: "State space", meaning: "Every state that can be reached from the initial state, joined by the actions that move between them. It is produced by the five parts; think of it as the map." },
@@ -1195,11 +1196,11 @@ const COURSE_CONTENT = [
       { term: "Straight-line distance", meaning: "The distance between two places in a straight line. On a road map it is never longer than the real road, so it is an admissible heuristic when the cost is distance." },
       { term: "Greedy best-first search", meaning: "Expands the node with the smallest h(n) and ignores the cost already paid. It can be fast, but it is not optimal." },
       { term: "A*", say: "A-star", meaning: "The main algorithm of this module. It expands the node with the smallest f(n) = g(n) + h(n): what you already paid, plus what you still expect to pay. The star is part of the name, not a multiplication sign — see section 3.5." },
-      { term: "Admissible", meaning: "A heuristic that never guesses higher than the real remaining cost. It is the condition that makes A* return a cheapest path." },
+      { term: "Admissible", meaning: "A heuristic that never guesses higher than the real remaining cost. It is the condition that makes A* return a cheapest path, when the branching factor is finite and every step costs at least some ε > 0." },
       { term: "Consistent", meaning: "A stronger condition: one step can never improve the guess by more than that step costs, h(n) ≤ c + h(n'). Every consistent heuristic is also admissible." },
       { term: "Misplaced tiles, h₁", meaning: "An 8-puzzle heuristic: the number of tiles that are not in their correct square." },
       { term: "Manhattan distance, h₂", meaning: "An 8-puzzle heuristic: for every tile, its horizontal plus vertical distance from its correct square, added up." },
-      { term: "Dominance", meaning: "h₂ dominates h₁ if both are admissible and h₂(n) ≥ h₁(n) for every node. With consistent heuristics, A* with h₂ expands no more nodes than A* with h₁, apart from ties." },
+      { term: "Dominance", meaning: "h₂ dominates h₁ if both are admissible and h₂(n) ≥ h₁(n) for every node. If both are also consistent, A* with h₂ expands no more nodes than A* with h₁, apart from ties." },
       { term: "Relaxed problem", meaning: "The same problem with some rules removed, so it is easier to solve exactly. Its exact cost is an admissible heuristic for the real problem." }
     ],
     sections: [
@@ -1275,7 +1276,7 @@ const COURSE_CONTENT = [
 
 <div class="aha">
   <div class="aha-label">Formulation is the hard part</div>
-  <p>The algorithms in this module are short. You can memorise them in one evening. The hard part is turning a messy real situation into those five parts, and that is the part the exams test. Later in this course, when you get stuck, check your formulation before you check your algorithm.</p>
+  <p>The algorithms in this module are short. You can memorize them in one evening. The hard part is turning a messy real situation into those five parts, and that is the part the exams test. Later in this course, when you get stuck, check your formulation before you check your algorithm.</p>
 </div>
 
 <p>In code, all five parts fit in one small class. Every problem in this module plugs into it:</p>
@@ -1326,7 +1327,7 @@ const COURSE_CONTENT = [
 <ol class="steps">
   <li><strong>Start with a frontier</strong><p>The <strong>frontier</strong> holds nodes we have created but not expanded yet. It is the edge of what we know. At the start it holds only the first node.</p></li>
   <li><strong>Take one node out of the frontier</strong><p><em>This is the only line that changes between algorithms.</em> Which node you take — the oldest, the newest, the cheapest, the most promising — decides whether you are running BFS, DFS, UCS, or A*.</p></li>
-  <li><strong>Test it</strong><p>If it is a goal, follow the parent links back to the start and return the path. (BFS can safely test earlier, when a node is created &mdash; section 3.3.)</p></li>
+  <li><strong>Test it</strong><p>If it is a goal, follow the parent links back to the start and return the path. (BFS can safely test earlier, when a node is created &mdash; see its code in section 3.4.)</p></li>
   <li><strong>Expand it</strong><p>To <strong>expand</strong> a node means to make its children: apply every legal action, and add the new nodes to the frontier.</p></li>
   <li><strong>Repeat</strong><p>Until you find a goal, or the frontier is empty — which means there is no solution.</p></li>
 </ol>
@@ -1439,7 +1440,7 @@ def path(node):
   <p>A map has 6 places. You run a tree-like search and your search tree now holds 40 nodes. Is something broken?</p>
   <details>
     <summary>Show answer</summary>
-    <p><strong>No, this is normal.</strong> Without a reached table, the same place is created again on every path that leads to it, so nodes are many more than states. It wastes work, but the answer is still correct. Graph search would expand at most 6 nodes, one per state.</p>
+    <p><strong>No, this is normal.</strong> Without a reached table, the same place is created again on every path that leads to it, so nodes are many more than states. It wastes work, but the answer is still correct. BFS with a reached table would expand at most 6 nodes, one per state. UCS and A* may add a place again when they find a cheaper path to it, but the table still stops the endless repeats.</p>
   </details>
 </div>
 
@@ -1596,7 +1597,7 @@ def breadth_first_search(problem):
 
 <p>On the delivery map, BFS returns S &rarr; B &rarr; G: two roads, the fewest possible, but 9 km.</p>
 
-<p><strong>Result:</strong> complete when the branching factor $b$ is finite. Optimal <em>only when every step costs the same</em> &mdash; on the delivery map S &rarr; A &rarr; C &rarr; G is only 8 km. Time and memory are both $O(b^d)$. The memory is what hurts most: BFS must hold a whole level of the tree at once.</p>
+<p><strong>Result:</strong> complete when the branching factor $b$ is finite. Guaranteed to be optimal <em>when every step costs the same</em> &mdash; on the delivery map S &rarr; A &rarr; C &rarr; G is only 8 km. Time and memory are both $O(b^d)$. The memory is what hurts most: BFS must hold a whole level of the tree at once.</p>
 
 <h3>2. Uniform-Cost Search (UCS)</h3>
 
@@ -1620,7 +1621,7 @@ def breadth_first_search(problem):
 
 <p><strong>Rule:</strong> take out the <strong>deepest</strong> node — the one created most recently. <strong>Frontier:</strong> a stack, last in, first out.</p>
 
-<p>The strong point of DFS is memory. In its tree-like form it remembers only the current path and the unexpanded siblings along it: $O(bm)$ instead of $O(b^d)$. If the deepest path has 12 steps ($m = 12$) and $b = 10$, that is about 120 nodes, where BFS at the same depth may need a trillion. The saving disappears if DFS keeps a reached table of every state it has seen: the table can grow to the size of the whole state space.</p>
+<p>The strong point of DFS is memory. In its tree-like form it remembers only the current path and the unexpanded siblings along it: $O(bm)$ instead of $O(b^d)$. If the deepest path has 12 steps ($m = 12$) and $b = 10$, that is about 120 nodes, where BFS at the same depth may need a trillion. The saving disappears if DFS keeps a reached table of every state it has reached: the table can grow to the size of the whole state space.</p>
 
 <p><strong>Result:</strong> not optimal. Tree-like DFS is not even complete: it can go around a cycle forever. If it checks the current path for repeated states, it is complete in a finite state space &mdash; but in an infinite one it can still follow an endless branch. Time $O(b^m)$; memory $O(bm)$ for tree-like DFS.</p>
 
@@ -1662,12 +1663,12 @@ def breadth_first_search(problem):
 
 <div class="aha">
   <div class="aha-label">Why the repeated work does not matter</div>
-  <p>In a tree with branching factor 10, the deepest level holds about 90% of all nodes. Levels 1 to 4 are generated again and again, and all that repetition costs about one eighth of a single pass over level 5. You pay about 11% more time and save about 99.9% of the memory. That is why IDS — not BFS — is the standard blind search when you do not know how deep the goal is.</p>
+  <p>In a tree with branching factor 10, the deepest level holds about 90% of all nodes. Levels 1 to 4 are created again and again, and all that repetition costs about one eighth of a single pass over level 5. You pay about 11% more time and save about 99.9% of the memory. That is why IDS — not BFS — is the standard blind search when you do not know how deep the goal is.</p>
 </div>
 
 <p><strong>Result:</strong> complete when $b$ is finite. Optimal when all steps cost the same. Time $O(b^d)$, memory $O(bd)$. It has the memory of DFS and the guarantees of BFS.</p>
 
-<h3>The table to memorise</h3>
+<h3>The table to memorize</h3>
 
 <div class="table-figure">
   <p class="table-hint">Swipe sideways to see the whole table &rarr;</p>
@@ -1778,6 +1779,8 @@ def breadth_first_search(problem):
   <div class="diagram-caption">When two nodes have the same f, the one that entered the frontier first comes out first. "Old" marks an entry whose state was later reached more cheaply.</div>
 </div>
 
+<p>Read the table in two directions. The "Taken out" column lists the nodes A* expands, in order: S, B, A, C, then G. Along each row, the last column is the frontier: nodes created but not expanded yet.</p>
+
 <p>Three things to notice:</p>
 
 <ol class="steps">
@@ -1812,7 +1815,7 @@ def breadth_first_search(problem):
     <h4>What you gain</h4>
     <ul>
       <li>Never guesses higher than the real cost</li>
-      <li>A* is guaranteed to return a cheapest path</li>
+      <li>With finite b and step costs of at least ε, A* returns a cheapest path</li>
       <li>The closer the guess, the fewer nodes expanded</li>
       <li>h(n) = 0 is admissible but gives no help — A* becomes UCS</li>
     </ul>
@@ -1899,39 +1902,40 @@ def a_star(problem, h):
       <line x1="420" y1="255" x2="590" y2="185"/>
     </g>
 
-    <text x="150" y="132" font-size="11" fill="var(--gold)" font-weight="600">450</text>
-    <text x="340" y="66" font-size="11" fill="var(--gold)" font-weight="600">650</text>
-    <text x="525" y="100" font-size="11" fill="var(--gold)" font-weight="600">360</text>
-    <text x="150" y="252" font-size="11" fill="var(--gold)" font-weight="600">90</text>
-    <text x="320" y="275" font-size="11" fill="var(--gold)" font-weight="600">420</text>
-    <text x="520" y="238" font-size="11" fill="var(--gold)" font-weight="600">430</text>
+    <text x="150" y="132" font-size="14" fill="var(--gold)" font-weight="600">450</text>
+    <text x="340" y="66" font-size="14" fill="var(--gold)" font-weight="600">650</text>
+    <text x="525" y="100" font-size="14" fill="var(--gold)" font-weight="600">360</text>
+    <text x="150" y="252" font-size="14" fill="var(--gold)" font-weight="600">90</text>
+    <text x="320" y="275" font-size="14" fill="var(--gold)" font-weight="600">420</text>
+    <text x="520" y="238" font-size="14" fill="var(--gold)" font-weight="600">430</text>
 
     <circle cx="95" cy="205" r="30" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/>
-    <text x="95" y="203" text-anchor="middle" font-size="11" fill="var(--accent)" font-weight="700">Makkah</text>
-    <text x="95" y="217" text-anchor="middle" font-size="10" fill="var(--ink-mute)">h=789</text>
+    <text x="95" y="203" text-anchor="middle" font-size="13" fill="var(--accent)" font-weight="700">Makkah</text>
+    <text x="95" y="217" text-anchor="middle" font-size="12" fill="var(--ink-mute)">h=789</text>
 
     <circle cx="255" cy="85" r="31" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/>
-    <text x="255" y="83" text-anchor="middle" font-size="10" fill="var(--ink)">Madinah</text>
-    <text x="255" y="97" text-anchor="middle" font-size="10" fill="var(--ink-mute)">h=714</text>
+    <text x="255" y="83" text-anchor="middle" font-size="12" fill="var(--ink)">Madinah</text>
+    <text x="255" y="97" text-anchor="middle" font-size="12" fill="var(--ink-mute)">h=714</text>
 
     <circle cx="430" cy="70" r="31" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/>
-    <text x="430" y="68" text-anchor="middle" font-size="10" fill="var(--ink)">Buraydah</text>
-    <text x="430" y="82" text-anchor="middle" font-size="10" fill="var(--ink-mute)">h=325</text>
+    <text x="430" y="68" text-anchor="middle" font-size="12" fill="var(--ink)">Buraydah</text>
+    <text x="430" y="82" text-anchor="middle" font-size="12" fill="var(--ink-mute)">h=325</text>
 
     <circle cx="230" cy="265" r="28" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/>
-    <text x="230" y="263" text-anchor="middle" font-size="11" fill="var(--ink)">Taif</text>
-    <text x="230" y="277" text-anchor="middle" font-size="10" fill="var(--ink-mute)">h=746</text>
+    <text x="230" y="263" text-anchor="middle" font-size="13" fill="var(--ink)">Taif</text>
+    <text x="230" y="277" text-anchor="middle" font-size="12" fill="var(--ink-mute)">h=746</text>
 
     <circle cx="420" cy="255" r="28" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/>
-    <text x="420" y="253" text-anchor="middle" font-size="11" fill="var(--ink)">Afif</text>
-    <text x="420" y="267" text-anchor="middle" font-size="10" fill="var(--ink-mute)">h=391</text>
+    <text x="420" y="253" text-anchor="middle" font-size="13" fill="var(--ink)">Afif</text>
+    <text x="420" y="267" text-anchor="middle" font-size="12" fill="var(--ink-mute)">h=391</text>
 
     <circle cx="590" cy="168" r="33" fill="var(--accent-soft)" stroke="var(--teal)" stroke-width="3"/>
-    <text x="590" y="166" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">Riyadh</text>
-    <text x="590" y="180" text-anchor="middle" font-size="10" fill="var(--ink-mute)">h=0</text>
+    <text x="590" y="166" text-anchor="middle" font-size="13" fill="var(--teal)" font-weight="700">Riyadh</text>
+    <text x="590" y="180" text-anchor="middle" font-size="12" fill="var(--ink-mute)">h=0</text>
 
   </svg>
   <div class="diagram-caption">Road distances are approximate. Straight-line values were computed from city coordinates.</div>
+</div>
 
   <details>
     <summary>Show answer</summary>
@@ -1992,9 +1996,11 @@ def a_star(problem, h):
 
 <h3>Dominance: comparing two admissible heuristics</h3>
 
-<p>If both are admissible and $h_2(n) \\ge h_1(n)$ for every node, we say $h_2$ <strong>dominates</strong> $h_1$. That is a precise statement about the two functions: $h_2$ is never smaller, and never too high.</p>
+<p>If both are admissible and $h_2(n) \\ge h_1(n)$ for every node, we say $h_2$ <strong>dominates</strong> $h_1$. That is the whole definition: a statement about the two functions. $h_2$ is never smaller, and never too high.</p>
 
-<p>What does it mean for the search? With consistent heuristics, such as these two, every node that A* expands with $h_2$ is also expanded with $h_1$ &mdash; except possibly some nodes whose $f$ equals the cost of the best solution, where the order of ties decides. So A* with $h_2$ expands no more nodes than A* with $h_1$, apart from ties. It is a guarantee about the number of nodes, not about seconds: $h_2$ may cost more to compute at each node.</p>
+<p><strong>What it usually means for A*.</strong> A larger admissible guess is closer to the real remaining cost, so it tends to steer A* more directly towards the goal and to expand fewer nodes.</p>
+
+<p><strong>When it becomes a guarantee.</strong> If both heuristics are also consistent &mdash; as $h_1$ and $h_2$ are &mdash; and A* runs the same way with each, every node that A* expands with $h_2$ is also expanded with $h_1$, except possibly some nodes whose $f$ equals the cost of the best solution, where the order of ties decides. So A* with $h_2$ expands no more nodes than with $h_1$, apart from ties. Even then it is a guarantee about nodes, not about seconds: $h_2$ may cost more to compute at each node.</p>
 
 <p>How large is the difference in practice? Russell &amp; Norvig (3rd edition) report averages over 100 random 8-puzzle problems that need 12 moves: iterative deepening, with no hint, created about 3.6 million nodes; A* with $h_1$ about 230; A* with $h_2$ about 70. Your own counts will differ with the implementation and the tie-breaking rule.</p>
 
@@ -2101,7 +2107,7 @@ def a_star(problem, h):
 
 <h3>The whole module in one paragraph</h3>
 
-<p>Describe your problem with five parts. Explore it with a frontier, and remember the states you reached. Judge every algorithm on completeness, optimality, time, and memory — and expect memory to be the limit that stops you. With no hint, use BFS when all steps cost the same, UCS when they do not, and IDS when memory is tight. With a hint, add it to the cost you already paid, and you have A*, which returns a cheapest path whenever the hint is never too high.</p>
+<p>Describe your problem with five parts. Explore it with a frontier, and remember the states you reached. Judge every algorithm on completeness, optimality, time, and memory — and expect memory to be the limit that stops you. With no hint, use BFS when all steps cost the same, UCS when they do not, and IDS when memory is tight. With a hint, add it to the cost you already paid, and you have A*, which returns a cheapest path whenever the hint is never too high and every step costs at least some ε &gt; 0.</p>
 
 <div class="checkpoint">
   <span class="checkpoint-label">Check yourself</span>
@@ -2161,7 +2167,7 @@ def a_star(problem, h):
         ]
       },
       {
-        group: "Formulas to memorise",
+        group: "Formulas to memorize",
         items: [
           "<code>g(n)</code> = cost already paid from the start to n",
           "<code>h(n)</code> = guessed cost from n to the goal, in the same unit as g",
@@ -2170,7 +2176,7 @@ def a_star(problem, h):
           "ignore <code>g(n)</code> → A* becomes greedy search",
           "Admissible: <code>h(n) ≤ real remaining cost</code>",
           "Consistent: <code>h(n) ≤ c + h(n')</code>",
-          "Dominance: both admissible and <code>h₂(n) ≥ h₁(n)</code> → A* with h₂ expands no more nodes, apart from ties"
+          "Dominance: both admissible and <code>h₂(n) ≥ h₁(n)</code> for every n. If both are also consistent → A* with h₂ expands no more nodes, apart from ties"
         ]
       },
       {
@@ -2206,7 +2212,7 @@ def a_star(problem, h):
       {
         group: "Mistakes that cost marks",
         items: [
-          "Saying BFS is always optimal — it is not, unless all steps cost the same",
+          "Saying BFS is always optimal — it is guaranteed only when all steps cost the same",
           "Calling the driving distance the search time — path cost belongs to the answer, search time to the algorithm",
           "Testing the goal when a node is <em>created</em> in UCS or A* instead of when it is <em>taken out</em>",
           "Confusing a state with a node: one state can appear in many nodes",
