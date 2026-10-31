@@ -1788,6 +1788,18 @@ body { display: block; }
   content: "▸"; position: absolute; left: 0; color: var(--gold); font-size: 0.75rem;
 }
 .cheat-group li strong { color: var(--ink); }
+/* A group marked optional: true — further exploration, not in the quiz */
+.cheat-group.cheat-optional {
+  grid-column: 1 / -1;
+  border: 1px dashed var(--rule);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem 0.7rem;
+  background: var(--bg);
+}
+.cheat-group.cheat-optional h4 { color: var(--ink-mute); border-bottom-style: dashed; }
+.cheat-group.cheat-optional li { font-size: 0.82rem; color: var(--ink-mute); }
+.cheat-group.cheat-optional li::before { color: var(--ink-mute); }
+.cheat-group.cheat-optional li strong { color: var(--ink-soft); }
 .cheat-group code, .terms-box code {
   font-family: 'JetBrains Mono', monospace; font-size: 0.82em;
   background: var(--bg-soft); padding: 1px 5px; border-radius: 3px;

@@ -1811,7 +1811,7 @@ def breadth_first_search(problem):
   <p>A <strong>heuristic function</strong> $h(n)$ is a guess at the cost of the cheapest path from the state at node $n$ to a goal. At the goal itself, $h = 0$. It is only an estimate: cheap to compute and allowed to be wrong. It does not need to be exact to be useful &mdash; even a rough estimate can show which choices look more promising. Section 3.6 shows how to check whether an estimate is safe for A*.</p>
 </div>
 
-<p>The heuristic used in this section is the <strong>straight-line distance</strong>: for maps, the distance in a straight line to the destination. Roads curve, so the real drive is never shorter than this.</p>
+<p>The heuristic used in this section is the <strong>straight-line distance</strong>: for maps, the distance in a straight line to the destination. Roads curve, so the real drive is never shorter than this. It fits here because the path cost is also a distance, in kilometres. If the cost were travel time or money, the straight-line distance would not automatically be a safe estimate (section 3.6).</p>
 
 <p>How do we use the hint? There are two ways. The first is quick, but it can return an expensive path. The second is A*.</p>
 
@@ -1839,11 +1839,11 @@ def breadth_first_search(problem):
   </div>
 </div>
 
+<p>Start with one number. In the delivery map, the node for B has $g = 2$: the driver has already driven 2 km. Its $h = 3$: the customer is 3 km away in a straight line. Add the two: $2 + 3 = 5$, so "a route through B will cost at least about 5 km." Both numbers are kilometres, so adding them makes sense. If $g$ were in kilometres and $h$ in minutes, the sum would mean nothing.</p>
+
 <div class="definition">
   <p>A* expands the node with the smallest $f(n) = g(n) + h(n)$, where $g(n)$ is the cost <em>already paid</em> to reach $n$, and $h(n)$ is the guess for the cost <em>still to pay</em>. So $f(n)$ is a guess at the total cost of the best solution passing through $n$. <strong>Frontier:</strong> a priority queue ordered by $f$.</p>
 </div>
-
-<p>Before the formula, one number. In the delivery map, the node for B has $g = 2$: the driver has already driven 2 km. Its $h = 3$: the customer is 3 km away in a straight line. So $f = 2 + 3 = 5$: "a route through B will cost at least about 5 km." Both numbers are kilometres, so adding them makes sense. If $g$ were in kilometres and $h$ in minutes, the sum would mean nothing.</p>
 
 <div class="aha">
   <div class="aha-label">A* connects UCS and Greedy Best-First Search</div>
@@ -2280,8 +2280,7 @@ def a_star(problem, h):
           "<code>h(n) = 0</code> → A* becomes UCS",
           "ignore <code>g(n)</code> → A* becomes greedy search",
           "Admissible: <code>h(n) ≤ real remaining cost</code>",
-          "Consistent: <code>h(n) ≤ c + h(n')</code>",
-          "Dominance: both admissible and <code>h₂(n) ≥ h₁(n)</code> for every n → h₂ usually saves nodes"
+          "Consistent: <code>h(n) ≤ c + h(n')</code>"
         ]
       },
       {
@@ -2298,8 +2297,7 @@ def a_star(problem, h):
         items: [
           "BFS — queue; complete if b is finite; optimal if equal costs; time and memory <code>O(b^d)</code>",
           "UCS — priority queue by g; complete and optimal if b is finite and every step costs at least ε &gt; 0",
-          "DFS — stack; tree-like: not complete, not optimal; time <code>O(b^m)</code>, memory <code>O(bm)</code>",
-          "Further exploration: DLS — DFS with a depth limit ℓ · IDS — DLS with ℓ = 0, 1, 2, …; complete if b is finite, optimal if equal costs, memory <code>O(bd)</code>; use when steps cost the same and memory is tight"
+          "DFS — stack; tree-like: not complete, not optimal; time <code>O(b^m)</code>, memory <code>O(bm)</code>"
         ]
       },
       {
@@ -2323,6 +2321,15 @@ def a_star(problem, h):
           "Adding g in kilometres to h in minutes — g and h must use the same unit",
           "Forgetting the reached table and then wondering why the search never stops",
           "Thinking the agent moves while it searches — it searches its model first, and only then acts"
+        ]
+      },
+      {
+        group: "Further exploration — not in the quiz",
+        optional: true,
+        items: [
+          "Dominance: both admissible and <code>h₂(n) ≥ h₁(n)</code> for every n → A* with h₂ usually expands fewer nodes",
+          "DLS — DFS that never goes deeper than a limit ℓ",
+          "IDS — DLS with ℓ = 0, 1, 2, …: the guarantees of BFS with the memory of DFS, when steps cost the same and memory is tight"
         ]
       }
     ],

@@ -362,7 +362,7 @@
         </header>
         <div class="cheat-grid">
           ${mod.cheatsheet.map(g => `
-            <div class="cheat-group">
+            <div class="cheat-group${g.optional ? ' cheat-optional' : ''}">
               <h4>${g.group}</h4>
               <ul>${g.items.map(i => `<li>${i}</li>`).join('')}</ul>
             </div>`).join('')}
