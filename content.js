@@ -2224,7 +2224,7 @@ def a_star(problem, h):
 
 <div class="aha">
   <div class="aha-label">Where this takes you next</div>
-  <p>Sometimes we need a sequence of actions to reach a goal. Other times, we mainly care about finding a good solution, not the path used to discover it. That second case opens Module 4, local search and optimization. Local search improves candidate solutions instead of finding paths to a goal, so it usually does not keep the path that led to an answer.</p>
+  <p>Sometimes we need a sequence of actions to reach a goal. Other times, we mainly care about finding a good solution, not the path used to discover it. That second case opens Module 4, optimization. Local search improves candidate solutions instead of finding paths to a goal, so it usually does not keep the path that led to an answer.</p>
   <p>The later modules reuse this module too. Adversarial search (Module 5) searches a tree where an opponent chooses every second move, and constraint satisfaction (Module 6) searches partial assignments, like the timetable above.</p>
 </div>
 
@@ -2328,63 +2328,73 @@ def a_star(problem, h):
   // ==================== MODULE 4 ====================
   {
     id: 4,
-    title: "Local Search and Optimization",
-    subtitle: "Optimization Problems, Hill Climbing, Genetic Algorithms, Gradient Descent",
-    shortDesc: "When nobody cares how you got there — only how good the final answer is.",
+    title: "Optimization",
+    subtitle: "Finding Better Solutions",
+    shortDesc: "Turn a real problem into one a computer can score, then search for better and better answers.",
     hours: 8,
-    story: "In Module 3 the answer was a path. Here the answer is one complete solution — a timetable, a choice of projects, a number — and we want the best one we can find. This module first teaches you to describe such a problem: what you choose, what must hold, and how to score an answer. Then it shows three ways to improve an answer: one candidate at a time, a whole population at once, and by following the slope.",
+    story: "In the lecture you were delivery drivers, each with your own order for visiting the customers. This module turns that game into a method. First, model the problem: write a route as a list, and score it by its total distance. Then search for better routes in two ways: improve one route by small changes, or keep a whole population of routes and combine the best ones. Finally, the same ideas help to build better AI systems.",
     objectives: [
-      "Describe an optimization problem: decision variables, candidate solutions, search space, objective function, constraints, feasible region and neighbourhood.",
-      "Classify an optimization problem as discrete or continuous, and as minimization or maximization.",
-      "Trace hill climbing on a small example, and explain local optimum, plateau and ridge, and how sideways moves and random restarts help.",
-      "Trace one generation of a genetic algorithm — fitness, selection, crossover, mutation — and handle a child that breaks a constraint.",
-      "Apply gradient descent to a function of one variable and explain the effect of the learning rate."
+      "Model a real-world problem as an optimization problem: candidate solution, solution representation, objective function, search space and constraints.",
+      "Compute the objective value of a candidate solution, such as the length of a delivery route; say whether to minimize or maximize, whether the problem is discrete or continuous, and which wishes are constraints or soft preferences.",
+      "Trace single-solution local search (hill climbing) on a small route problem, and explain current solution, neighbouring solution, best solution found so far, local optimum and global optimum.",
+      "Trace one generation of a genetic algorithm on the same problem, keep every route valid, and compare population-based search with single-solution search.",
+      "Explain how optimization helps to build AI systems: gradient descent and the learning rate inside the model; hyperparameter tuning, feature selection and neural architecture search around it."
     ],
     collapseTerms: true,
     terms: [
       { term: "Optimization", meaning: "Finding the best possible solution according to a defined objective, while satisfying any constraints that apply." },
-      { term: "Decision variable", meaning: "Something whose value we choose, such as the time slot of each exam. A solution gives a value to every decision variable." },
-      { term: "Candidate solution", meaning: "One complete choice of values for all the decision variables, such as one full timetable, good or bad. In Module 3 a solution was a path; here it is one complete answer." },
-      { term: "Search space (solution space)", meaning: "All the candidate solutions the representation allows, including bad ones and ones that break constraints." },
-      { term: "Objective function", meaning: "A function that gives each candidate solution a number that measures its quality. We minimize it (cost, error, penalty) or maximize it (profit, benefit, fitness). It plays the role of Module 2's utility function: a value for each candidate. In machine learning it is called a loss function." },
-      { term: "Minimization / maximization", meaning: "The direction of the search: minimize a cost, an error or a penalty; maximize a profit, a benefit or a fitness. Maximizing f is the same as minimizing −f." },
-      { term: "Constraint", meaning: "A requirement that a feasible solution must satisfy, such as: no student has two exams at the same time. Section 2.3 calls it a hard requirement; Module 6 calls it a hard constraint." },
+      { term: "Travelling Salesperson Problem (TSP)", meaning: "Find the shortest route that starts at a depot, visits every customer exactly once and returns to the depot. Module 3 and Lab 2 call it the travelling salesman problem; it is the same problem." },
+      { term: "Problem modelling", meaning: "Turning a real situation into a precise problem that a computer can work on: keep what matters (places, distances), drop the rest (traffic, the colour of the van)." },
+      { term: "Candidate solution", meaning: "One complete answer, good or bad, such as one full route. In Module 3 a solution was a path built step by step; here it is one complete answer, judged as a whole." },
+      { term: "Solution representation", meaning: "How a candidate solution is written so that an algorithm can store it and change it: a permutation such as [A, C, B, D] for a route, or a bit string such as 1010 for yes/no choices." },
+      { term: "Permutation", meaning: "A list that contains every item exactly once, in some order, such as [A, C, B, D]. A permutation representation writes each route this way, so every customer is visited exactly once." },
+      { term: "Decision variable", meaning: "Something whose value we choose, such as which customer comes first in a route. A candidate solution gives a value to every decision variable." },
+      { term: "Search space (solution space)", meaning: "All the candidate solutions the representation allows. Four customers give 24 orders, which are 12 different routes, because a route and its reverse have the same length." },
+      { term: "Objective function", meaning: "A function that gives each candidate solution a number that measures its quality, such as the total distance of a route, including the return to the depot. It evaluates candidates; it does not choose which ones to try. It plays the role of Module 2's utility function, but it is not the PEAS performance measure. In machine learning it is called a loss function." },
+      { term: "Search strategy", meaning: "The part of a method that decides which candidate solutions to explore next, such as: swap two customers and try the new route." },
+      { term: "Minimization / maximization", meaning: "The direction of the search: minimize a cost, an error or a distance; maximize a profit, a benefit or a fitness. Maximizing f is the same as minimizing −f." },
+      { term: "Constraint", meaning: "A requirement that a solution must satisfy to be accepted at all, such as: no student has two exams at the same time. Section 2.3 calls it a hard requirement; Module 6 calls it a hard constraint." },
       { term: "Soft preference", meaning: "A desirable condition that is not required, such as few students with two exams on one day. It enters the objective function as a penalty or a reward." },
       { term: "Penalty", meaning: "An amount added to the objective each time a soft preference is not met, when the objective is minimized." },
       { term: "Feasible solution", meaning: "A candidate solution that satisfies every constraint. All feasible solutions together form the feasible region, which is part of the search space." },
-      { term: "Neighbourhood", meaning: "The candidate solutions reachable from the current one by one small, defined change, such as moving one exam to another slot. Each of them is a neighbour." },
-      { term: "Discrete optimization", meaning: "Optimization where the decision variables take separate values: whole numbers, yes/no choices or orderings. Example: the exam timetable." },
-      { term: "Continuous optimization", meaning: "Optimization where the decision variables take real values anywhere in a range. Example: choosing x to minimize (x − 3)²." },
+      { term: "Discrete optimization", meaning: "Optimization where the decision variables take separate values: whole numbers, yes/no choices or orderings. Example: the order of visiting customers." },
+      { term: "Continuous optimization", meaning: "Optimization where the decision variables take real values anywhere in a range. Example: choosing x to minimize (x − 3)², or the weights of a model." },
       { term: "Local search", meaning: "A family of methods that move between candidate solutions, using a neighbourhood or other small changes, to improve the objective. They usually do not keep the path that led to the answer." },
-      { term: "Single-solution optimization", meaning: "Methods that hold and improve one candidate solution at a time, such as hill climbing." },
-      { term: "Population-based optimization", meaning: "Methods that hold and improve a group of candidate solutions at a time, such as genetic algorithms. The members are candidate solutions, not agents." },
-      { term: "Landscape", meaning: "A picture of a problem: each position is a candidate solution, and the height is its objective value." },
-      { term: "Global optimum", meaning: "The best feasible solution in the whole problem: the global maximum when maximizing, the global minimum when minimizing." },
+      { term: "Single-solution search", meaning: "Methods that hold and improve one candidate solution at a time, such as hill climbing." },
+      { term: "Population-based search", meaning: "Methods that hold and improve a group of candidate solutions at a time, such as genetic algorithms. The members are candidate solutions, not agents." },
+      { term: "Neighbourhood", meaning: "The candidate solutions reachable from the current one by one small, defined change, such as swapping two customers in a route. Each of them is a neighbouring solution (a neighbour). Not the same as the nearest neighbour method of Lab 2, where a neighbour is a place." },
+      { term: "Neighbouring solution", meaning: "A candidate solution one small change away from the current one, such as a route with two customers swapped." },
+      { term: "Current solution", meaning: "The candidate solution a single-solution method holds now and tries to improve." },
+      { term: "Best solution found so far", meaning: "The best candidate a method has seen since it started. The program stores it and returns it, because the current solution or the population can later get worse." },
+      { term: "Hill climbing", meaning: "Single-solution local search: move to the best neighbour, and stop when no neighbour is better. Better means shorter for a route, higher for a fitness." },
+      { term: "Stopping criterion", meaning: "The rule that ends a search loop: no neighbour is better (hill climbing), the step is tiny or a step limit is reached (gradient descent), or a fixed number of generations (genetic algorithm)." },
       { term: "Local optimum", meaning: "A solution that no neighbour improves. It may also be the global optimum, or a better solution may exist elsewhere. It is a local maximum or a local minimum, depending on the direction." },
+      { term: "Global optimum", meaning: "The best feasible solution of the whole problem: the global maximum when maximizing, the global minimum when minimizing." },
+      { term: "Landscape", meaning: "A picture of a problem: each position is a candidate solution, and the height is its objective value." },
       { term: "Plateau", say: "pla-TOH", meaning: "A flat area where all neighbours have the same value, so the search has no direction to follow." },
       { term: "Ridge", meaning: "A narrow line along which the objective improves, but every single move the neighbourhood allows makes it worse, so the search stops early." },
-      { term: "Hill climbing", meaning: "Single-solution local search: move to the best neighbour, and stop when no neighbour is better. Better means higher when maximizing, lower when minimizing." },
-      { term: "Sideways move", meaning: "A move to a neighbour with the same objective value. A limited number of them lets hill climbing cross a plateau." },
-      { term: "Random-restart hill climbing", meaning: "Running hill climbing many times from new random starting solutions and keeping the best result. With success probability p per run, about 1/p runs are needed on average." },
-      { term: "Stopping criterion", meaning: "The rule that ends a search loop: no neighbour is better (hill climbing), the step is tiny or a step limit is reached (gradient descent), or the best fitness stops improving (genetic algorithm)." },
+      { term: "Random-restart hill climbing", meaning: "Running hill climbing many times from new random starting solutions and keeping the best solution found so far. With success probability p per run, about 1/p runs are needed on average." },
       { term: "Simulated annealing", say: "a-NEE-ling", meaning: "Optional reading. A variant of hill climbing that sometimes accepts a worse neighbour on purpose, often at first and rarely later, to escape a local optimum." },
       { term: "Nature-inspired optimization", meaning: "Optimization methods that take their main idea from a process in nature: biological evolution (genetic algorithms), swarms (particle swarm and ant colony optimization) or physical annealing (simulated annealing). Some keep a population and some keep one solution at a time; a natural origin does not make a method better." },
-      { term: "Genetic algorithm", meaning: "Population-based optimization: score the population with a fitness function, select parents, apply crossover and mutation, and repeat with the new generation." },
+      { term: "Genetic algorithm", meaning: "Population-based search that repeats: population → evaluation → selection → crossover → mutation → new population." },
       { term: "Population", meaning: "The group of candidate solutions a genetic algorithm holds at one time. Each round of the cycle produces a new generation." },
-      { term: "Chromosome (individual)", meaning: "How one candidate solution is written in a genetic algorithm, often as a string such as 1010. One member of the population is called an individual." },
-      { term: "Fitness function", meaning: "The score a genetic algorithm gives each chromosome, where higher is better. If the objective is a cost, the fitness must reverse it." },
-      { term: "Selection", meaning: "Choosing parents at random, with fitter chromosomes more likely to be chosen." },
-      { term: "Crossover", meaning: "Making children by cutting two parent chromosomes at the same point and swapping the tails. It does not guarantee a better child." },
-      { term: "Mutation", meaning: "A small random change to a chromosome, such as flipping one bit. It keeps variety in the population, and can make a child better or worse." },
-      { term: "Derivative (gradient)", meaning: "The slope of the objective at the current point: which way is uphill and how steep. With one variable it is f′(x); with many it is the gradient ∇f(x)." },
-      { term: "Gradient descent", meaning: "Continuous optimization that repeats x ← x − α·f′(x): a step against the slope. With a suitable learning rate the objective goes down; with one that is too large it can go up." },
-      { term: "Learning rate", meaning: "α, the size of each step in gradient descent. Too small is slow; too large jumps over the minimum and may never settle." }
+      { term: "Chromosome (individual)", meaning: "How one candidate solution is written in a genetic algorithm: a route list such as [A, C, B, D], or a bit string such as 1010. One member of the population is called an individual." },
+      { term: "Fitness function", meaning: "The score a genetic algorithm gives each chromosome, where higher is better. If the objective is a distance or a cost, the fitness must turn it around: a shorter route is fitter, for example fitness = 1 / distance." },
+      { term: "Selection", meaning: "Choosing parents at random, with fitter chromosomes more likely to be chosen. One simple way: pick two at random and keep the fitter one." },
+      { term: "Crossover", meaning: "Making a child from parts of two parents. For routes it must keep a permutation: no customer twice, none missing. It does not guarantee a better child." },
+      { term: "Mutation", meaning: "A small random change to a chromosome: swap two customers in a route, or flip one bit. It keeps variety in the population, and can make a child better or worse." },
+      { term: "Derivative (gradient)", meaning: "The slope of the objective at the current point: which way is uphill and how steep. With one variable it is f′(x); with many it is the gradient, one slope for each variable." },
+      { term: "Gradient descent", meaning: "Continuous optimization that repeats x ← x − α·f′(x): a step against the slope. It is how models are trained. With a suitable learning rate the objective goes down; with one that is too large it can go up." },
+      { term: "Learning rate", meaning: "α, the size of each step in gradient descent. Too small is slow; too large jumps over the minimum and may never settle. It is a hyperparameter, chosen by experiment." },
+      { term: "Hyperparameter tuning", meaning: "Searching for the best settings that are chosen before training, such as the learning rate or the number of layers. Each candidate is scored by training a model and testing it on validation data." },
+      { term: "Feature selection", meaning: "Choosing which inputs (features) a model should use. A candidate is a bit string with one bit per feature; the objective is the score on validation data." },
+      { term: "Neural architecture search", meaning: "Searching for a good design of a neural network: how many layers, of what kind, and how they connect. Research has used evolutionary algorithms and other methods for it." }
     ],
     sections: [
       {
-        title: "Introduction to Optimization and Local Search",
+        title: "Optimization: From Problems to Solutions",
         body: `
-<p>Every module so far asked an agent to reach a goal. This module asks a different question: of all the answers we could give, which one is the <em>best</em>? That question is called optimization. We first learn to describe it carefully. The algorithms come after.</p>
+<p>In the lecture you were delivery drivers. Each of you chose an order for visiting the customers, and we compared the routes. That small game already holds every idea of this module. This section gives each idea its name. Sections 4.2 to 4.4 then show different ways to find better solutions.</p>
 
 <h3>What is optimization?</h3>
 
@@ -2392,12 +2402,12 @@ def a_star(problem, h):
   <p><strong>Optimization</strong> is the process of finding the best possible solution according to a defined objective, while satisfying any constraints that apply.</p>
 </div>
 
-<p>Three levels of success are easy to mix up. Take the timetable of your college's final exams:</p>
+<p>Three levels of success are easy to mix up. Take the delivery driver:</p>
 
 <ol class="steps">
-  <li><strong>An acceptable solution</strong><p>Every exam has a time slot and a room, and no student has two exams at the same time. The timetable can be used.</p></li>
-  <li><strong>A better solution</strong><p>It is acceptable, and fewer students have two exams on the same day.</p></li>
-  <li><strong>An optimal solution</strong><p>No acceptable timetable is better. To be sure of this, you would have to rule out every other acceptable timetable.</p></li>
+  <li><strong>An acceptable solution</strong><p>The route visits every customer once and returns to the depot. The driver can use it.</p></li>
+  <li><strong>A better solution</strong><p>It is acceptable, and it is shorter.</p></li>
+  <li><strong>An optimal solution</strong><p>No acceptable route is shorter. To be sure of this, you would have to rule out every other route.</p></li>
 </ol>
 
 <p>The methods in this module move from level 1 towards level 3. In general they cannot promise to reach level 3: they aim for a <em>good</em> solution, and they often cannot tell you whether it is the best one.</p>
@@ -2406,24 +2416,149 @@ def a_star(problem, h):
   <div class="callout-icon">i</div>
   <div class="callout-body">
     <div class="callout-title">You have already met optimization</div>
-    <p>In Module 3, uniform-cost search and A* return the cheapest path. That is optimization over paths. So optimization is wider than local search: local search is one family of methods for it, used when the answer is one complete solution rather than a path.</p>
+    <p>In Module 3, uniform-cost search and A* (with an admissible heuristic) return a cheapest path. That is optimization over paths. The two modules ask their questions in different ways:</p>
+    <ul>
+      <li>Module 3: <em>How can we find a path, or a sequence of actions, that reaches a goal?</em></li>
+      <li>Module 4: <em>How can we represent, evaluate and improve candidate solutions?</em></li>
+    </ul>
+    <p>This is a difference of focus for teaching, not a strict line between search and optimization. The delivery problem fits both: Lab 2 builds a route one customer at a time, like a path; this module takes complete routes and improves them.</p>
   </div>
 </div>
 
-<h3>The parts of an optimization problem</h3>
+<h3>From a real problem to a solution</h3>
 
-<p>Before you choose an algorithm, describe the problem. Eight ideas do the job. We use one running example for all of them: the exam timetable.</p>
+<p>We follow the same six steps for every problem in this module.</p>
+
+<div class="diagram">
+  <svg viewBox="0 0 700 275" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Six steps: real-world problem, problem modelling, solution representation, objective function, search strategy, evaluation; the last two repeat.">
+    <text x="350" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">FROM A REAL PROBLEM TO A BETTER SOLUTION</text>
+    <rect x="20" y="48" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+      <text x="29" y="63" font-size="10" fill="var(--ink-mute)" font-weight="700">1</text>
+      <text x="118" y="81" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Real-world problem</text>
+      <text x="118" y="101" text-anchor="middle" font-size="12" fill="var(--ink-soft)">1 driver, 4 customers</text><rect x="252" y="48" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+      <text x="261" y="63" font-size="10" fill="var(--ink-mute)" font-weight="700">2</text>
+      <text x="350" y="81" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Problem modelling</text>
+      <text x="350" y="101" text-anchor="middle" font-size="12" fill="var(--ink-soft)">depot, customers, distances</text><rect x="484" y="48" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+      <text x="493" y="63" font-size="10" fill="var(--ink-mute)" font-weight="700">3</text>
+      <text x="582" y="81" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Solution representation</text>
+      <text x="582" y="101" text-anchor="middle" font-size="12" fill="var(--ink-soft)">[A, C, B, D]</text><rect x="20" y="162" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="29" y="177" font-size="10" fill="var(--ink-mute)" font-weight="700">4</text>
+      <text x="118" y="195" text-anchor="middle" font-size="12.5" fill="var(--accent)" font-weight="700">Objective function</text>
+      <text x="118" y="215" text-anchor="middle" font-size="12" fill="var(--ink-soft)">total distance = 30 km</text><rect x="252" y="162" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="261" y="177" font-size="10" fill="var(--ink-mute)" font-weight="700">5</text>
+      <text x="350" y="195" text-anchor="middle" font-size="12.5" fill="var(--accent)" font-weight="700">Search strategy</text>
+      <text x="350" y="215" text-anchor="middle" font-size="12" fill="var(--ink-soft)">swap two customers</text><rect x="484" y="162" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+      <text x="493" y="177" font-size="10" fill="var(--ink-mute)" font-weight="700">6</text>
+      <text x="582" y="195" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Evaluation</text>
+      <text x="582" y="215" text-anchor="middle" font-size="12" fill="var(--ink-soft)">shorter? keep it</text><path d="M218 84 L248 84" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M450 84 L480 84" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M582 122 V 140 H 118 V 158" fill="none" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M218 198 L248 198" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M450 198 L480 198" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M680 198 H 690 V 250 H 352 V 236" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#pp2)"/>
+    <text x="520" y="266" text-anchor="middle" font-size="11" fill="var(--gold)" font-weight="700">not good enough? search again</text>
+    <defs><marker id="pp1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--ink-mute)"/></marker><marker id="pp2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--gold)"/></marker></defs>
+  </svg>
+  <div class="diagram-caption">The six steps, with the delivery problem under each one. Steps 5 and 6 repeat until the solution is good enough.</div>
+</div>
+
+<h3>The running example: one driver, four customers</h3>
+
+<p>A driver leaves the depot, visits four customers A, B, C and D, and returns to the depot. Each customer is visited exactly once. In which order should the driver visit them, so that the total distance is as short as possible?</p>
+
+<p>This is the <strong>Travelling Salesperson Problem (TSP)</strong>. Module 3 and Lab 2 call it the travelling salesman problem; it is the same problem. Our version is a simplified version of real delivery: we ignore traffic, delivery times and the size of the van.</p>
+
+<p>The distances below are <em>illustrative</em>: small whole numbers, in kilometres, chosen so that you can add them by hand. They are not real map distances. The distance from X to Y is the same as from Y to X.</p>
+
+<div class="table-figure">
+  <div class="table-scroll">
+    <table class="env-table">
+      <thead>
+        <tr><th scope="col">km</th><th scope="col">Depot</th><th scope="col">A</th><th scope="col">B</th><th scope="col">C</th><th scope="col">D</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Depot</th><td>—</td><td>6</td><td>4</td><td>2</td><td>8</td></tr>
+        <tr><th scope="row">A</th><td>6</td><td>—</td><td>4</td><td>7</td><td>3</td></tr>
+        <tr><th scope="row">B</th><td>4</td><td>4</td><td>—</td><td>4</td><td>5</td></tr>
+        <tr><th scope="row">C</th><td>2</td><td>7</td><td>4</td><td>—</td><td>6</td></tr>
+        <tr><th scope="row">D</th><td>8</td><td>3</td><td>5</td><td>6</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h3>Six ideas, one example</h3>
 
 <ol class="steps">
-  <li><strong>Decision variables</strong><p>The things whose values we choose. Timetable: the time slot and the room of each exam.</p></li>
-  <li><strong>Candidate solution</strong><p>One complete choice of values for all the decision variables: one full timetable, good or bad. In Module 3 a solution was a path. Here a solution is one complete answer.</p></li>
-  <li><strong>Search space</strong><p>All the candidate solutions that the representation allows. Timetable: every way of giving each exam a slot and a room, including terrible ones. It is also called the solution space.</p></li>
-  <li><strong>Objective function</strong><p>A function that gives each candidate solution a number that measures its quality. Timetable: how many times a student has two exams on the same day.</p></li>
-  <li><strong>Minimize or maximize</strong><p>The direction of the search. We minimize a cost, an error, a distance or a penalty. We maximize a profit, a benefit or a fitness. Timetable: minimize.</p></li>
-  <li><strong>Constraint</strong><p>A requirement that a solution must satisfy to be accepted at all. Timetable: no student has two exams at the same time, and no room holds more students than it has seats.</p></li>
-  <li><strong>Feasible solution and feasible region</strong><p>A feasible solution satisfies every constraint. The feasible region is the set of all feasible solutions. It is part of the search space, not all of it.</p></li>
-  <li><strong>Neighbourhood</strong><p>The candidate solutions you can reach from the current one by one small, defined change. Timetable: move one exam to another slot, or swap the slots of two exams. Each of these is a neighbour.</p></li>
+  <li><strong>Problem modelling</strong><p>Turning a real situation into a precise problem that a computer can work on. We keep what matters (the places and the distances between them) and drop the rest (traffic, the colour of the van). Module 3 called this dropping of details abstraction.</p></li>
+  <li><strong>Candidate solution</strong><p>One complete answer, good or bad: one full route. In Module 3 a solution was a path built step by step. Here the route is the answer, and we judge it as a whole.</p></li>
+  <li><strong>Solution representation</strong><p>How a candidate solution is written so that an algorithm can store it and change it. A route is written as a list of the customers in visiting order, such as <code>[A, C, B, D]</code>. The depot is not written, because every route starts and ends there.</p></li>
+  <li><strong>Objective function</strong><p>A function that gives each candidate solution a number that measures its quality. Here: the total distance of the route, including the last leg back to the depot. We want to minimize it.</p></li>
+  <li><strong>Search space</strong><p>All the candidate solutions the representation allows. Here: every order of the four customers.</p></li>
+  <li><strong>Constraints</strong><p>Requirements that a solution must satisfy to be accepted at all. Here: every customer is visited exactly once, and the route starts and ends at the depot.</p></li>
 </ol>
+
+<p>A list such as <code>[A, C, B, D]</code>, which contains every customer exactly once, is called a <strong>permutation</strong>. Writing routes as permutations is called a <strong>permutation representation</strong>. The things we choose are sometimes called the <strong>decision variables</strong>: here, which customer comes first, second, third and fourth.</p>
+
+<h4>Scoring one route</h4>
+
+<div class="diagram">
+  <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="The route Depot, A, C, B, D, Depot with legs of 6, 7, 4, 5 and 8 km: 30 km in total. The map is not to scale.">
+    <text x="350" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">ROUTE [A, C, B, D]: 6 + 7 + 4 + 5 + 8 = 30 KM</text>
+    <path d="M330.2 242.9 L163.5 183.4" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#dm1)"/><path d="M161.0 175.0 L555.0 175.0" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#dm1)"/><path d="M564.8 160.5 L488.1 87.3" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#dm1)"/><path d="M449.0 70.0 L255.0 70.0" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#dm1)"/><path d="M241.6 87.5 L336.1 229.2" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#dm1)"/><circle cx="250.4" cy="197.4" r="13" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.5"/>
+      <text x="250.4" y="201.9" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="700">6</text><circle cx="439.2" cy="191.0" r="13" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.5"/>
+      <text x="439.2" y="195.5" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="700">7</text><circle cx="536.0" cy="110.9" r="13" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.5"/>
+      <text x="536.0" y="115.4" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="700">4</text><circle cx="350.0" cy="54.0" r="13" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.5"/>
+      <text x="350.0" y="58.5" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="700">5</text><circle cx="249.1" cy="127.5" r="13" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.5"/>
+      <text x="249.1" y="132.0" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="700">8</text><rect x="320" y="232" width="60" height="36" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="350" y="255" text-anchor="middle" font-size="12" fill="var(--accent)" font-weight="700">Depot</text><circle cx="140" cy="175" r="21" fill="var(--bg-soft)" stroke="var(--ink-soft)" stroke-width="2"/><text x="140" y="180.5" text-anchor="middle" font-size="16" fill="var(--ink)" font-weight="700">A</text><circle cx="470" cy="70" r="21" fill="var(--bg-soft)" stroke="var(--ink-soft)" stroke-width="2"/><text x="470" y="75.5" text-anchor="middle" font-size="16" fill="var(--ink)" font-weight="700">B</text><circle cx="580" cy="175" r="21" fill="var(--bg-soft)" stroke="var(--ink-soft)" stroke-width="2"/><text x="580" y="180.5" text-anchor="middle" font-size="16" fill="var(--ink)" font-weight="700">C</text><circle cx="230" cy="70" r="21" fill="var(--bg-soft)" stroke="var(--ink-soft)" stroke-width="2"/><text x="230" y="75.5" text-anchor="middle" font-size="16" fill="var(--ink)" font-weight="700">D</text>
+    <text x="350" y="292" text-anchor="middle" font-size="11" fill="var(--ink-mute)">Not to scale. The last leg, back to the depot, counts too.</text>
+    <defs><marker id="dm1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--accent)"/></marker></defs>
+  </svg>
+  <div class="diagram-caption">Follow the arrows from the depot and back. The map only shows the order; it is not drawn to scale.</div>
+</div>
+
+<div class="formula">
+  <p><span>Route</span> Depot → A → C → B → D → Depot</p>
+  <p><span>Objective</span> 6 + 7 + 4 + 5 + 8 = 30 km</p>
+</div>
+
+<p>Two routes can be compared only through their objective values: the shorter one is better. The objective function does not tell us which route to try next. That is a separate job.</p>
+
+<div class="before-after">
+  <div class="ba-col before">
+    <span class="ba-label">Do not mix up</span>
+    <h4>Objective function</h4>
+    <ul>
+      <li>Evaluates one candidate solution</li>
+      <li>Gives it a number: <code>[A, C, B, D]</code> → 30 km</li>
+      <li>Is part of the problem</li>
+    </ul>
+  </div>
+  <div class="ba-col after">
+    <span class="ba-label">Do not mix up</span>
+    <h4>Search strategy</h4>
+    <ul>
+      <li>Decides which candidate solutions to explore</li>
+      <li>For example: swap two customers and try the new route</li>
+      <li>Is part of the method (sections 4.2 and 4.3)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout note">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">The objective function is not the PEAS performance measure</div>
+    <p>The performance measure of section 2.3 judges an agent's behaviour from the outside, over its whole working life: did the deliveries arrive, safely and on time? The objective function scores one candidate solution inside an optimization method: how long is this route? The designer often builds the objective from the performance measure, but the two do different jobs.</p>
+  </div>
+</div>
+
+<h4>How big is the search space?</h4>
+
+<p>Four customers can be put in order in 4 × 3 × 2 × 1 = 24 ways. A route and the same route driven backwards have the same length, because the distances are the same in both directions. So there are only 12 different routes. We can check 12 routes by hand. With 10 customers there are 3,628,800 orders, and the number grows very fast: Lab 2 measures how fast. That is why we need methods that search for a good route without trying them all.</p>
+
+<h3>Constraints and soft preferences</h3>
+
+<p>Not every wish is a constraint. A <strong>soft preference</strong> is a desirable condition that is not required. "Few students with two exams on one day" is a soft preference for an exam timetable: a timetable that ignores it can still be used. It is just worse. "No student has two exams at the same time" is a constraint: a timetable that breaks it cannot be used.</p>
+
+<p>A soft preference enters the objective function. When we minimize, each time the preference is not met adds a <strong>penalty</strong>. When we maximize, meeting it can add a reward instead. Section 2.3 drew the same line with different words: hard requirements and things to improve. Module 6 calls the first kind hard constraints.</p>
+
+<p>For the driver: "visit every customer exactly once" is a constraint. "Visit customer C early, because C is a pharmacy" could be a soft preference: we could add a penalty for every customer visited before C.</p>
 
 <div class="diagram">
   <svg viewBox="0 0 700 310" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="The feasible region is part of the search space; the objective function scores a feasible candidate solution.">
@@ -2444,12 +2579,12 @@ def a_star(problem, h):
     <text x="573" y="140" text-anchor="middle" font-size="11" fill="var(--ink-soft)">gives the candidate a number</text>
     <path d="M573 160 V 190" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#an2)"/>
     <rect x="468" y="195" width="210" height="44" rx="8" fill="var(--bg-soft)" stroke="var(--rule)"/>
-    <text x="573" y="222" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">penalty = 5</text>
+    <text x="573" y="222" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">total distance = 30 km</text>
     <path d="M573 242 V 262" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#an2)"/>
-    <text x="573" y="282" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">compare numbers: keep the better one</text>
+    <text x="573" y="282" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">compare numbers: keep the shorter one</text>
     <defs><marker id="an1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--gold)"/></marker><marker id="an2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--ink-mute)"/></marker></defs>
   </svg>
-  <div class="diagram-caption">The feasible region sits inside the search space. The objective function scores one candidate at a time.</div>
+  <div class="diagram-caption">A feasible solution satisfies every constraint. All feasible solutions together form the feasible region, which is part of the search space.</div>
 </div>
 
 <div class="before-after">
@@ -2473,11 +2608,7 @@ def a_star(problem, h):
   </div>
 </div>
 
-<h3>Constraints and soft preferences</h3>
-
-<p>Not every wish is a constraint. A <strong>soft preference</strong> is a desirable condition that is not required. "Few students with two exams on one day" is a soft preference: a timetable that ignores it can still be used. It is just worse.</p>
-
-<p>A soft preference enters the objective function. When we minimize, each time the preference is not met adds a <strong>penalty</strong>. When we maximize, meeting it can add a reward instead. Section 2.3 drew the same line with different words: hard requirements and things to improve. Module 6 calls the first kind hard constraints.</p>
+<p>A good representation can make a constraint impossible to break. Every permutation visits each customer exactly once, so every route we can write is feasible. A weaker representation, such as "any list of four letters", would also allow <code>[A, A, B, D]</code>, and the algorithm would have to reject or penalize it.</p>
 
 <div class="callout warning">
   <div class="callout-icon">!</div>
@@ -2496,22 +2627,19 @@ def a_star(problem, h):
   <p><strong>Continuous optimization</strong>: the decision variables take real values anywhere in a range.</p>
 </div>
 
-<p>Section 2.4 used the words <em>discrete</em> and <em>continuous</em> for the states and actions of an environment. Here they describe the decision variables of an optimization problem.</p>
-
 <div class="table-figure">
   <p class="table-hint">Swipe sideways to see all columns &rarr;</p>
   <div class="table-scroll">
     <table class="env-table" style="white-space: normal;">
       <thead>
-        <tr><th scope="col">Problem</th><th scope="col">Decision variables</th><th scope="col">Search space</th><th scope="col">Type</th></tr>
+        <tr><th scope="col">Problem</th><th scope="col">Representation</th><th scope="col">Type</th></tr>
       </thead>
       <tbody>
-        <tr><th scope="row">Order of visiting 5 customers</th><td>the visiting order</td><td>all 120 orders</td><td>Discrete</td></tr>
-        <tr><th scope="row">Exam timetable</th><td>slot and room of each exam</td><td>all ways to give each exam a slot and a room</td><td>Discrete</td></tr>
-        <tr><th scope="row">Projects within a budget</th><td>fund each project: yes or no</td><td>all yes/no choices (16 for 4 projects)</td><td>Discrete</td></tr>
-        <tr><th scope="row">Tuning one number in a machine learning model</th><td>a real number w</td><td>all real values in a range</td><td>Continuous</td></tr>
-        <tr><th scope="row">Placing a warehouse on a simple map</th><td>its coordinates (x, y)</td><td>all points in an area</td><td>Continuous</td></tr>
-        <tr><th scope="row">Minimize f(x) = (x − 3)²</th><td>a real number x</td><td>all real numbers</td><td>Continuous</td></tr>
+        <tr><th scope="row">Order of visiting 4 customers</th><td>a permutation, such as [A, C, B, D]</td><td>Discrete</td></tr>
+        <tr><th scope="row">Which of 4 projects to fund within a budget</th><td>a bit string, one yes/no bit per project, such as 1010</td><td>Discrete</td></tr>
+        <tr><th scope="row">Exam timetable</th><td>a slot and a room for each exam</td><td>Discrete</td></tr>
+        <tr><th scope="row">Placing a warehouse on a simple map</th><td>its coordinates (x, y)</td><td>Continuous</td></tr>
+        <tr><th scope="row">Minimize f(x) = (x − 3)²</th><td>a real number x</td><td>Continuous</td></tr>
       </tbody>
     </table>
   </div>
@@ -2520,7 +2648,7 @@ def a_star(problem, h):
 <div class="diagram">
   <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Discrete: separate points. Continuous: a smooth curve over a range.">
     <text x="180" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">DISCRETE</text><text x="530" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">CONTINUOUS</text>
-    <text x="180" y="44" text-anchor="middle" font-size="11" fill="var(--ink-soft)">separate choices, e.g. timetables</text>
+    <text x="180" y="44" text-anchor="middle" font-size="11" fill="var(--ink-soft)">separate choices, e.g. routes</text>
     <text x="530" y="44" text-anchor="middle" font-size="11" fill="var(--ink-soft)">any real value in a range, e.g. x</text>
     <line x1="50" y1="210" x2="310" y2="210" stroke="var(--rule)" stroke-width="2"/><line x1="50" y1="60" x2="50" y2="210" stroke="var(--rule)" stroke-width="2"/><line x1="400" y1="210" x2="660" y2="210" stroke="var(--rule)" stroke-width="2"/><line x1="400" y1="60" x2="400" y2="210" stroke="var(--rule)" stroke-width="2"/>
     <circle cx="63" cy="116.3" r="6" fill="var(--accent)"/><circle cx="89" cy="153.8" r="6" fill="var(--accent)"/><circle cx="115" cy="97.5" r="6" fill="var(--accent)"/><circle cx="141" cy="172.5" r="6" fill="var(--accent)"/><circle cx="167" cy="135" r="6" fill="var(--accent)"/><circle cx="193" cy="78.8" r="6" fill="var(--accent)"/><circle cx="219" cy="153.8" r="6" fill="var(--accent)"/><circle cx="245" cy="116.3" r="6" fill="var(--accent)"/><circle cx="271" cy="191.3" r="6" fill="var(--accent)"/><circle cx="297" cy="135" r="6" fill="var(--accent)"/>
@@ -2533,16 +2661,7 @@ def a_star(problem, h):
   <div class="diagram-caption">Discrete: separate candidates with nothing in between. Continuous: a smooth range of candidates.</div>
 </div>
 
-<div class="callout note">
-  <div class="callout-icon">i</div>
-  <div class="callout-body">
-    <div class="callout-title">Four facts to keep straight</div>
-    <p><strong>Discrete does not mean finite.</strong> A variable that can be any whole number is discrete, yet it has infinitely many values.</p>
-    <p><strong>Continuous is not the same as easy.</strong> A continuous objective can have many valleys, and its slope cannot always be computed.</p>
-    <p><strong>The type does not fix the method.</strong> Hill climbing works on both types once you define the neighbours. A genetic algorithm can use discrete or continuous chromosomes. Gradient descent usually needs continuous variables and an objective whose slope we can compute.</p>
-    <p><strong>Some problems mix both.</strong> When some variables are discrete and others continuous, the problem is a mixed problem. You do not need it in this course.</p>
-  </div>
-</div>
+<p>Section 2.4 used the words <em>discrete</em> and <em>continuous</em> for the states and actions of an environment. Here they describe the decision variables. Discrete does not mean finite: a variable that can be any whole number is discrete, yet it has infinitely many values.</p>
 
 <h3>Minimize or maximize?</h3>
 
@@ -2565,78 +2684,32 @@ def a_star(problem, h):
   <div class="diagram-caption">The same shape of question, seen from two sides. Which side you are on depends on how you defined f.</div>
 </div>
 
-<p>The direction comes from the way you define the objective function. Maximizing f is the same as minimizing −f, so every method in this module works in either direction once you flip the sign. In this module, the landscape picture in section 4.2 is drawn for maximization (higher is better). The exam timetable and gradient descent use minimization (lower is better). They do not contradict each other: they look at the same kind of problem from opposite sides.</p>
+<p>We minimize a cost, an error or a distance. We maximize a profit, a benefit or a fitness. Maximizing f is the same as minimizing −f. The delivery problem minimizes the distance. The genetic algorithm in section 4.3 talks about fitness, where higher is better; it simply turns "shorter" into "fitter".</p>
 
-<h3>Worked example: the exam timetable</h3>
+<h3>Two ways to search for better solutions</h3>
 
-<div class="table-figure">
-  <div class="table-scroll">
-    <table class="env-table" style="white-space: normal;">
-      <thead>
-        <tr><th scope="col">Part</th><th scope="col">For the exam timetable</th></tr>
-      </thead>
-      <tbody>
-        <tr><th scope="row">Decision variables</th><td>the time slot and the room of each exam</td></tr>
-        <tr><th scope="row">Candidate solution</th><td>one complete timetable</td></tr>
-        <tr><th scope="row">Search space</th><td>all ways to give every exam a slot and a room</td></tr>
-        <tr><th scope="row">Constraints</th><td>no student has two exams at the same time; no room is over its capacity</td></tr>
-        <tr><th scope="row">Soft preference</th><td>few students with two exams on the same day</td></tr>
-        <tr><th scope="row">Objective function</th><td>penalty = number of times a student has two exams on the same day</td></tr>
-        <tr><th scope="row">Direction</th><td>minimize the penalty</td></tr>
-        <tr><th scope="row">Neighbourhood</th><td>move one exam to another slot, or swap the slots of two exams, without breaking a constraint</td></tr>
-        <tr><th scope="row">Type</th><td>discrete optimization</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<p>Here are four candidate timetables. The numbers are made up for the example.</p>
-
-<div class="table-figure">
-  <p class="table-hint">Swipe sideways to see all columns &rarr;</p>
-  <div class="table-scroll">
-    <table class="env-table" style="white-space: normal;">
-      <thead>
-        <tr><th scope="col">Timetable</th><th scope="col">Students with two exams at the same time</th><th scope="col">Feasible?</th><th scope="col">Penalty</th></tr>
-      </thead>
-      <tbody>
-        <tr><th scope="row">T1</th><td>0</td><td>yes</td><td>8</td></tr>
-        <tr><th scope="row">T2</th><td>0</td><td>yes</td><td>5</td></tr>
-        <tr><th scope="row">T3</th><td>0</td><td>yes</td><td>2</td></tr>
-        <tr><th scope="row">T4</th><td>3</td><td>no</td><td>1</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<p>T3 is the best of the three feasible timetables. That does not make it the global optimum: a timetable with penalty 1 or 0 may exist that nobody has tried yet. T4 has the lowest penalty of all, but it breaks a constraint, so we cannot use it. A low objective value never makes up for a broken constraint.</p>
-
-<h3>From optimization to local search</h3>
-
-<p>We can now describe a problem and score any candidate solution. The next question is: <em>how can we improve a solution?</em></p>
+<p>We can now model a problem and score any candidate. The next question is: <em>how do we find better candidates?</em></p>
 
 <div class="definition">
   <p><strong>Local search</strong> is a family of methods that move between candidate solutions, using a neighbourhood or other small changes, to improve the objective. They care about the quality of the final solution, so they usually do not keep the path that led to it.</p>
 </div>
 
-<p>Methods for this kind of problem come in two kinds:</p>
-
 <div class="before-after">
   <div class="ba-col before">
     <span class="ba-label">One candidate</span>
-    <h4>Single-solution optimization</h4>
+    <h4>Single-solution search</h4>
     <ul>
       <li>Holds one candidate solution at a time</li>
-      <li>Moves it to a better neighbour, step by step</li>
+      <li>Changes it a little and keeps the change if it is better</li>
       <li>Example: hill climbing (section 4.2)</li>
     </ul>
   </div>
   <div class="ba-col after">
     <span class="ba-label">A group of candidates</span>
-    <h4>Population-based optimization</h4>
+    <h4>Population-based search</h4>
     <ul>
       <li>Holds a group of candidate solutions at a time</li>
-      <li>Builds a new group from the best of the old one</li>
+      <li>Builds new candidates from the better ones</li>
       <li>Example: genetic algorithms (section 4.3)</li>
     </ul>
   </div>
@@ -2667,12 +2740,17 @@ def a_star(problem, h):
   <div class="diagram-caption">Single-solution methods improve one candidate. Population-based methods improve a group.</div>
 </div>
 
-<p>A population needs more memory than a single candidate, so not every method in this module keeps just one solution in memory. Strictly speaking, genetic algorithms belong to evolutionary, population-based optimization, rather than to local search itself. This course places them here because they solve the same kind of problem.</p>
+<p>These are two useful families, not a complete list. Some methods fit neither. The nearest neighbour method of Lab 2 does not improve complete routes at all: it builds one route, customer by customer. Strictly speaking, genetic algorithms belong to evolutionary optimization rather than to local search; this course places them here because they solve the same kind of problem.</p>
 
 <h3>Where you meet these problems</h3>
 
 <div class="applications">
   <div class="app-grid">
+    <div class="app-card">
+      <span class="app-icon">🚚</span>
+      <strong>Delivery routes</strong>
+      <p>Parcels, food and medicine. Real companies add delivery times, many vans and live traffic.</p>
+    </div>
     <div class="app-card">
       <span class="app-icon">📅</span>
       <strong>Timetables and rosters</strong>
@@ -2684,42 +2762,96 @@ def a_star(problem, h):
       <p>Ambulance stations, warehouses, or mobile towers in a city, placed to reduce distance for everyone.</p>
     </div>
     <div class="app-card">
-      <span class="app-icon">🚚</span>
-      <strong>Delivery routes for a whole fleet</strong>
-      <p>Which driver takes which orders. The final assignment is what matters.</p>
-    </div>
-    <div class="app-card">
-      <span class="app-icon">📉</span>
-      <strong>Training models</strong>
-      <p>Choosing the numbers inside a machine learning model is continuous optimization. Section 4.4 shows the basic method, gradient descent.</p>
+      <span class="app-icon">🤖</span>
+      <strong>Building AI systems</strong>
+      <p>Training a model and choosing its settings are optimization problems too. Section 4.4 shows how.</p>
     </div>
   </div>
 </div>
 
 <div class="checkpoint">
   <span class="checkpoint-label">Check yourself</span>
-  <p>The Red Crescent in Jeddah has 10 possible sites for new ambulance stations. At least one station must be built, and the budget allows at most 3. They want the average time to reach a caller to be as small as possible. Name the decision variables, the search space, the constraint, the objective function and its direction, and the type of problem. Then: what changes if a station may be placed at any point on the map?</p>
+  <p>Using the distance table, find the total distance of the route <code>[D, B, A, C]</code>. Is it better than <code>[A, C, B, D]</code>? Then: how many different orders are there for 5 customers?</p>
   <details>
     <summary>Show answer</summary>
-    <p><strong>Decision variables:</strong> for each of the 10 sites, build a station there: yes or no. <strong>Search space:</strong> all yes/no choices for the 10 sites, 2<sup>10</sup> = 1024 candidates. <strong>Constraint:</strong> at least 1 and at most 3 stations, so the feasible region holds only 175 of the 1024 candidates (10 with one station, 45 with two, 120 with three). <strong>Objective function:</strong> the average time to reach a caller; <strong>direction:</strong> minimize. <strong>Type:</strong> discrete optimization.</p>
+    <p>Depot → D 8, D → B 5, B → A 4, A → C 7, C → Depot 2: <strong>26 km</strong>. It is better than <code>[A, C, B, D]</code> (30 km), because it is shorter. If you got 24, you forgot the last leg back to the depot.</p>
+    <p>Five customers can be ordered in 5 × 4 × 3 × 2 × 1 = <strong>120</strong> ways. A route and its reverse have the same length, so there are 60 different routes.</p>
+  </details>
+</div>
+
+<div class="checkpoint">
+  <span class="checkpoint-label">Check yourself</span>
+  <p>The Red Crescent in Jeddah has 10 possible sites for new ambulance stations. At least one station must be built, and the budget allows at most 3. They want the average time to reach a caller to be as small as possible. Name the representation, the search space, the constraint, the objective function and its direction, and the type of problem. Then: what changes if a station may be placed at any point on the map?</p>
+  <details>
+    <summary>Show answer</summary>
+    <p><strong>Representation:</strong> a bit string of 10 bits, one per site: 1 = build a station there, 0 = do not. <strong>Search space:</strong> all bit strings of length 10, 2<sup>10</sup> = 1024 candidates. <strong>Constraint:</strong> at least 1 and at most 3 stations, so the feasible region holds only 175 of the 1024 candidates (10 with one station, 45 with two, 120 with three). <strong>Objective function:</strong> the average time to reach a caller; <strong>direction:</strong> minimize. <strong>Type:</strong> discrete optimization.</p>
     <p>Now suppose you will build exactly 3 stations, and each may be placed anywhere on the map. Each station needs its own pair of coordinates (x, y), so you choose three pairs: six real numbers. The problem becomes continuous optimization.</p>
   </details>
 </div>
 
-<p class="reading-time">16 min read</p>
+<p class="reading-time">18 min read</p>
         `
       },
       {
-        title: "Hill Climbing and Local Search",
+        title: "Single-Solution Local Search",
         body: `
-<p>Hill climbing is the simplest single-solution method. It uses the parts you met in section 4.1: a current solution, its neighbourhood, and the objective function.</p>
+<p>This section studies one idea: improve <em>one</em> candidate solution by small changes. We use hill climbing, the simplest example, on the delivery problem of section 4.1.</p>
+
+<h3>Neighbouring routes</h3>
+
+<p>To make a small change to a route, swap the places of two customers. For example, swapping C and D in <code>[A, C, B, D]</code> gives <code>[A, D, B, C]</code>. Each route you can reach with one swap is a <strong>neighbouring solution</strong>, or neighbour. All of them together are the <strong>neighbourhood</strong> of the route.</p>
+
+<p>Four customers give 6 pairs to swap (A–B, A–C, A–D, B–C, B–D, C–D), so every route has exactly 6 neighbours. Swapping keeps a permutation, so every neighbour is still a valid route.</p>
+
+<div class="callout warning">
+  <div class="callout-icon">!</div>
+  <div class="callout-body">
+    <div class="callout-title">Two meanings of "neighbour"</div>
+    <p>In Lab 2, the <em>nearest neighbour</em> method drives to the closest customer not yet visited: a neighbour there is a <em>place</em>. In this section a neighbour is a <em>route</em>: the route you get after one swap. When the meaning is not clear, say "neighbouring route".</p>
+  </div>
+</div>
+
+<h3>Hill climbing</h3>
+
+<div class="diagram">
+  <svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Current solution, generate neighbours, evaluate, compare, update; repeat. Stop when no neighbour is better.">
+    <text x="300" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">SINGLE-SOLUTION LOCAL SEARCH: ONE LOOP</text>
+    <rect x="8" y="78" width="118" height="80" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+    <text x="67" y="108" text-anchor="middle" font-size="12" fill="var(--accent)" font-weight="700">Current</text>
+    <text x="67" y="123" text-anchor="middle" font-size="12" fill="var(--accent)" font-weight="700">solution</text>
+    <text x="67" y="144" text-anchor="middle" font-size="10" fill="var(--ink-soft)">one route</text>
+    <rect x="146" y="78" width="118" height="80" rx="8" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+    <text x="205" y="108" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">Generate</text>
+    <text x="205" y="123" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">neighbours</text>
+    <text x="205" y="144" text-anchor="middle" font-size="10" fill="var(--ink-soft)">swap two customers</text>
+    <rect x="284" y="78" width="118" height="80" rx="8" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+    <text x="343" y="116" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">Evaluate</text>
+    
+    <text x="343" y="144" text-anchor="middle" font-size="10" fill="var(--ink-soft)">length of each</text>
+    <rect x="422" y="78" width="118" height="80" rx="8" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+    <text x="481" y="116" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">Compare</text>
+    
+    <text x="481" y="144" text-anchor="middle" font-size="10" fill="var(--ink-soft)">is one shorter?</text>
+    <rect x="560" y="78" width="118" height="80" rx="8" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+    <text x="619" y="116" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="700">Update</text>
+    
+    <text x="619" y="144" text-anchor="middle" font-size="10" fill="var(--ink-soft)">move to the shortest</text>
+    <path d="M128 118 H 148" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#hc1)"/><path d="M266 118 H 286" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#hc1)"/><path d="M404 118 H 424" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#hc1)"/><path d="M542 118 H 562" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#hc1)"/>
+    <path d="M481 76 V 48" stroke="var(--teal)" stroke-width="2" marker-end="url(#hc3)"/>
+    <text x="492" y="52" font-size="11" fill="var(--teal)" font-weight="700">no: stop — a local optimum</text>
+    <path d="M619 160 V 196 H 67 V 162" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#hc2)"/>
+    <text x="343" y="220" text-anchor="middle" font-size="11" fill="var(--gold)" font-weight="700">yes: the shorter route becomes the current solution — repeat</text>
+    <defs><marker id="hc1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--ink-mute)"/></marker><marker id="hc2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--gold)"/></marker><marker id="hc3" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--teal)"/></marker></defs>
+  </svg>
+  <div class="diagram-caption">One loop, repeated. The search holds one route at a time.</div>
+</div>
 
 <ol class="steps">
-  <li><strong>Current solution</strong><p>The candidate solution you hold now. It starts as a random or simple feasible solution.</p></li>
-  <li><strong>Neighbours</strong><p>Every candidate in the neighbourhood of the current solution.</p></li>
-  <li><strong>Objective value</strong><p>Compute the objective function for each neighbour.</p></li>
-  <li><strong>Improving move</strong><p>If the best neighbour is better than the current solution, move to it.</p></li>
-  <li><strong>Stopping criterion</strong><p>If no neighbour is better, stop. The current solution is the answer.</p></li>
+  <li><strong>Current solution</strong><p>The route the search holds now. It starts as a random or simple route.</p></li>
+  <li><strong>Generate neighbours</strong><p>Make every route that is one swap away.</p></li>
+  <li><strong>Evaluate</strong><p>Compute the total distance of each neighbour.</p></li>
+  <li><strong>Compare</strong><p>Is the shortest neighbour shorter than the current route?</p></li>
+  <li><strong>Update</strong><p>If yes, it becomes the current solution: repeat from step 2. If no, stop. This rule is the <strong>stopping criterion</strong>.</p></li>
 </ol>
 
 <div class="analogy">
@@ -2727,6 +2859,8 @@ def a_star(problem, h):
   <p>You want the highest point in the dunes, but you can only feel the ground one metre around you. So you always step upward. Eventually every direction goes down, and you stop.</p>
   <p>You are standing on <em>a</em> top. Whether it is <em>the</em> top, you have no way of knowing: the fog never lifts.</p>
 </div>
+
+<p>The name comes from this maximization picture, where better means higher. For routes, better means shorter, so we climb "down" towards smaller distances. The idea is the same.</p>
 
 <pre><code class="language-python">def hill_climbing(problem):
     current = problem.initial_solution()
@@ -2740,29 +2874,67 @@ def a_star(problem, h):
         current = best
 </code></pre>
 
-<p>This version minimizes, because the exam timetable has a penalty to make small. To maximize a fitness instead, use <code>max</code> and <code>&lt;=</code>. The name "hill climbing" comes from the maximization picture, where better means higher.</p>
+<p>The code does not know anything about routes. To use it for a problem, you write two functions: <code>neighbours</code> (for routes: all swaps) and <code>cost</code> (for routes: the total distance). To maximize instead, use <code>max</code> and <code>&lt;=</code>.</p>
 
-<h3>Tracing it on the exam timetable</h3>
+<h3>Tracing it on the delivery problem</h3>
 
-<p>Start from a feasible timetable with penalty 8, the neighbourhood from section 4.1, and these values, made up for the example:</p>
+<p><strong>Step 1.</strong> The current solution is <code>[A, C, B, D]</code>, 30 km. Its six neighbours:</p>
 
 <div class="table-figure">
-  <p class="table-hint">Swipe sideways to see all columns &rarr;</p>
   <div class="table-scroll">
     <table class="env-table" style="white-space: normal;">
       <thead>
-        <tr><th scope="col">Step</th><th scope="col">Current penalty</th><th scope="col">Best neighbour</th><th scope="col">Decision</th></tr>
+        <tr><th scope="col">Swap</th><th scope="col">Neighbouring route</th><th scope="col">Total distance</th></tr>
       </thead>
       <tbody>
-        <tr><th scope="row">1</th><td>8</td><td>5 (move one exam to another slot)</td><td>5 &lt; 8: move</td></tr>
-        <tr><th scope="row">2</th><td>5</td><td>3 (swap the slots of two exams)</td><td>3 &lt; 5: move</td></tr>
-        <tr><th scope="row">3</th><td>3</td><td>4 (no neighbour is below 4)</td><td>no neighbour is better: stop</td></tr>
+        <tr><th scope="row">A and C</th><td>[C, A, B, D]</td><td>26</td></tr>
+        <tr><th scope="row">A and B</th><td>[B, C, A, D]</td><td>26</td></tr>
+        <tr><th scope="row">A and D</th><td>[D, C, B, A]</td><td>28</td></tr>
+        <tr><th scope="row">C and B</th><td>[A, B, C, D]</td><td>28</td></tr>
+        <tr><th scope="row">C and D</th><td>[A, D, B, C]</td><td><strong>20</strong></td></tr>
+        <tr><th scope="row">B and D</th><td>[A, C, D, B]</td><td>28</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<p>Hill climbing returns a timetable with penalty 3. But in section 4.1 we already met timetable T3 with penalty 2. So penalty 3 is a <strong>local optimum</strong>: no single move improves it, yet a better timetable exists. Hill climbing stopped because of the neighbourhood it was given, not because it found the best answer.</p>
+<p>Check one of them yourself: <code>[A, D, B, C]</code> is 6 + 3 + 5 + 4 + 2 = 20 km. The shortest neighbour, 20 km, is shorter than 30 km, so the search moves: <code>[A, D, B, C]</code> becomes the current solution.</p>
+
+<p><strong>Step 2.</strong> The current solution is <code>[A, D, B, C]</code>, 20 km. Its six neighbours:</p>
+
+<div class="table-figure">
+  <div class="table-scroll">
+    <table class="env-table" style="white-space: normal;">
+      <thead>
+        <tr><th scope="col">Swap</th><th scope="col">Neighbouring route</th><th scope="col">Total distance</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">A and D</th><td>[D, A, B, C]</td><td>21</td></tr>
+        <tr><th scope="row">A and B</th><td>[B, D, A, C]</td><td>21</td></tr>
+        <tr><th scope="row">A and C</th><td>[C, D, B, A]</td><td>23</td></tr>
+        <tr><th scope="row">D and B</th><td>[A, B, D, C]</td><td>23</td></tr>
+        <tr><th scope="row">D and C</th><td>[A, C, B, D]</td><td>30</td></tr>
+        <tr><th scope="row">B and C</th><td>[A, D, C, B]</td><td>23</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<p>No neighbour is shorter than 20 km, so hill climbing stops and returns <code>[A, D, B, C]</code>, 20 km.</p>
+
+<p>Is that the shortest route? There are only 12 different routes, so we can check them all. The shortest is <code>[B, A, D, C]</code>: 4 + 4 + 3 + 6 + 2 = <strong>19 km</strong>. Hill climbing stopped at a route that no single swap can improve, although a shorter route exists. It stopped because of the neighbourhood it was given, not because it found the best answer.</p>
+
+<h3>Five words to keep apart</h3>
+
+<ol class="steps">
+  <li><strong>Current solution</strong><p>The route the search holds now. In step 2 above: <code>[A, D, B, C]</code>.</p></li>
+  <li><strong>Neighbouring solution</strong><p>A route one swap away from the current solution, such as <code>[D, A, B, C]</code>.</p></li>
+  <li><strong>Best solution found so far</strong><p>The best route the method has seen since it started. The program must store it and return it at the end.</p></li>
+  <li><strong>Local optimum</strong><p>A solution that no neighbour improves: <code>[A, D, B, C]</code>, 20 km. It may also be the best of all, or a better solution may exist elsewhere.</p></li>
+  <li><strong>Global optimum</strong><p>The best solution of the whole problem: <code>[B, A, D, C]</code>, 19 km. It is always a local optimum too. When maximizing, the two are called a local maximum and a global maximum; when minimizing, a local minimum and a global minimum.</p></li>
+</ol>
+
+<p>In plain hill climbing the current solution is always the best found so far, because the search only moves to better routes. The two can differ in the methods below, which sometimes leave a good route. So a program should keep the best solution found so far in its own variable.</p>
 
 <h3>Where hill climbing gets stuck</h3>
 
@@ -2787,51 +2959,57 @@ def a_star(problem, h):
     <text x="72" y="208" text-anchor="middle" font-size="10" fill="var(--teal)">moves</text>
     <defs><marker id="ls1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--teal)"/></marker></defs>
   </svg>
-  <div class="diagram-caption">Drawn for maximization. For a penalty, turn the picture upside down: the good places are the valleys.</div>
+  <div class="diagram-caption">Drawn for maximization. For a distance, turn the picture upside down: the good places are the valleys.</div>
 </div>
 
-<p>A picture like this is called a <strong>landscape</strong>: each position is a candidate solution, and the height is its objective value. Hill climbing only knows the ground under its feet, never the whole map. It stops in three typical places:</p>
+<p>A picture like this is called a <strong>landscape</strong>: each position is a candidate solution, and the height is its objective value. Hill climbing only knows the ground under its feet, never the whole map. Besides a local optimum, two other shapes can stop it:</p>
 
-<ol class="steps">
-  <li><strong>Local optimum</strong><p>No neighbour is better. It may also be the best solution of all, but a better solution may exist elsewhere, like the penalty-3 timetable above. The best of all is the <strong>global optimum</strong>, and it is always a local optimum too. When maximizing, they are called a local maximum and a global maximum; when minimizing, a local minimum and a global minimum.</p></li>
-  <li><strong>Plateau</strong><p>A flat area: all neighbours have the same value, so there is no direction to follow. The search stops, or wanders if it accepts equal moves.</p></li>
-  <li><strong>Ridge</strong><p>The objective improves along a narrow line, but every single move the neighbourhood allows makes it slightly worse. The search stops, although better solutions lie further along the ridge.</p></li>
-</ol>
+<ul>
+  <li><strong>Plateau</strong>: a flat area where all neighbours have the same value, so there is no direction to follow.</li>
+  <li><strong>Ridge</strong>: the objective improves along a narrow line, but every single move the neighbourhood allows makes it slightly worse.</li>
+</ul>
 
-<h3>Simple fixes</h3>
+<h3>Random restarts</h3>
 
-<div class="applications">
-  <div class="app-grid">
-    <div class="app-card">
-      <span class="app-icon">↔️</span>
-      <strong>Sideways moves</strong>
-      <p>Also accept a neighbour with the same value, so the search can cross a plateau. Set a limit on how many in a row, or it may walk in circles forever.</p>
-    </div>
-    <div class="app-card">
-      <span class="app-icon">🎲</span>
-      <strong>Random-restart hill climbing</strong>
-      <p>Run hill climbing many times, each time from a new random start, and keep the best result. Each run is cheap, and different starts reach different tops.</p>
-    </div>
-    <div class="app-card">
-      <span class="app-icon">🎯</span>
-      <strong>Stochastic hill climbing</strong>
-      <p>Pick randomly among the improving moves instead of always the best one. It may need more steps to reach a top, but it explores more of the landscape. Here <em>stochastic</em> describes the algorithm's own random choices, not the environment (section 2.4).</p>
-    </div>
+<p>Different starting routes lead to different local optima. So run hill climbing again from a new random route, and keep the best result. This is <strong>random-restart hill climbing</strong>.</p>
+
+<div class="table-figure">
+  <p class="table-hint">Swipe sideways to see all columns &rarr;</p>
+  <div class="table-scroll">
+    <table class="env-table">
+      <thead>
+        <tr><th scope="col">Run</th><th scope="col">Start</th><th scope="col">Moves</th><th scope="col">Stops at</th><th scope="col">Best found so far</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">1</th><td>[A, C, B, D], 30</td><td>swap C and D → 20</td><td>[A, D, B, C], 20</td><td>[A, D, B, C], 20</td></tr>
+        <tr><th scope="row">2</th><td>[A, B, C, D], 28</td><td>swap A and C → 21,<br>swap B and D → 19</td><td>[C, D, A, B], 19</td><td>[C, D, A, B], 19</td></tr>
+      </tbody>
+    </table>
   </div>
 </div>
+
+<p>Run 2 ends at <code>[C, D, A, B]</code>. That is <code>[B, A, D, C]</code> driven backwards: the same route, with the same length, 19 km. If a third run ended at 23 km, the best found so far would stay at 19. The program returns the best found so far, not the result of the last run.</p>
 
 <div class="aha">
   <div class="aha-label">How many restarts do you need?</div>
   <p>Suppose one run finds the best solution with probability p, and the runs are independent. Then you need <strong>1/p runs on average</strong> until the first success. That is an average, not a promise. With p&nbsp;=&nbsp;0.1 you expect 10 runs, yet 10 runs succeed only about 65% of the time.</p>
-  <p>Optional: the chance of at least one success in k runs is 1 − (1 − p)<sup>k</sup>. For p&nbsp;=&nbsp;0.1, k&nbsp;=&nbsp;10 gives 0.65 and k&nbsp;=&nbsp;22 gives 0.90.</p>
 </div>
 
 <div class="checkpoint">
   <span class="checkpoint-label">Check yourself</span>
-  <p>Your timetable solver, which uses hill climbing, returns a different answer every time you run it, and the quality varies a lot. Is this a bug?</p>
+  <p>Hill climbing holds <code>[C, A, D, B]</code>, 21 km. Is it a local optimum? Check its six neighbours with the distance table of section 4.1.</p>
   <details>
     <summary>Show answer</summary>
-    <p><strong>No.</strong> It starts from a random solution, so it climbs a different hill each time and stops on a different local optimum. The fix is not to remove the randomness but to use it: run the solver many times and keep the best result. That is random-restart hill climbing.</p>
+    <p><strong>No.</strong> The six neighbours are 28 (swap C and A), 26 (C and D), 19 (C and B), 19 (A and D), 20 (A and B) and 26 (D and B). Two of them are shorter, so hill climbing moves on. The two 19 km neighbours, <code>[B, A, D, C]</code> and <code>[C, D, A, B]</code>, are the same route driven in opposite directions.</p>
+  </details>
+</div>
+
+<div class="checkpoint">
+  <span class="checkpoint-label">Check yourself</span>
+  <p>Your route planner uses hill climbing from a random start. It returns a different route every time you run it, and the quality varies. Is this a bug?</p>
+  <details>
+    <summary>Show answer</summary>
+    <p><strong>No.</strong> It starts from a random route, so it can stop at a different local optimum each time. The fix is not to remove the randomness but to use it: run the planner many times and keep the best route found so far. That is random-restart hill climbing.</p>
   </details>
 </div>
 
@@ -2839,17 +3017,17 @@ def a_star(problem, h):
   <div class="callout-icon">i</div>
   <div class="callout-body">
     <div class="callout-title">Further exploration (optional): simulated annealing</div>
-    <p>Hill climbing never accepts a worse neighbour, and that is why it stops at a local optimum. <strong>Simulated annealing</strong> sometimes accepts a worse neighbour on purpose: often at the start, rarely near the end. These temporary steps down let it leave a small hill and find a higher one. The name comes from metalwork, where metal is heated and then cooled slowly so that it settles well. This box is extra reading and is not tested.</p>
+    <p>Hill climbing never accepts a worse neighbour, and that is why it stops at a local optimum. <em>Simulated annealing</em> sometimes accepts a worse neighbour on purpose: often at the start, rarely near the end. In our example, from <code>[A, D, B, C]</code> (20 km) it might accept <code>[B, D, A, C]</code> (21 km). From there, swapping B and C gives <code>[C, D, A, B]</code>, 19 km. One step back made a better route reachable. Because the method can leave a good route, it must keep the best solution found so far. The name comes from metalwork, where metal is heated and then cooled slowly so that it settles well. This box is extra reading and is not tested.</p>
   </div>
 </div>
 
-<p class="reading-time">9 min read</p>
+<p class="reading-time">13 min read</p>
         `
       },
       {
-        title: "Population-Based Optimization: Genetic Algorithms",
+        title: "Population-Based Search: Genetic Algorithms",
         body: `
-<p><em>What if we explore several candidate solutions at once, instead of improving only one?</em> This is the population-based side of the comparison in section 4.1.</p>
+<p><em>What if we keep several routes at once, instead of improving only one?</em> This is the population-based side of the comparison in section 4.1. We use the same delivery problem, so you can compare the two methods directly.</p>
 
 <div class="analogy">
   <span class="analogy-label">Breeding date palms</span>
@@ -2898,15 +3076,24 @@ def a_star(problem, h):
   <div class="diagram-caption">Each family takes its idea from a different part of nature. The label under each one answers the other question: how many candidates it holds.</div>
 </div>
 
-<p>This section studies one of these methods in detail: the genetic algorithm.</p>
+<p>This section studies one of these methods: the genetic algorithm.</p>
 
-<div class="definition">
-  <p>A <strong>genetic algorithm</strong> keeps a <strong>population</strong> of candidate solutions. Each candidate is written as a <strong>chromosome</strong>, often a string such as <code>1010</code>; one member of the population is called an individual. A <strong>fitness function</strong> scores each chromosome, and higher fitness means better.</p>
-</div>
+<h3>The words you need</h3>
+
+<ol class="steps">
+  <li><strong>Population</strong><p>The group of candidate solutions the algorithm holds at one time. Here: a few routes.</p></li>
+  <li><strong>Chromosome (individual)</strong><p>How one candidate solution is written. For routes, the chromosome is the route list itself, such as <code>[A, C, B, D]</code>. For yes/no choices it is a bit string, such as <code>1010</code>. One member of the population is called an individual.</p></li>
+  <li><strong>Fitness function</strong><p>A score for each chromosome, where higher is better. Our objective is a distance to minimize, so the fitness must turn it around: a shorter route has a higher fitness. One common choice is fitness = 1 / distance. In this example we only need to know which of two routes is fitter: the shorter one.</p></li>
+  <li><strong>Selection</strong><p>Choosing the parents. It is random, but fitter chromosomes are more likely to be chosen.</p></li>
+  <li><strong>Crossover</strong><p>Making a child from parts of two parents.</p></li>
+  <li><strong>Mutation</strong><p>A small random change to a child. For routes: swap two customers, the same move that made a neighbour in section 4.2.</p></li>
+</ol>
 
 <p>The members of the population are candidate solutions, not agents. Nothing in the population perceives or acts, so this is not the multi-agent setting of section 2.4.</p>
 
-<h3>The cycle</h3>
+<div class="definition">
+  <p>A <strong>genetic algorithm</strong> repeats one cycle: <strong>Population → Evaluation → Selection → Crossover → Mutation → New population</strong>.</p>
+</div>
 
 <div class="diagram">
   <svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Initial population, fitness evaluation, selection, crossover, mutation, then the next generation repeats from fitness evaluation.">
@@ -2939,181 +3126,192 @@ def a_star(problem, h):
   <div class="diagram-caption">Selection keeps what works, crossover combines it, mutation keeps new options alive.</div>
 </div>
 
+<h3>One generation on the delivery problem</h3>
+
+<h4>Population and evaluation</h4>
+
+<p>Generation 0 holds four routes. Route R1 is the starting route of section 4.2, and R3 is the route where hill climbing stopped.</p>
+
+<div class="table-figure">
+  <div class="table-scroll">
+    <table class="env-table" style="white-space: normal;">
+      <thead>
+        <tr><th scope="col">Route</th><th scope="col">Chromosome</th><th scope="col">Total distance</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">R1</th><td>[A, C, B, D]</td><td>30</td></tr>
+        <tr><th scope="row">R2</th><td>[C, A, D, B]</td><td>21</td></tr>
+        <tr><th scope="row">R3</th><td>[A, D, B, C]</td><td>20</td></tr>
+        <tr><th scope="row">R4</th><td>[A, B, C, D]</td><td>28</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<p>The best route found so far is R3, 20 km.</p>
+
+<h4>Selection</h4>
+
+<p>One simple way to select a parent: pick two routes at random and keep the fitter one, here the shorter one. In this run, the first draw compared R1 (30) with R2 (21) and chose <strong>R2</strong>. The second draw compared R4 (28) with R3 (20) and chose <strong>R3</strong>. A weak route can still be drawn, but it rarely wins.</p>
+
+<h4>Crossover</h4>
+
+<p>For bit strings, crossover can cut two parents at the same place and swap the tails. For routes this breaks the representation. Cut R2 and R3 after position 2 and join the parts: <code>[C, A]</code> + <code>[B, C]</code> = <code>[C, A, B, C]</code>. Customer C appears twice and D is missing, so this is not a route at all.</p>
+
+<p>A crossover for routes must keep a permutation. One simple way:</p>
+
 <ol class="steps">
-  <li><strong>Initial population</strong><p>Start with a group of candidate solutions, often chosen at random.</p></li>
-  <li><strong>Fitness evaluation</strong><p>Score every chromosome with the fitness function.</p></li>
-  <li><strong>Selection</strong><p>Choose parents at random, but fitter chromosomes are more likely to be chosen.</p></li>
-  <li><strong>Crossover</strong><p>Cut two parent chromosomes at the same point and swap the tails. This makes two children.</p></li>
-  <li><strong>Mutation</strong><p>Now and then, change one position of a child at random, for example flip one bit. How often this happens is the mutation rate.</p></li>
-  <li><strong>Next generation</strong><p>The children form the new population. Repeat from fitness evaluation until a fixed number of generations, or until the best fitness stops improving.</p></li>
+  <li><strong>Keep the middle of parent 1</strong><p>Copy positions 2 and 3 of R2 into the child: <code>[_, A, D, _]</code>.</p></li>
+  <li><strong>Fill the gaps in parent 2's order</strong><p>The missing customers are B and C. In R3 = <code>[A, D, B, C]</code>, B comes before C. Fill the gaps from left to right: <code>[B, A, D, C]</code>.</p></li>
 </ol>
 
-<h3>Worked example: choosing projects within a budget</h3>
+<p>The child is a valid route: every customer appears exactly once. Its length is 4 + 4 + 3 + 6 + 2 = <strong>19 km</strong>. With the roles of the parents swapped, the same rule keeps <code>[_, D, B, _]</code> from R3 and fills C, then A, in R2's order: a second child, <code>[C, D, B, A]</code>, 23 km.</p>
 
-<p>Your college has 90 thousand riyals and four project proposals. Each project is either funded (1) or not (0), so a chromosome has four bits. For example, <code>1010</code> means projects P1 and P3 are funded.</p>
+<p>This rule is a simple version of order crossover (OX). The name does not matter for this course. What matters is that every child is still a valid route, with no customer repeated and none missing.</p>
 
-<div class="table-figure">
-  <div class="table-scroll">
-    <table class="env-table" style="white-space: normal;">
-      <thead>
-        <tr><th scope="col">Project</th><th scope="col">Cost (thousand riyals)</th><th scope="col">Benefit (points)</th></tr>
-      </thead>
-      <tbody>
-        <tr><th scope="row">P1</th><td>40</td><td>30</td></tr>
-        <tr><th scope="row">P2</th><td>30</td><td>25</td></tr>
-        <tr><th scope="row">P3</th><td>50</td><td>45</td></tr>
-        <tr><th scope="row">P4</th><td>20</td><td>10</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+<h4>Mutation</h4>
 
-<div class="formula">
-  <p><span>Objective:</span> maximize the total benefit</p>
-  <p><span>Constraint:</span> total cost ≤ 90</p>
-  <p><span>Fitness:</span> total benefit if the cost is within budget; 0 if it is over budget</p>
-</div>
-
-<p>Here the objective is already something to maximize, so the fitness can use it directly. If the objective were a cost to minimize, the fitness would have to reverse it, for example 1000 − cost, so that a cheaper solution gets a higher fitness. Fitness is defined for the algorithm; it is not always the same number as the objective.</p>
-
-<h4>Generation 0</h4>
-
-<div class="table-figure">
-  <p class="table-hint">Swipe sideways to see all columns &rarr;</p>
-  <div class="table-scroll">
-    <table class="env-table" style="white-space: normal;">
-      <thead>
-        <tr><th scope="col">Chromosome</th><th scope="col">Projects</th><th scope="col">Cost</th><th scope="col">Fitness</th><th scope="col">Chance of selection</th></tr>
-      </thead>
-      <tbody>
-        <tr><th scope="row">A = 0110</th><td>P2, P3</td><td>80</td><td>70</td><td>70 / 175 = 40%</td></tr>
-        <tr><th scope="row">B = 1100</th><td>P1, P2</td><td>70</td><td>55</td><td>55 / 175 = 31%</td></tr>
-        <tr><th scope="row">C = 1001</th><td>P1, P4</td><td>60</td><td>40</td><td>40 / 175 = 23%</td></tr>
-        <tr><th scope="row">D = 0001</th><td>P4</td><td>20</td><td>10</td><td>10 / 175 = 6%</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<p>All four are within budget. The total fitness is 175, and each chromosome's chance of selection is its fitness divided by 175. Selection is random, so in this run it picked the pairs <strong>A + C</strong> and <strong>A + B</strong>. A was picked twice, and D, the weakest, was not picked.</p>
-
-<h4>Crossover and mutation</h4>
+<p>Mutation swaps two customers of a child, now and then. In this run it changed the second child: swapping D and A in <code>[C, D, B, A]</code> gives <code>[C, A, B, D]</code>, 26 km. The child is still a valid route, but it is longer: mutation is random, and its job is to keep variety in the population, not to improve every child.</p>
 
 <div class="diagram">
-  <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Crossover after bit 2: 0110 and 1001 give 0101 and 1010; 0110 and 1100 give 0100 and 1110. Mutation flips bit 3 of 0100 to give 0110.">
-    <text x="350" y="22" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">CROSSOVER AFTER BIT 2, THEN ONE MUTATION</text>
-    <text x="40" y="46" font-size="11" fill="var(--ink-mute)" font-weight="600">PARENTS</text>
-    <text x="40" y="78" font-size="12" fill="var(--ink)" font-weight="700">A</text><rect x="60" y="60" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="74" y="79" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="90" y="60" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="104" y="79" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="120" y="60" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="134" y="79" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="150" y="60" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="164" y="79" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><line x1="119" y1="57" x2="119" y2="91" stroke="var(--gold)" stroke-width="2.5" stroke-dasharray="4 3"/>
-    <text x="40" y="118" font-size="12" fill="var(--ink)" font-weight="700">C</text><rect x="60" y="100" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="74" y="119" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="90" y="100" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="104" y="119" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="120" y="100" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="134" y="119" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="150" y="100" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="164" y="119" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><line x1="119" y1="97" x2="119" y2="131" stroke="var(--gold)" stroke-width="2.5" stroke-dasharray="4 3"/>
-    <path d="M190 95 H 235" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#co1)"/>
-    <text x="250" y="46" font-size="11" fill="var(--ink-mute)" font-weight="600">CHILDREN</text>
-    <rect x="250" y="60" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="264" y="79" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="280" y="60" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="294" y="79" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="310" y="60" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="324" y="79" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="340" y="60" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="354" y="79" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><text x="380" y="79" font-size="12" fill="var(--ink-soft)">benefit 35</text>
-    <rect x="250" y="100" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="264" y="119" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="280" y="100" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="294" y="119" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="310" y="100" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="324" y="119" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="340" y="100" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="354" y="119" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><text x="380" y="119" font-size="12" fill="var(--teal)" font-weight="700">benefit 75</text>
+  <svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Cutting two routes and swapping the tails gives C, A, B, C: C twice and D missing. Keeping A and D from the first parent and filling B then C in the order of the second parent gives B, A, D, C, a valid route of 19 km. Mutation swaps D and A in C, D, B, A to give C, A, B, D.">
+    <text x="350" y="22" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">CROSSOVER AND MUTATION MUST KEEP A VALID ROUTE</text>
+    <text x="20" y="52" font-size="11" fill="var(--ink-mute)" font-weight="600">1. CUT AND SWAP THE TAILS: DOES NOT WORK FOR ROUTES</text>
+    <text x="20" y="82" font-size="11" fill="var(--ink)" font-weight="700">Parent 1</text><rect x="90" y="62" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="105" y="82" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">C</text><rect x="124" y="62" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="139" y="82" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">A</text><rect x="158" y="62" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="173" y="82" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">D</text><rect x="192" y="62" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="207" y="82" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">B</text><line x1="157" y1="58" x2="157" y2="96" stroke="var(--gold)" stroke-width="2.5" stroke-dasharray="4 3"/><text x="236" y="82" font-size="12" fill="var(--ink-soft)">21 km</text>
+    <text x="20" y="122" font-size="11" fill="var(--ink)" font-weight="700">Parent 2</text><rect x="90" y="102" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="105" y="122" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">A</text><rect x="124" y="102" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="139" y="122" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">D</text><rect x="158" y="102" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="173" y="122" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">B</text><rect x="192" y="102" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="207" y="122" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">C</text><line x1="157" y1="98" x2="157" y2="136" stroke="var(--gold)" stroke-width="2.5" stroke-dasharray="4 3"/><text x="236" y="122" font-size="12" fill="var(--ink-soft)">20 km</text>
+    <path d="M290 97 H 335" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#rc1)"/>
+    <rect x="345" y="82" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--gold)" stroke-width="2.5" /><text x="360" y="102" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--gold)" font-weight="700">C</text><rect x="379" y="82" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="394" y="102" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">A</text><rect x="413" y="82" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="428" y="102" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">B</text><rect x="447" y="82" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--gold)" stroke-width="2.5" /><text x="462" y="102" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--gold)" font-weight="700">C</text>
+    <text x="490" y="94" font-size="12" fill="var(--gold)" font-weight="700">C twice, D missing:</text>
+    <text x="490" y="110" font-size="12" fill="var(--gold)" font-weight="700">not a route</text>
 
-    <text x="40" y="178" font-size="12" fill="var(--ink)" font-weight="700">A</text><rect x="60" y="160" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="74" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="90" y="160" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="104" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="120" y="160" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="134" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="150" y="160" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="164" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><line x1="119" y1="157" x2="119" y2="191" stroke="var(--gold)" stroke-width="2.5" stroke-dasharray="4 3"/>
-    <text x="40" y="218" font-size="12" fill="var(--ink)" font-weight="700">B</text><rect x="60" y="200" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="74" y="219" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="90" y="200" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="104" y="219" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="120" y="200" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="134" y="219" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="150" y="200" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="164" y="219" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><line x1="119" y1="197" x2="119" y2="231" stroke="var(--gold)" stroke-width="2.5" stroke-dasharray="4 3"/>
-    <path d="M190 195 H 235" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#co1)"/>
-    <rect x="250" y="160" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="264" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="280" y="160" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="294" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="310" y="160" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="324" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="340" y="160" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="354" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text>
-    <rect x="250" y="200" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="264" y="219" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="280" y="200" width="28" height="28" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="294" y="219" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="310" y="200" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="324" y="219" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="340" y="200" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="354" y="219" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><text x="380" y="219" font-size="12" fill="var(--gold)" font-weight="700">cost 120: over budget</text>
-    <path d="M375 174 H 430" stroke="var(--gold)" stroke-width="2" marker-end="url(#co2)"/>
-    <text x="402" y="166" text-anchor="middle" font-size="10" fill="var(--gold)" font-weight="700">mutation</text>
-    <rect x="440" y="160" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="454" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><rect x="470" y="160" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="484" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">1</text><rect x="500" y="160" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--gold)" stroke-width="3"/><text x="514" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--gold)" font-weight="700">1</text><rect x="530" y="160" width="28" height="28" rx="4" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/><text x="544" y="179" text-anchor="middle" font-size="13" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">0</text><text x="570" y="179" font-size="12" fill="var(--teal)" font-weight="700">benefit 70</text>
-    <rect x="60" y="252" width="16" height="16" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-    <text x="84" y="265" font-size="11" fill="var(--ink-soft)">came from the second parent</text>
-    <rect x="300" y="252" width="16" height="16" rx="3" fill="var(--bg-soft)" stroke="var(--gold)" stroke-width="3"/>
-    <text x="324" y="265" font-size="11" fill="var(--ink-soft)">bit changed by mutation</text>
-    <text x="350" y="292" text-anchor="middle" font-size="11" fill="var(--ink-mute)">the dashed line is the cut point</text>
-    <defs><marker id="co1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--ink-mute)"/></marker><marker id="co2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--gold)"/></marker></defs>
+    <text x="20" y="172" font-size="11" fill="var(--ink-mute)" font-weight="600">2. KEEP THE MIDDLE OF PARENT 1, FILL THE REST IN PARENT 2'S ORDER</text>
+    <text x="20" y="202" font-size="11" fill="var(--ink)" font-weight="700">Parent 1</text><rect x="90" y="182" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="105" y="202" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">C</text><rect x="124" y="182" width="30" height="30" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5" /><text x="139" y="202" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">A</text><rect x="158" y="182" width="30" height="30" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5" /><text x="173" y="202" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">D</text><rect x="192" y="182" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="207" y="202" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">B</text>
+    <text x="20" y="242" font-size="11" fill="var(--ink)" font-weight="700">Parent 2</text><rect x="90" y="222" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="105" y="242" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">A</text><rect x="124" y="222" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="139" y="242" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">D</text><rect x="158" y="222" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--teal)" stroke-width="2.5" /><text x="173" y="242" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">B</text><rect x="192" y="222" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--teal)" stroke-width="2.5" /><text x="207" y="242" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">C</text>
+    <text x="236" y="242" font-size="11" fill="var(--teal)">missing: B, then C</text>
+    <path d="M345 217 H 390" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#rc1)"/>
+    <rect x="400" y="202" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--teal)" stroke-width="2.5" /><text x="415" y="222" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">B</text><rect x="434" y="202" width="30" height="30" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5" /><text x="449" y="222" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">A</text><rect x="468" y="202" width="30" height="30" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5" /><text x="483" y="222" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">D</text><rect x="502" y="202" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--teal)" stroke-width="2.5" /><text x="517" y="222" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">C</text>
+    <text x="545" y="222" font-size="12" fill="var(--teal)" font-weight="700">19 km, valid</text>
+
+    <text x="20" y="292" font-size="11" fill="var(--ink-mute)" font-weight="600">3. MUTATION: SWAP TWO CUSTOMERS</text>
+    <rect x="90" y="302" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="105" y="322" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">C</text><rect x="124" y="302" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--gold)" stroke-width="2.5" /><text x="139" y="322" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--gold)" font-weight="700">D</text><rect x="158" y="302" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="173" y="322" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">B</text><rect x="192" y="302" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--gold)" stroke-width="2.5" /><text x="207" y="322" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--gold)" font-weight="700">A</text><text x="236" y="322" font-size="12" fill="var(--ink-soft)">23 km</text>
+    <path d="M290 317 H 335" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#rc1)"/>
+    <rect x="345" y="302" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="360" y="322" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">C</text><rect x="379" y="302" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--gold)" stroke-width="2.5" /><text x="394" y="322" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--gold)" font-weight="700">A</text><rect x="413" y="302" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1" /><text x="428" y="322" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--ink)" font-weight="700">B</text><rect x="447" y="302" width="30" height="30" rx="5" fill="var(--bg-soft)" stroke="var(--gold)" stroke-width="2.5" /><text x="462" y="322" text-anchor="middle" font-size="15" font-family="'JetBrains Mono', monospace" fill="var(--gold)" font-weight="700">D</text><text x="490" y="322" font-size="12" fill="var(--ink-soft)">26 km, valid</text>
+
+    <rect x="20" y="360" width="16" height="16" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/>
+    <text x="44" y="373" font-size="11" fill="var(--ink-soft)">kept from parent 1</text>
+    <rect x="190" y="360" width="16" height="16" rx="3" fill="var(--bg-soft)" stroke="var(--teal)" stroke-width="2.5"/>
+    <text x="214" y="373" font-size="11" fill="var(--ink-soft)">filled in parent 2's order</text>
+    <rect x="390" y="360" width="16" height="16" rx="3" fill="var(--bg-soft)" stroke="var(--gold)" stroke-width="2.5"/>
+    <text x="414" y="373" font-size="11" fill="var(--ink-soft)">repeated, or swapped by mutation</text>
+    <text x="350" y="396" text-anchor="middle" font-size="11" fill="var(--ink-mute)">the dashed line is the cut point</text>
+    <defs><marker id="rc1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--ink-mute)"/></marker></defs>
   </svg>
-  <div class="diagram-caption">Each child takes the first two bits from one parent and the last two from the other.</div>
+  <div class="diagram-caption">Cutting and swapping tails breaks a route. Keeping a part of one parent and filling the rest in the other parent's order always gives a valid route, and so does a swap.</div>
 </div>
 
-<h4>Generation 1</h4>
+<h4>New population</h4>
+
+<p>In this small example, the two children replace the two longest routes, R1 and R4. Other genetic algorithms replace the whole population.</p>
 
 <div class="table-figure">
-  <p class="table-hint">Swipe sideways to see all columns &rarr;</p>
   <div class="table-scroll">
     <table class="env-table" style="white-space: normal;">
       <thead>
-        <tr><th scope="col">Child</th><th scope="col">How it was made</th><th scope="col">Cost</th><th scope="col">Fitness</th></tr>
+        <tr><th scope="col">Generation 1</th><th scope="col">How it was made</th><th scope="col">Total distance</th></tr>
       </thead>
       <tbody>
-        <tr><th scope="row">0101</th><td>A + C crossover</td><td>50</td><td>35</td></tr>
-        <tr><th scope="row">1010</th><td>C + A crossover</td><td>90</td><td>75</td></tr>
-        <tr><th scope="row">0110</th><td>A + B crossover gave 0100; mutation flipped bit 3</td><td>80</td><td>70</td></tr>
-        <tr><th scope="row">1110</th><td>B + A crossover</td><td>120: over budget</td><td>0 (penalized)</td></tr>
+        <tr><th scope="row">[C, A, D, B]</th><td>R2, kept</td><td>21</td></tr>
+        <tr><th scope="row">[A, D, B, C]</th><td>R3, kept</td><td>20</td></tr>
+        <tr><th scope="row">[B, A, D, C]</th><td>crossover of R2 and R3</td><td>19</td></tr>
+        <tr><th scope="row">[C, A, B, D]</th><td>crossover of R3 and R2, then mutation</td><td>26</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<p>The best fitness rose from 70 to 75. With only four projects we can check all 16 chromosomes by hand, and <code>1010</code> is in fact the best choice within budget. With hundreds of projects we could not check them all, and the genetic algorithm would give no such guarantee: it can stop improving long before it reaches the global optimum.</p>
+<p>The best route found so far improved from 20 km to 19 km, which is the global optimum of this small problem. The genetic algorithm combined the route where hill climbing stopped with another route, and found a shorter one. This was one lucky run: another run could do worse. With many customers, a genetic algorithm gives no guarantee of the global optimum.</p>
 
 <div class="callout warning">
   <div class="callout-icon">!</div>
   <div class="callout-body">
     <div class="callout-title">Crossover and mutation do not guarantee a better child</div>
-    <p>Child <code>0101</code> (fitness 35) is worse than both of its parents. Mutation can hurt too: flipping bit 2 of <code>1010</code> gives <code>1110</code>, which breaks the budget. Good children survive because selection favours them, not because the operators are clever.</p>
+    <p>The second child, <code>[C, D, B, A]</code> (23 km), is longer than both of its parents (21 and 20 km), and mutation then made it longer still. Good children survive because selection favours them, not because the operators are clever.</p>
   </div>
 </div>
 
-<h3>When a child breaks a constraint</h3>
+<h4>When a child breaks a constraint</h4>
 
-<p>Child <code>1110</code> costs 120 thousand riyals, more than the budget. A genetic algorithm needs a rule for such children. Three common rules:</p>
+<p>With routes and a crossover that keeps a permutation, every child is feasible. Other representations can produce children that break a constraint. For example, if each bit says whether to fund one project, a child can cost more than the budget. A genetic algorithm then needs a rule:</p>
 
-<ol class="steps">
-  <li><strong>Penalize it</strong><p>Keep it in the population, but give it a low fitness. We gave it fitness 0, so with selection in proportion to fitness it has no chance of becoming a parent. It still takes one place in the population.</p></li>
-  <li><strong>Reject it</strong><p>Throw it away before it joins the population, and make a new child in its place. Then every member of the population is feasible.</p></li>
-  <li><strong>Repair it</strong><p>Change it until it is feasible. For example, drop the funded project with the lowest benefit until the cost fits: <code>1110</code> drops P2 and becomes <code>1010</code>, cost 90.</p></li>
-</ol>
+<ul>
+  <li><strong>Penalize</strong> it: keep it, but give it a very low fitness.</li>
+  <li><strong>Reject</strong> it: throw it away and make a new child instead.</li>
+  <li><strong>Repair</strong> it: change it until it satisfies the constraint, for example drop projects until the cost fits.</li>
+</ul>
 
-<p>The choice of representation matters as much as the rule. Crossover helps most when parts of the chromosome are meaningful building blocks on their own, such as the funding decision for one project. If the positions have no independent meaning, cutting and swapping mostly breaks good solutions.</p>
+<h3>One solution or a population?</h3>
 
-<h3>Hill climbing or a genetic algorithm?</h3>
-
-<div class="before-after">
-  <div class="ba-col before">
-    <span class="ba-label">Single-solution</span>
-    <h4>Hill climbing</h4>
-    <ul>
-      <li>Improves one candidate solution</li>
-      <li>Few objective evaluations per step</li>
-      <li>Simple to build: you only need a neighbourhood</li>
-      <li>Stops at the first local optimum it reaches</li>
-    </ul>
-  </div>
-  <div class="ba-col after">
-    <span class="ba-label">Population-based</span>
-    <h4>Genetic algorithm</h4>
-    <ul>
-      <li>Improves a population of candidate solutions</li>
-      <li>Many fitness evaluations per generation</li>
-      <li>More settings to choose: population size, mutation rate</li>
-      <li>Variety can help it leave a local optimum, with no guarantee</li>
-    </ul>
+<div class="table-figure">
+  <div class="table-scroll">
+    <table class="env-table" style="white-space: normal;">
+      <thead>
+        <tr><th scope="col"></th><th scope="col">Hill climbing (4.2)</th><th scope="col">Genetic algorithm (4.3)</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Holds</th><td>one route</td><td>a population of routes</td></tr>
+        <tr><th scope="row">Makes new routes by</th><td>swapping two customers</td><td>crossover of two parents, then mutation</td></tr>
+        <tr><th scope="row">Uses the objective to</th><td>compare neighbours with the current route</td><td>choose parents and decide which routes stay</td></tr>
+        <tr><th scope="row">On our example</th><td>from [A, C, B, D] it stopped at 20 km</td><td>one generation reached 19 km</td></tr>
+        <tr><th scope="row">Main risk</th><td>stops at the first local optimum it reaches</td><td>more work per step and more settings to choose, such as population size and mutation rate</td></tr>
+        <tr><th scope="row">Best found so far</th><td>the current route, unless you restart</td><td>must be stored: the population changes</td></tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
-<p>Neither method is better in general. The right choice depends on the problem, the representation, and how much computing time you have.</p>
+<p>Neither method is better in general. Hill climbing with random restarts also reached 19 km in section 4.2. The right choice depends on the problem, the representation and the computing time you have. The fair way to compare them is to run both on the same problem, with the same amount of work, several times, and compare the best routes they find.</p>
 
 <div class="checkpoint">
   <span class="checkpoint-label">Check yourself</span>
-  <p>Using the project table, parents <code>1100</code> and <code>0011</code> are cut after bit 2. Write both children, their cost and their fitness (budget 90). Did crossover help?</p>
+  <p>Parents <code>[A, C, D, B]</code> (28 km) and <code>[C, B, A, D]</code> (21 km). (a) Cut both after position 2 and swap the tails: is the first child a valid route? (b) Use the crossover rule above, with <code>[A, C, D, B]</code> as parent 1. Write the child and its length. Is it better than both parents?</p>
   <details>
     <summary>Show answer</summary>
-    <p>The children are <code>1111</code> (cost 140, over budget, fitness 0) and <code>0000</code> (cost 0, fitness 0). Both parents had fitness 55, so both children are worse. Crossover mixes material; it does not guarantee improvement.</p>
+    <p>(a) <code>[A, C]</code> + <code>[A, D]</code> = <code>[A, C, A, D]</code>. A appears twice and B is missing, so it is <strong>not a valid route</strong>.</p>
+    <p>(b) Keep <code>[_, C, D, _]</code>. The missing customers are A and B; in <code>[C, B, A, D]</code>, B comes before A. The child is <code>[B, C, D, A]</code>: 4 + 4 + 6 + 3 + 6 = <strong>23 km</strong>. It is shorter than the first parent (28) but longer than the second (21). Crossover mixes routes; it does not promise a better child.</p>
   </details>
 </div>
 
-<p class="reading-time">10 min read</p>
+<p class="reading-time">14 min read</p>
         `
       },
       {
-        title: "Gradient Descent: Continuous Optimization",
+        title: "Optimization in AI Development",
         body: `
-<p>Section 4.1 introduced continuous optimization. Now the decision variable can take any real value, so there are infinitely many neighbours and we cannot list them. Instead of comparing neighbours, we use the slope of the objective function.</p>
+<p>Optimization is not only used to solve real-world problems. It can also help us build better AI systems. It does this in two places: inside a model, when the model is trained, and around a model, when we choose how to build it.</p>
 
-<p>Take a simple problem whose answer we already know, so we can watch the method find it:</p>
+<div class="diagram">
+  <svg viewBox="0 0 700 270" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Inside the model, training uses gradient descent to change the weights. Around the model, search chooses the settings, the features and the architecture.">
+    <text x="350" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">OPTIMIZATION INSIDE AND AROUND AN AI MODEL</text>
+    <rect x="20" y="44" width="660" height="210" rx="14" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="36" y="66" font-size="12" fill="var(--gold)" font-weight="700">AROUND THE MODEL: design choices, found by search (4.2, 4.3)</text>
+    <text x="36" y="96" font-size="12" fill="var(--ink)" font-weight="700">Hyperparameter tuning</text><text x="36" y="112" font-size="11" fill="var(--ink-soft)">which settings? e.g. learning rate</text>
+    <text x="36" y="146" font-size="12" fill="var(--ink)" font-weight="700">Feature selection</text><text x="36" y="162" font-size="11" fill="var(--ink-soft)">which input columns?</text>
+    <text x="36" y="196" font-size="12" fill="var(--ink)" font-weight="700">Neural architecture search</text><text x="36" y="212" font-size="11" fill="var(--ink-soft)">which network design?</text>
+    <rect x="300" y="84" width="360" height="150" rx="12" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+    <text x="480" y="108" text-anchor="middle" font-size="12" fill="var(--accent)" font-weight="700">INSIDE THE MODEL: training</text>
+    <text x="480" y="136" text-anchor="middle" font-size="12" fill="var(--ink)">thousands of weights (real numbers)</text>
+    <text x="480" y="160" text-anchor="middle" font-size="12" fill="var(--ink)">gradient descent changes them</text>
+    <text x="480" y="184" text-anchor="middle" font-size="12" fill="var(--ink)">to make the loss smaller</text>
+    <text x="480" y="214" text-anchor="middle" font-size="11" fill="var(--ink-soft)">continuous optimization</text>
+  </svg>
+  <div class="diagram-caption">Training is continuous optimization inside the model. Design choices around the model are searched with the ideas of sections 4.1 to 4.3.</div>
+</div>
+
+<h3>Inside the model: gradient descent</h3>
+
+<p>A machine learning model contains many numbers, called weights. Training means choosing the weights so that the model's answers are as good as possible on examples with known answers. The objective is called the <em>loss</em>: how wrong the answers are. We minimize it.</p>
+
+<p>The weights are real numbers, so this is continuous optimization. A real number has infinitely many neighbours, so we cannot list them and compare them as in section 4.2. Instead we use the slope of the objective. Take a simple problem whose answer we already know, so we can watch the method find it:</p>
 
 <div class="formula">
   <p><span>Minimize</span> f(x) = (x − 3)²</p>
@@ -3122,25 +3320,16 @@ def a_star(problem, h):
 
 <p>The lowest value is at x = 3, where f(3) = 0.</p>
 
-<ol class="steps">
-  <li><strong>Continuous decision variable</strong><p>x, any real number.</p></li>
-  <li><strong>Objective function</strong><p>f(x), the number to minimize. In machine learning it is called the loss function: how wrong a model's answers are.</p></li>
-  <li><strong>Derivative (gradient)</strong><p>f′(x), the slope at the current point. It tells you which way is uphill and how steep it is. With many variables it becomes the gradient ∇f(x), one slope for each variable.</p></li>
-  <li><strong>Learning rate</strong><p>α (alpha), a small positive number that sets the size of each step.</p></li>
-  <li><strong>Iterative update</strong><p>Take one step against the slope, then repeat from the new point.</p></li>
-  <li><strong>Stopping criterion</strong><p>Stop when the step becomes tiny, or after a fixed number of steps.</p></li>
-</ol>
+<ul>
+  <li>The <strong>derivative</strong> f′(x) is the slope at the current point. It tells you which way is uphill and how steep it is. With many variables it becomes the <strong>gradient</strong>, one slope for each variable.</li>
+  <li>The <strong>learning rate</strong> α (alpha) is a small positive number that sets the size of each step.</li>
+</ul>
 
 <div class="definition">
-  <p><strong>Gradient descent</strong> repeats one update: $x_{\\text{new}} = x - \\alpha\\, f'(x)$. The slope f′(x) points uphill, the minus sign turns the step downhill, and α is the <strong>learning rate</strong>.</p>
+  <p><strong>Gradient descent</strong> repeats one update: $x_{\\text{new}} = x - \\alpha\\, f'(x)$. The slope f′(x) points uphill, the minus sign turns the step downhill, and α is the learning rate. It stops when the step becomes tiny, or after a fixed number of steps.</p>
 </div>
 
-<div class="analogy">
-  <span class="analogy-label">Walking downhill in fog, but the ground is smooth</span>
-  <p>You cannot see the valley. But you can feel which way the ground slopes under your feet, so you take a step downhill and feel again. Steep ground means a big step; flat ground means a small one.</p>
-</div>
-
-<h3>Two steps by hand</h3>
+<h4>Two steps by hand</h4>
 
 <p>Start at x = 0 with learning rate α = 0.1.</p>
 
@@ -3154,27 +3343,14 @@ def a_star(problem, h):
       <tbody>
         <tr><th scope="row">1</th><td>0</td><td>9</td><td>−6</td><td>−0.6</td><td>0 − (−0.6) = 0.6</td></tr>
         <tr><th scope="row">2</th><td>0.6</td><td>5.76</td><td>−4.8</td><td>−0.48</td><td>0.6 − (−0.48) = 1.08</td></tr>
-        <tr><th scope="row">3</th><td>1.08</td><td>3.69</td><td>−3.84</td><td>−0.384</td><td>1.464</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<p>At x = 0 the slope is −6: the function goes <em>down</em> as x grows. The minus sign in the update turns that into a step to the right, towards 3. The distance to 3 shrinks from 3 to 2.4, then 1.92, then 1.536: each step closes 20% of the remaining gap. The steps get smaller on their own, because the slope gets flatter near the bottom.</p>
+<p>At x = 0 the slope is −6: the function goes <em>down</em> as x grows. The minus sign in the update turns that into a step to the right, towards 3. The steps get smaller on their own, because the slope gets flatter near the bottom.</p>
 
-<pre><code class="language-python">def gradient_descent(slope, x, learning_rate=0.1, max_steps=1000, tiny=0.001):
-    """Step against the slope until the steps become tiny."""
-    for _ in range(max_steps):
-        step = learning_rate * slope(x)
-        x = x - step
-        if abs(step) &lt; tiny:        # stopping criterion
-            break
-    return x
-
-gradient_descent(lambda x: 2 * (x - 3), x=0)   # about 2.996
-</code></pre>
-
-<h3>The learning rate</h3>
+<h4>The learning rate</h4>
 
 <div class="diagram">
   <svg viewBox="0 0 700 255" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Gradient descent on (x minus 3) squared from x = 0: with rate 0.01 it barely moves, with 0.1 it approaches 3, with 1.1 it jumps over 3 and moves further away."><text x="125" y="26" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">TOO SMALL: α = 0.01</text>
@@ -3205,124 +3381,144 @@ gradient_descent(lambda x: 2 * (x - 3), x=0)   # about 2.996
   <div class="diagram-caption">The same function and the same start. Only the learning rate changes.</div>
 </div>
 
+<p>Too small (0.01), and the search is very slow. Reasonable (0.1), and it moves steadily towards 3. Too large (1.1), and it jumps over 3 and lands further away each time, so it never settles. There is no single correct learning rate; it is chosen by experiment. That choice is itself an optimization problem, as the next part shows.</p>
+
+<div class="aha">
+  <div class="aha-label">Related to hill climbing, but not the same algorithm</div>
+  <p>Both improve one solution step by step, and both can stop at a local optimum: a function with several valleys can trap gradient descent in a local minimum. Hill climbing compares a list of neighbours and moves to the best one. Gradient descent never lists neighbours: it needs continuous variables and an objective whose slope we can compute, and it uses the slope to choose the direction. With a suitable learning rate, on a function with one valley such as (x − 3)², it approaches the global minimum.</p>
+</div>
+
+<h3>Around the model: choosing how to build it</h3>
+
+<p>Before training starts, someone must choose how to build the model. Each choice is an optimization problem, and it follows the same steps as the delivery problem.</p>
+
+<div class="applications">
+  <div class="app-grid">
+    <div class="app-card">
+      <span class="app-icon">🎛️</span>
+      <strong>Hyperparameter tuning</strong>
+      <p>A hyperparameter is a setting chosen before training, such as the learning rate α or the number of layers. A candidate solution is one combination of settings, for example α = 0.1 with 3 layers. Its objective value is how well the trained model does on validation data: examples kept aside, not used in training. Search methods try different combinations and keep the best.</p>
+    </div>
+    <div class="app-card">
+      <span class="app-icon">🧮</span>
+      <strong>Feature selection</strong>
+      <p>Features are the inputs of a model, such as attendance or quiz marks when predicting a student's final result. Feature selection chooses which features to use. A candidate is a bit string, one bit per feature: 1 = use it. A neighbour flips one bit, so hill climbing works, and bit strings suit a genetic algorithm too.</p>
+    </div>
+    <div class="app-card">
+      <span class="app-icon">🧠</span>
+      <strong>Neural architecture search</strong>
+      <p>The candidate is the design of a neural network: how many layers, of what kind, and how they connect. The objective is again performance on validation data, sometimes with size or speed. Research has explored such designs with evolutionary algorithms, and also with other methods.</p>
+    </div>
+  </div>
+</div>
+
 <div class="table-figure">
+  <p class="table-hint">Swipe sideways to see all columns &rarr;</p>
   <div class="table-scroll">
     <table class="env-table" style="white-space: normal;">
       <thead>
-        <tr><th scope="col">Learning rate</th><th scope="col">First values of x</th><th scope="col">What happens</th></tr>
+        <tr><th scope="col">Problem</th><th scope="col">Candidate solution</th><th scope="col">Objective</th><th scope="col">Direction</th></tr>
       </thead>
       <tbody>
-        <tr><th scope="row">Too small: 0.01</th><td>0 → 0.06 → 0.12 → 0.18</td><td>Very slow. After 5 steps x is only 0.29. It may look stuck.</td></tr>
-        <tr><th scope="row">Reasonable: 0.1</th><td>0 → 0.6 → 1.08 → 1.46</td><td>Steady progress. After 5 steps x is 2.02.</td></tr>
-        <tr><th scope="row">Too large: 1.1</th><td>0 → 6.6 → −1.32 → 8.18</td><td>Jumps over 3 and lands further away each time. It never settles.</td></tr>
+        <tr><th scope="row">Delivery route</th><td>a permutation of the customers</td><td>total distance</td><td>minimize</td></tr>
+        <tr><th scope="row">Hyperparameter tuning</th><td>a combination of settings</td><td>score on validation data</td><td>maximize</td></tr>
+        <tr><th scope="row">Feature selection</th><td>a bit string, one bit per feature</td><td>score on validation data</td><td>maximize</td></tr>
+        <tr><th scope="row">Neural architecture search</th><td>a network design</td><td>score on validation data</td><td>maximize</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<p>There is no single correct learning rate; it is chosen by experiment. Between "reasonable" and "too large" there is a middle case: with α = 0.9, x jumps from side to side of 3, but each jump is shorter, so it still settles.</p>
-
-<div class="callout note">
-  <div class="callout-icon">i</div>
-  <div class="callout-body">
-    <div class="callout-title">When gradient descent fits</div>
-    <p>It needs continuous decision variables and an objective whose slope we can compute (a differentiable function). For (x − 3)² there is only one valley, so with a suitable learning rate (0.1 here) gradient descent approaches the global minimum; with α = 1.1 it does not. A function with several valleys can trap it in a local minimum, just as a local optimum traps hill climbing.</p>
-  </div>
-</div>
-
-<div class="aha">
-  <div class="aha-label">Related to hill climbing, but not the same algorithm</div>
-  <p>Both improve one solution step by step, and both can stop at a local optimum. Hill climbing compares a list of neighbours and moves to the best one. Gradient descent never lists neighbours: it uses the derivative to choose the direction, and the learning rate to choose the step size.</p>
-</div>
-
-<h3>Where you meet it: training models</h3>
-
-<p>Training a machine learning model means choosing many numbers inside it, called weights, to minimize a loss: how wrong its answers are on examples with known answers. Methods based on gradient descent, run on many weights at once, are how such models are trained. The details come in later courses.</p>
+<p>These are applications of optimization and search, not of one particular algorithm. One difference from the delivery problem matters a lot: to score one candidate here, you must train a model, which can take minutes or days. So these searches try far fewer candidates, and they choose them carefully.</p>
 
 <div class="checkpoint">
   <span class="checkpoint-label">Check yourself</span>
-  <p>For f(x) = (x − 3)², start at x = 5 with α = 0.1. Compute one step. Then compute one step from the same start with α = 1.1. Which one helped?</p>
+  <p>(a) For f(x) = (x − 3)², start at x = 5 with α = 0.1 and compute one step. Then compute one step from the same start with α = 1.1. Which one helped? (b) A model can use 5 features. You want the set of features that gives the best score on validation data. Give the representation, the number of candidates, one neighbour of <code>10110</code>, and the direction.</p>
   <details>
     <summary>Show answer</summary>
-    <p>f′(5) = 2(5 − 3) = 4. With α = 0.1: x = 5 − 0.4 = <strong>4.6</strong>, closer to 3 (distance 1.6 instead of 2). With α = 1.1: x = 5 − 4.4 = <strong>0.6</strong>. It jumped over 3 and is now further away (distance 2.4). The small rate helped; the large one made things worse.</p>
+    <p>(a) f′(5) = 2(5 − 3) = 4. With α = 0.1: x = 5 − 0.4 = <strong>4.6</strong>, closer to 3. With α = 1.1: x = 5 − 4.4 = <strong>0.6</strong>: it jumped over 3 and is now further away. The small rate helped; the large one made things worse.</p>
+    <p>(b) A bit string of 5 bits. There are 2<sup>5</sup> = <strong>32</strong> candidates (31 if at least one feature must be used). A neighbour flips one bit: for example <code>00110</code>. The direction is <strong>maximize</strong> the validation score.</p>
   </details>
 </div>
 
-<p class="reading-time">9 min read</p>
+<p class="reading-time">11 min read</p>
         `
       }
     ],
     cheatsheet: [
       {
-        group: "Describing an optimization problem",
+        group: "From a real problem to a solution",
         items: [
-          "<strong>Decision variables</strong> — what you choose · <strong>candidate solution</strong> — one complete choice",
-          "<strong>Search space</strong> — every candidate · <strong>feasible region</strong> — only those that satisfy all constraints",
-          "<strong>Objective function</strong> — a number for each candidate: minimize a cost, maximize a fitness",
+          "Real-world problem → <strong>problem modelling</strong> → <strong>solution representation</strong> → <strong>objective function</strong> → <strong>search strategy</strong> → evaluation",
+          "<strong>Candidate solution</strong> — one complete answer, good or bad: one full route",
+          "<strong>Objective function</strong> evaluates a candidate · <strong>search strategy</strong> decides which candidates to explore",
+          "Objective function ≠ PEAS performance measure: one scores a candidate, the other judges the agent's behaviour",
           "<strong>Constraint</strong> — must hold (yes or no) · <strong>soft preference</strong> — desirable, enters the objective as a penalty or a reward",
-          "<strong>Neighbourhood</strong> — candidates reachable by one small, defined change"
+          "Discrete or continuous: decided by the decision variables, not by the algorithm"
         ]
       },
       {
-        group: "Discrete or continuous?",
+        group: "The delivery example (TSP)",
         items: [
-          "Decided by the decision variables, not by the algorithm",
-          "Discrete: orderings, yes/no choices, timetables — and discrete does not mean finite",
-          "Continuous: real values in a range, such as x in (x − 3)²",
-          "Hill climbing: either type · genetic algorithm: either type · gradient descent: continuous, with a slope we can compute"
+          "Representation: a permutation, such as <code>[A, C, B, D]</code>; the depot is not written",
+          "<code>[A, C, B, D]</code> = 6 + 7 + 4 + 5 + 8 = 30 km — count the last leg back to the depot",
+          "4 customers: 24 orders, but 12 different routes (a route and its reverse have the same length)",
+          "Shortest route: <code>[B, A, D, C]</code>, 19 km"
         ]
       },
       {
-        group: "Landscape vocabulary",
+        group: "Single-solution local search",
         items: [
-          "<strong>Global optimum</strong> — the best feasible solution overall",
-          "<strong>Local optimum</strong> — no neighbour is better; it may or may not be the global optimum",
-          "<strong>Plateau</strong> — flat area, no direction to follow",
-          "<strong>Ridge</strong> — improves along a line, but every allowed move makes it worse"
+          "Current solution → generate neighbours → evaluate → compare → update",
+          "Neighbour = swap two customers: 6 neighbours for 4 customers",
+          "<code>[A, C, B, D]</code> 30 → <code>[A, D, B, C]</code> 20 → stop: a <strong>local optimum</strong>, not the global optimum (19)",
+          "<strong>Random-restart hill climbing</strong> — keep the <strong>best solution found so far</strong>; about 1/p runs on average"
         ]
       },
       {
-        group: "The three methods",
+        group: "Population-based search: genetic algorithm",
         items: [
-          "<strong>Hill climbing</strong> — single-solution: move to the best neighbour; stop when none is better",
-          "<strong>Genetic algorithm</strong> — population-based: fitness → selection → crossover → mutation → next generation",
-          "<strong>Gradient descent</strong> — continuous: <code>x ← x − α·f′(x)</code>",
-          "<strong>Nature-inspired optimization</strong> — a source of ideas, not a type: GA and swarms keep a population; simulated annealing keeps one solution"
+          "Population → evaluation → selection → crossover → mutation → new population",
+          "<strong>Fitness</strong>: higher is better, so a shorter route is fitter",
+          "Cutting and swapping tails breaks a route: <code>[C, A, B, C]</code> has C twice and no D",
+          "Keep part of parent 1, fill the rest in parent 2's order: <code>[B, A, D, C]</code>, a valid route",
+          "Mutation for routes: swap two customers — it can make a child worse"
         ]
       },
       {
-        group: "Fixes for getting stuck",
+        group: "One solution or a population?",
         items: [
-          "<strong>Sideways moves</strong> — cross a plateau, but set a limit",
-          "<strong>Random-restart hill climbing</strong> — about 1/p runs on average; an average, not a promise",
-          "Chance of success in k runs: <code>1 − (1 − p)^k</code> — for p = 0.1, 10 runs give 0.65"
+          "Hill climbing: one route, small changes, can stop at a local optimum",
+          "Genetic algorithm: many routes, combined and mutated, more work and more settings",
+          "Neither is better in general — compare them on the same problem with the same amount of work",
+          "Not every method is one of the two: the nearest neighbour method (Lab 2) builds a route instead of improving one"
         ]
       },
       {
-        group: "Gradient descent on (x − 3)², start x = 0",
+        group: "Optimization in AI development",
         items: [
-          "α = 0.1: x = 0 → 0.6 → 1.08 → 1.464 — steady progress towards 3",
-          "α = 0.01: too small — after 5 steps x is only 0.29",
-          "α = 1.1: too large — 0 → 6.6 → −1.32 → 8.18, never settles",
-          "No single correct value: the learning rate is chosen by experiment"
+          "Inside the model: <strong>gradient descent</strong> <code>x ← x − α·f′(x)</code> trains the weights",
+          "f(x) = (x − 3)², start 0, α = 0.1: x = 0 → 0.6 → 1.08",
+          "Learning rate too small: slow · too large (1.1): jumps over the minimum and never settles",
+          "Around the model: <strong>hyperparameter tuning</strong> · <strong>feature selection</strong> (a bit string) · <strong>neural architecture search</strong>"
         ]
       },
       {
         group: "Mistakes that cost marks",
         items: [
+          "Forgetting the last leg back to the depot",
           "Saying hill climbing finds the best answer — it finds <em>a</em> local optimum",
-          "Treating the search space as the feasible region",
-          "Writing a constraint as a soft preference, or a soft preference as a constraint",
-          "Saying crossover or mutation always improves a child — they can make it worse",
-          "Scoring a child that is over budget by its benefit — penalize it (fitness 0), reject it, or repair it",
-          "Saying gradient descent is hill climbing — it uses the derivative instead of listing neighbours",
-          "Saying gradient descent always finds the global minimum — it needs a suitable learning rate, and with several valleys it may stop in a local one"
+          "Returning the last solution instead of the best solution found so far",
+          "Giving a shorter route a lower fitness — fitness is higher for better routes",
+          "Cutting two routes and swapping the tails — a customer can appear twice or go missing",
+          "Mixing up the objective function (scores a candidate) and the search strategy (chooses what to try)",
+          "Saying gradient descent is hill climbing — it uses the slope instead of listing neighbours"
         ]
       }
     ],
     resources: [
       { type: "video", title: "Optimization — Lecture 3, CS50's Introduction to AI with Python", author: "Brian Yu, Harvard — local search and hill climbing from minute 1", url: "https://www.youtube.com/watch?v=qK46ET1xk2A" },
-      { type: "docs", title: "Artificial Intelligence: A Modern Approach, 4th ed. — Chapter 4", author: "Russell & Norvig — this module is Chapter 4", url: "https://aima.cs.berkeley.edu/" },
+      { type: "docs", title: "Artificial Intelligence: A Modern Approach, 4th ed. — Chapter 4", author: "Russell & Norvig — local search, genetic algorithms and continuous optimization", url: "https://aima.cs.berkeley.edu/" },
       { type: "docs", title: "aima-python — hill climbing and genetic algorithm code", author: "AIMA code repository, GitHub", url: "https://github.com/aimacode/aima-python" }
     ]
   },

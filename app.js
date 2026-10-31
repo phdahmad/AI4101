@@ -525,8 +525,8 @@
                at Level 5 of the BSc in Computer Science, College of Computing, Umm Al-Qura University.
                Its prerequisite is CS2107 — Analysis and Design of Algorithms.</p>
             <p>The course covers intelligent agents and their environments, uninformed and informed search,
-               local search and optimization, adversarial search for games, constraint satisfaction, and
-               logical agents.</p>
+               optimization (local search, genetic algorithms and gradient descent), adversarial search for games,
+               constraint satisfaction, and logical agents.</p>
             <p>Every module here is written for a first reading: an everyday example before the formal
                definition, a diagram before the pseudocode, a worked example before the complexity table.
                Examples are drawn from Saudi Arabia wherever that makes the idea clearer.</p>

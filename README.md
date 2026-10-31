@@ -37,14 +37,14 @@
 
 ## حالة المحتوى
 
-**المقرر مكتمل: 7 وحدات · 38 قسماً · 166 مصطلحاً · 7 بطاقات مراجعة · 74 سؤالاً · 32 مصدراً.**
+**المقرر مكتمل: 7 وحدات · 38 قسماً · 176 مصطلحاً · 7 بطاقات مراجعة · 74 سؤالاً · 32 مصدراً.**
 
 | # | الوحدة | ساعات | أقسام | مصطلحات | أسئلة | مصادر |
 |---|---|---|---|---|---|---|
 | 1 | Introduction to Artificial Intelligence | 4 | 7 | 18 | 10 | 4 |
 | 2 | Intelligent Agents and Their Environments | 8 | 5 | 30 | 12 | 4 |
 | 3 | Problem Solving by Search | 16 | 7 | 32 | 12 | 11 |
-| 4 | Local Search and Optimization | 8 | 4 | 37 | 10 | 3 |
+| 4 | Optimization | 8 | 4 | 47 | 10 | 3 |
 | 5 | Adversarial Search | 8 | 5 | 16 | 10 | 4 |
 | 6 | Constraint Satisfaction Problems | 8 | 5 | 15 | 10 | 3 |
 | 7 | Logical Agents | 8 | 5 | 18 | 10 | 3 |
