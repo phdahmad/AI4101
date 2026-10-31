@@ -766,8 +766,8 @@
     const reached = new Set([start]);
     const frontier = [start];
     const expanded = [];
-    const snap = (current, msg, result) => ({
-      current, msg, result,
+    const snap = (current, msg, result, created = []) => ({
+      current, msg, result, created: [...created],
       frontier: frontier.map(id => ({ id })), expanded: [...expanded]
     });
     const steps = [snap(null, `Start: the frontier (a queue) holds only ${start}.`)];
@@ -784,13 +784,13 @@
       if (found) {
         const path = tracerPath(parent, goal);
         steps.push(snap(n, `Take out ${n}, the oldest node, and expand it. It creates ${tracerList(created)}. ${goal} is the goal, and BFS tests a node when it creates it, so the search stops here.`,
-          { found: true, path, cost: cfg.weighted ? tracerCost(adj, path) : path.length - 1 }));
+          { found: true, path, cost: cfg.weighted ? tracerCost(adj, path) : path.length - 1 }, created));
         return steps;
       }
       const tail = frontier.length ? '' : ' The frontier is now empty: there is no solution.';
       steps.push(snap(n, `Take out ${n}, the oldest node, and expand it. ` +
         (created.length ? `New nodes join the back of the queue: ${tracerList(created)}.` : 'It creates no new nodes.') + tail,
-        frontier.length ? undefined : { found: false }));
+        frontier.length ? undefined : { found: false }, created));
     }
     return steps;
   }
@@ -800,8 +800,8 @@
     const { start, goal } = cfg;
     const stack = [{ id: start, path: [start] }];
     const expanded = [];
-    const snap = (current, msg, result) => ({
-      current, msg, result,
+    const snap = (current, msg, result, created = []) => ({
+      current, msg, result, created: [...created],
       frontier: stack.slice().reverse().map(e => ({ id: e.id })), expanded: [...expanded]
     });
     const steps = [snap(null, `Start: the frontier (a stack) holds only ${start}.`)];
@@ -819,7 +819,7 @@
       steps.push(snap(top.id, `Take out ${top.id}, the newest node, and expand it. ` +
         (kids.length ? `Its children go on the stack with ${kids[0]} on top, so ${kids[0]} comes out next.`
                      : 'It has no children, so DFS goes back to the newest node still waiting.') + tail,
-        stack.length ? undefined : { found: false }));
+        stack.length ? undefined : { found: false }, kids));
     }
     return steps;
   }
@@ -880,7 +880,7 @@
   }
   const TRACER_RUN = { bfs: runBFS, dfs: runDFS, astar: runAStar };
 
-  function tracerSVG(cfg, adj, s) {
+  function tracerSVG(cfg, adj, s, view) {
     const N = cfg.nodes, r = cfg.r || 22;
     const onPath = new Set();
     if (s && s.result && s.result.found) {
@@ -911,6 +911,13 @@
       if (inFrontier.has(id)) cls.push('is-frontier');
       if (s && s.current === id) cls.push('is-current');
       if (s && s.result && s.result.found && s.result.path.includes(id)) cls.push('on-path');
+      const tags = [];
+      if (view) {
+        if (view.undiscovered.has(id)) cls.push('is-undiscovered');
+        if (view.newIds.has(id)) { cls.push('is-new'); tags.push('new'); }
+        if (view.foundId === id) { cls.push('is-found'); tags.push('\u2713 goal found'); }
+        else if (view.next === id) { cls.push('is-next'); tags.push('next'); }
+      }
       let g = `<g class="${cls.join(' ')}"><circle cx="${n.x}" cy="${n.y}" r="${r}"/>` +
               `<text class="tr-id" x="${n.x}" y="${n.y}">${id}</text>`;
       if (n.sub) {
@@ -921,6 +928,8 @@
         const [dx, dy] = n.hAt || [0, r + 18];
         g += `<text class="tr-h" x="${n.x + dx}" y="${n.y + dy}">h=${n.h}</text>`;
       }
+      if (view && s && s.current === id) g += `<text class="tr-tag tr-tag-now" x="${n.x}" y="${n.y - r - 11}">now</text>`;
+      if (tags.length) g += `<text class="tr-tag" x="${n.x}" y="${n.y + r + 15}">${tags.join(' \u00b7 ')}</text>`;
       const k = done.indexOf(id);
       if (k !== -1) {
         g += `<g class="tr-badge"><circle cx="${n.x + r * 0.85}" cy="${n.y - r * 0.85}" r="10"/>` +
@@ -931,11 +940,145 @@
     return `<svg class="tracer-svg" viewBox="${cfg.viewBox}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${cfg.label || 'Search graph'}">${edges}${labels}${nodes}</svg>`;
   }
 
+  // BFS/DFS player (section 3.4): Play/Pause, Previous, Next, Reset and a speed choice over the
+  // same recorded steps. Every picture is drawn from one snapshot of the real run, so the drawing,
+  // the frontier and the algorithm cannot drift apart. Only tracers with "playback": true use it.
+  const PLAY_SPEEDS = { slow: 2000, normal: 1200 };
+  function attachPlayer(box, cfg, adj) {
+    const algos = cfg.algos;
+    let algo = algos[0], steps = [], seen = [], k = 0, timer = null, speed = 'slow';
+    const done = {};
+    box.classList.add('tracer-player');
+    box.innerHTML = `
+      <div class="tracer-algos" role="group" aria-label="Algorithm">${algos.map(a =>
+        `<button type="button" class="tracer-algo" data-algo="${a}">${TRACER_NAMES[a]}</button>`).join('')}</div>
+      <div class="tracer-figure"></div>
+      <ul class="tracer-legend">
+        <li><span class="sw sw-undiscovered"></span><span>Not discovered</span></li>
+        <li><span class="sw sw-frontier"></span><span>In the frontier (<b>next</b> comes out next)</span></li>
+        <li><span class="sw sw-current"></span><span>Current node (<b>now</b>)</span></li>
+        <li><span class="sw sw-new">+</span><span>Created in this step (<b>new</b>)</span></li>
+        <li><span class="sw sw-expanded"></span><span>Expanded (number = order)</span></li>
+        <li><span class="sw sw-goal">\u2713</span><span>Goal (<b>\u2713 goal found</b>)</span></li>
+      </ul>
+      <p class="tracer-note">${cfg.goalNote || ''}</p>
+      <div class="tracer-controls">
+        <button type="button" class="btn btn-ghost tracer-prev">Previous</button>
+        <button type="button" class="btn btn-primary tracer-play" aria-pressed="false">Play</button>
+        <button type="button" class="btn btn-ghost tracer-next">Next step</button>
+        <button type="button" class="btn btn-ghost tracer-reset">Reset</button>
+        <label class="tracer-speed">Speed
+          <select><option value="slow">Slow</option><option value="normal">Normal</option></select>
+        </label>
+        <span class="tracer-count"></span>
+      </div>
+      <p class="tracer-msg" aria-live="polite"></p>
+      <div class="tracer-panels">
+        <div class="tp"><span class="tp-label">Current node</span><div class="tp-val tp-current"></div></div>
+        <div class="tp"><span class="tp-label">Created in this step</span><div class="tp-val tp-new"></div></div>
+        <div class="tp"><span class="tp-label tp-frontier-label"></span><div class="tp-val tp-frontier"></div></div>
+        <div class="tp"><span class="tp-label">Expanded, in order</span><div class="tp-val tp-expanded"></div></div>
+        <div class="tp tp-wide"><span class="tp-label">Result</span><div class="tp-val tp-result"></div></div>
+      </div>
+      <div class="tracer-compare" hidden></div>
+      <p class="tracer-rule"></p>
+      ${box.dataset.caption ? `<div class="diagram-caption">${box.dataset.caption}</div>` : ''}`;
+    const $ = sel => box.querySelector(sel);
+    const playBtn = $('.tracer-play');
+    const last = () => steps.length - 1;
+    function summary(st) {
+      const end = st[st.length - 1];
+      return { expanded: end.expanded, maxFrontier: Math.max(...st.map(x => x.frontier.length)), result: end.result };
+    }
+    function renderCompare() {
+      const box2 = $('.tracer-compare');
+      const names = algos.filter(a => done[a]);
+      if (!names.length) { box2.hidden = true; return; }
+      box2.hidden = false;
+      const rows = names.map(a => {
+        const d = done[a];
+        const res = !d.result ? '—' : d.result.found ? `${d.result.path.join(' → ')} (${d.result.cost} steps)` : 'no solution';
+        return `<li><strong>${TRACER_NAMES[a]}</strong> — expanded ${d.expanded.join(', ')} (${d.expanded.length} nodes) · largest frontier: ${d.maxFrontier} nodes · path: ${res}</li>`;
+      }).join('');
+      const missing = algos.filter(a => !done[a]);
+      const tail = missing.length
+        ? `<p class="tracer-compare-hint">Now run ${missing.map(a => TRACER_NAMES[a]).join(' and ')} to the end to compare.</p>`
+        : `<p>BFS takes out the oldest node (a queue), so it finishes each level before the next one. DFS takes out the newest node (a stack), so it follows one branch down before it tries another.</p>` +
+          (cfg.compareNote ? `<p>${cfg.compareNote}</p>` : '');
+      box2.innerHTML = `<span class="tp-label">Compare</span><ul>${rows}</ul>${tail}`;
+    }
+    function stop() {
+      if (timer) { clearTimeout(timer); timer = null; }
+      playBtn.textContent = 'Play';
+      playBtn.setAttribute('aria-pressed', 'false');
+    }
+    function show() {
+      const s = steps[k];
+      const view = {
+        undiscovered: new Set(Object.keys(cfg.nodes).filter(id => !seen[k].has(id))),
+        newIds: new Set(s.created || []),
+        next: s.frontier.length && !s.result ? s.frontier[0].id : null,
+        foundId: s.result && s.result.found ? cfg.goal : null
+      };
+      $('.tracer-figure').innerHTML = tracerSVG(cfg, adj, s, view);
+      $('.tracer-count').textContent = `Step ${k} of ${last()}`;
+      $('.tracer-msg').textContent = s.msg;
+      $('.tp-current').textContent = s.current || '—';
+      $('.tp-new').textContent = (s.created && s.created.length) ? s.created.join(', ') : '—';
+      $('.tp-frontier-label').textContent = algo === 'bfs' ? 'Frontier: a queue — next out first' : 'Frontier: a stack — top (next out) first';
+      $('.tp-frontier').innerHTML = s.frontier.length
+        ? s.frontier.map((e, i) => `<span class="tr-chip${i === 0 && !s.result ? ' is-next' : ''}">${e.id}${i === 0 && !s.result ? ' · next' : ''}</span>`).join('')
+        : '<span class="tp-empty">empty</span>';
+      $('.tp-expanded').textContent = s.expanded.length ? s.expanded.join(' → ') : '—';
+      $('.tp-result').textContent = !s.result ? 'not yet'
+        : s.result.found ? `\u2713 goal ${cfg.goal} found · path ${s.result.path.join(' → ')} · ${s.result.cost} steps` : 'no solution';
+      $('.tracer-prev').disabled = k === 0;
+      $('.tracer-next').disabled = k >= last();
+      playBtn.disabled = k >= last();
+      box.querySelectorAll('.tracer-algo').forEach(b => {
+        const on = b.dataset.algo === algo;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      if (k >= last()) { done[algo] = summary(steps); stop(); }
+      renderCompare();
+    }
+    function tick() {
+      if (!box.isConnected || document.hidden) { stop(); return; }
+      if (k < last()) { k++; show(); }
+      if (k < last() && timer) timer = setTimeout(tick, PLAY_SPEEDS[speed]);
+      else stop();
+    }
+    function load(a) {
+      stop();
+      algo = a; steps = TRACER_RUN[a](cfg, adj); k = 0;
+      // Which nodes exist by step i: the start node, and every node created up to step i.
+      seen = []; let acc = new Set([cfg.start]);
+      steps.forEach((st, i) => { (st.created || []).forEach(id => acc.add(id)); seen[i] = new Set(acc); });
+      $('.tracer-rule').textContent = TRACER_RULES[a];
+      show();
+    }
+    playBtn.addEventListener('click', () => {
+      if (timer) { stop(); return; }
+      if (k >= last()) return;
+      playBtn.textContent = 'Pause';
+      playBtn.setAttribute('aria-pressed', 'true');
+      timer = setTimeout(tick, 400);
+    });
+    $('.tracer-next').addEventListener('click', () => { stop(); if (k < last()) { k++; show(); } });
+    $('.tracer-prev').addEventListener('click', () => { stop(); if (k > 0) { k--; show(); } });
+    $('.tracer-reset').addEventListener('click', () => { stop(); k = 0; show(); });
+    $('.tracer-speed select').addEventListener('change', e => { speed = e.target.value; });
+    box.querySelectorAll('.tracer-algo').forEach(b => b.addEventListener('click', () => load(b.dataset.algo)));
+    load(algo);
+  }
+
   function attachTracers() {
     $app.querySelectorAll('.tracer[data-tracer]').forEach(box => {
       let cfg;
       try { cfg = JSON.parse(box.dataset.tracer); } catch (e) { return; }
       const adj = tracerAdjacency(cfg);
+      if (cfg.playback) { attachPlayer(box, cfg, adj); return; }
       if (cfg.static) { box.innerHTML = tracerSVG(cfg, adj, null) + (box.dataset.caption ? `<div class="diagram-caption">${box.dataset.caption}</div>` : ''); return; }
       const algos = cfg.algos || ['astar'];
       let algo = algos[0], steps = [], k = 0;

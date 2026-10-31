@@ -1445,6 +1445,32 @@ const COURSE_CONTENT = [
 
 <p>Two kinds of node are now in the tree. A node is <em>created</em> (textbooks also say <em>generated</em>) when its parent is expanded. A node in the <em>frontier</em> has been created but not expanded yet. After three expansions, 9 nodes have been created: the 3 we expanded, and 6 still waiting in the frontier.</p>
 
+<div class="definition">
+  <p><strong>Frontier:</strong> the search nodes that have been created (generated) but not yet expanded. In short: <em>frontier = discovered nodes waiting to be expanded.</em></p>
+</div>
+
+<p>Before a node is created, it is <em>not discovered</em>: nothing in the tree stands for it yet. So every node moves through the same three states, always in this order. Follow node A through steps 0, 1 and 2 of the table above:</p>
+
+<div class="diagram compact">
+  <svg viewBox="0 0 320 340" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Node A in three states: step 0 not discovered, step 1 in the frontier, step 2 expanded">
+    <rect x="6" y="6" width="308" height="84" rx="8" fill="var(--bg-elev)" stroke="var(--rule)" stroke-width="2"/>
+    <circle cx="44" cy="48" r="20" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="2 4" opacity="0.7"/><text x="44" y="54" text-anchor="middle" font-size="17" fill="var(--ink-mute)">A</text>
+    <text x="78" y="40" font-size="17" font-weight="700" fill="var(--ink)">Step 0 · Not discovered</text>
+    <text x="78" y="64" font-size="14" fill="var(--ink-soft)">no node for A exists yet</text>
+    <path d="M160 90 V 110" stroke="var(--ink-mute)" stroke-width="2"/><path d="M153 106 L160 116 L167 106 z" fill="var(--ink-mute)"/>
+    <rect x="6" y="122" width="308" height="84" rx="8" fill="var(--bg-elev)" stroke="var(--rule)" stroke-width="2"/>
+    <circle cx="44" cy="164" r="20" fill="var(--bg-elev)" stroke="var(--gold)" stroke-width="3" stroke-dasharray="5 3"/><text x="44" y="170" text-anchor="middle" font-size="17" font-weight="700" fill="var(--ink)">A</text>
+    <text x="78" y="156" font-size="17" font-weight="700" fill="var(--ink)">Step 1 · In the frontier</text>
+    <text x="78" y="180" font-size="14" fill="var(--ink-soft)">created when S is expanded</text>
+    <path d="M160 206 V 226" stroke="var(--ink-mute)" stroke-width="2"/><path d="M153 222 L160 232 L167 222 z" fill="var(--ink-mute)"/>
+    <rect x="6" y="238" width="308" height="84" rx="8" fill="var(--bg-elev)" stroke="var(--rule)" stroke-width="2"/>
+    <circle cx="44" cy="280" r="20" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="44" y="286" text-anchor="middle" font-size="17" font-weight="700" fill="var(--accent)">A</text>
+    <text x="78" y="272" font-size="17" font-weight="700" fill="var(--ink)">Step 2 · Expanded</text>
+    <text x="78" y="296" font-size="14" fill="var(--ink-soft)">taken out; creates S and C</text>
+  </svg>
+  <div class="diagram-caption">Dotted: not discovered. Dashed: in the frontier. Filled: expanded. The tracer in section 3.4 uses the same three looks.</div>
+</div>
+
 <p>Now look at the states inside those nodes. S appears three times and C twice, although the map has only six places. Every path that reaches a place makes a new node. That is the repeated-state problem, and we return to it below.</p>
 
 <h3>One loop, many algorithms</h3>
@@ -1752,9 +1778,9 @@ def breadth_first_search(problem):
 
 <h3>BFS and DFS on the same tree</h3>
 
-<p>The two rules give very different orders. Choose an algorithm and press <em>Next step</em>; watch the frontier.</p>
+<p>The two rules give very different orders. Choose an algorithm, then press <em>Next step</em> or <em>Play</em>; <em>Previous</em> goes back one expansion. Watch which node comes out of the frontier each time. Run both to the end to see a short comparison.</p>
 
-<div class="tracer" data-tracer='{"viewBox":"0 0 400 240","label":"A tree with root A; B and C below it; D, E under B; F, G under C. The goal is F.","directed":true,"weighted":false,"start":"A","goal":"F","algos":["bfs","dfs"],"nodes":{"A":{"x":200,"y":40},"B":{"x":110,"y":120},"C":{"x":290,"y":120},"D":{"x":60,"y":200},"E":{"x":160,"y":200},"F":{"x":240,"y":200},"G":{"x":340,"y":200}},"edges":[["A","B",1],["A","C",1],["B","D",1],["B","E",1],["C","F",1],["C","G",1]]}' data-caption="Same tree, same goal F. Only the rule for taking a node out changes. Switch between BFS and DFS, then step through each."></div>
+<div class="tracer" data-tracer='{"viewBox":"0 -6 400 264","label":"A tree with root A; B and C below it; D, E under B; F, G under C. The goal is F.","directed":true,"weighted":false,"start":"A","goal":"F","algos":["bfs","dfs"],"playback":true,"goalNote":"In this implementation, BFS checks for the goal when a node is created. DFS checks when a node is taken out of the frontier.","compareNote":"On this small tree, both algorithms reached the same goal, but BFS expanded fewer nodes. This does not mean BFS is always faster.","nodes":{"A":{"x":200,"y":40},"B":{"x":110,"y":120},"C":{"x":290,"y":120},"D":{"x":60,"y":200},"E":{"x":160,"y":200},"F":{"x":240,"y":200},"G":{"x":340,"y":200}},"edges":[["A","B",1],["A","C",1],["B","D",1],["B","E",1],["C","F",1],["C","G",1]]}' data-caption="Same tree, same goal F. Only the rule for taking a node out changes. Switch between BFS and DFS, then step through each."></div>
 
 <div class="callout note">
   <div class="callout-icon">i</div>

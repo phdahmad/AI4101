@@ -2778,6 +2778,62 @@ body.is-landing .stats-strip { display: block; }
 .tr-chip.stale { border-style: dashed; color: var(--ink-mute); text-decoration: line-through; }
 .tp-empty { color: var(--ink-mute); font-style: italic; }
 .tracer-rule { margin: 0.8rem 0 0; font: 0.78rem/1.5 'Inter', sans-serif; color: var(--ink-mute); }
+
+/* ---------- BFS/DFS player (tracers with "playback": true, section 3.4) ----------
+   Every state has a shape or a word as well as a colour: dotted = not discovered,
+   dashed = in the frontier, filled + number = expanded, "now" / "new" / "next" / "✓ goal found". */
+.tracer-player .tracer-svg .tr-node.is-undiscovered > circle { stroke-dasharray: 2 4; stroke: var(--ink-mute); opacity: 0.6; }
+.tracer-player .tracer-svg .tr-node.is-undiscovered .tr-id { fill: var(--ink-mute); font-weight: 500; }
+.tracer-player .tracer-svg .tr-node.is-goal.is-undiscovered > circle { stroke: var(--teal); }
+.tracer-player .tracer-svg .tr-node.is-found > circle { fill: var(--teal-soft, var(--bg-elev)); stroke: var(--teal); stroke-width: 4; stroke-dasharray: none; }
+.tracer-player .tracer-svg .tr-node.is-found .tr-id { fill: var(--teal); }
+.tracer-player .tracer-svg .tr-tag {
+  font: 700 12px 'Inter', sans-serif; fill: var(--ink-soft); text-anchor: middle; dominant-baseline: central;
+  paint-order: stroke; stroke: var(--bg-elev); stroke-width: 4px;
+}
+.tracer-player .tracer-svg .tr-node.is-new .tr-tag,
+.tracer-player .tracer-svg .tr-node.is-next .tr-tag { fill: var(--gold); }
+.tracer-player .tracer-svg .tr-node.is-found .tr-tag { fill: var(--teal); }
+.tracer-player .tracer-svg .tr-tag-now { fill: var(--accent); }
+.tracer-player .tracer-svg .tr-node.is-current > circle,
+.tracer-player .tracer-svg .tr-tag { animation: tr-fade-in 260ms ease-out; }
+@keyframes tr-fade-in { from { opacity: 0.35; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .tracer-player .tracer-svg .tr-node.is-current > circle,
+  .tracer-player .tracer-svg .tr-tag { animation: none; }
+}
+.tracer-player .tracer-legend .sw-undiscovered { border: 2px dotted var(--ink-mute); opacity: 0.7; }
+.tracer-player .tracer-legend .sw-new,
+.tracer-player .tracer-legend .sw-goal {
+  display: inline-grid; place-items: center; font: 700 10px/1 'Inter', sans-serif;
+}
+.tracer-player .tracer-legend .sw-new { border-color: var(--gold); color: var(--gold); }
+.tracer-player .tracer-legend .sw-goal { color: var(--teal); }
+.tracer-note { margin: 0.6rem 0 0; font: 0.82rem/1.5 'Inter', sans-serif; color: var(--ink-soft); }
+.tracer-player .tracer-controls .btn { min-height: 44px; }
+.tracer-speed { display: inline-flex; align-items: center; gap: 0.4rem; font: 0.82rem 'Inter', sans-serif; color: var(--ink-soft); }
+.tracer-speed select {
+  min-height: 44px; padding: 0 0.6rem; border: 1px solid var(--rule); border-radius: 6px;
+  background: var(--bg-elev); color: var(--ink); font: inherit;
+}
+.tracer-player .tracer-panels .tp-wide { grid-column: 1 / -1; }
+.tracer-player .tr-chip.is-next { border-color: var(--gold); font-weight: 700; }
+.tracer-compare {
+  margin-top: 0.8rem; border: 1px solid var(--rule); border-left: 4px solid var(--teal);
+  border-radius: 6px; padding: 0.7rem 0.9rem; font: 0.88rem/1.55 'Inter', sans-serif; color: var(--ink-soft);
+}
+.tracer-compare ul { margin: 0.3rem 0 0.4rem; padding-left: 1.1rem; }
+.tracer-compare li { margin: 0.2rem 0; }
+.tracer-compare li strong { color: var(--ink); }
+.tracer-compare p { margin: 0.3rem 0 0; }
+.tracer-compare-hint { font-style: italic; color: var(--ink-mute); }
+@media (max-width: 560px) {
+  .tracer-player .tracer-svg .tr-tag { font-size: 17px; }
+  .tracer-player .tracer-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.45rem; }
+  .tracer-player .tracer-controls .btn { padding: 0.45rem 0.4rem; font-size: 0.85rem; white-space: normal; line-height: 1.2; }
+  .tracer-player .tracer-speed { grid-column: span 2; }
+  .tracer-player .tracer-count { grid-column: 1 / -1; }
+}
 @media (max-width: 560px) {
   /* SVG text is in viewBox units: enlarge it so it stays readable at phone width */
   .tracer-svg .tr-id { font-size: 25px; }
