@@ -1200,7 +1200,7 @@ const COURSE_CONTENT = [
       { term: "Consistent", meaning: "A stronger condition: one step can never improve the guess by more than that step costs, h(n) ≤ c + h(n'). Every consistent heuristic is also admissible." },
       { term: "Misplaced tiles, h₁", meaning: "An 8-puzzle heuristic: the number of tiles that are not in their correct square." },
       { term: "Manhattan distance, h₂", meaning: "An 8-puzzle heuristic: for every tile, its horizontal plus vertical distance from its correct square, added up." },
-      { term: "Dominance", meaning: "h₂ dominates h₁ if both are admissible and h₂(n) ≥ h₁(n) for every node. A* with h₂ then usually expands fewer nodes; the exact guarantee is optional reading in section 3.6." },
+      { term: "Dominance", meaning: "Optional reading. h₂ dominates h₁ if both are admissible and h₂(n) ≥ h₁(n) for every node. A* with h₂ then usually expands fewer nodes; the exact guarantee is in section 3.6." },
       { term: "Relaxed problem", meaning: "Optional reading. The same problem with some rules removed, so it is easier to solve exactly. Its exact cost is an admissible heuristic for the real problem." }
     ],
     sections: [
@@ -1214,7 +1214,7 @@ const COURSE_CONTENT = [
     <ul>
       <li><strong>Core</strong> &mdash; understand, trace, and apply: problem formulation; state, node, state space, search tree, and frontier (3.1&ndash;3.2); how to judge a strategy (3.3); greedy best-first search, A*, and admissible heuristics (3.5&ndash;3.6).</li>
       <li><strong>Review</strong> &mdash; connect with what you know from Computer Science: BFS, DFS, and UCS (3.4).</li>
-      <li><strong>Further exploration</strong> &mdash; brief, and not in the quiz: DLS and IDS (3.4); dominance guarantees and how heuristics are designed (3.6).</li>
+      <li><strong>Further exploration</strong> &mdash; brief, and not in the quiz: DLS and IDS (3.4); dominance and how heuristics are designed (3.6).</li>
     </ul>
   </div>
 </div>
@@ -2048,7 +2048,7 @@ def a_star(problem, h):
         body: `
 <p>The heuristic affects how efficiently A* searches. An admissible heuristic helps A* guarantee an optimal solution under the appropriate conditions. When $h(n) = 0$, A* behaves like UCS. A more informative admissible heuristic can often reduce the number of nodes explored.</p>
 
-<p>This section is about the heuristics themselves: how to check one, and how to compare two of them. How to design a new one is further exploration, at the end of the section.</p>
+<p>This section is about the heuristics themselves: how to check whether one is admissible. Comparing two heuristics and designing new ones are further exploration, at the end of the section.</p>
 
 <h3>Is this h too high? Check it against the real cost</h3>
 
@@ -2091,16 +2091,12 @@ def a_star(problem, h):
   </div>
 </div>
 
-<h3>Dominance: comparing two admissible heuristics</h3>
-
-<p>If both are admissible and $h_2(n) \\ge h_1(n)$ for every node, we say $h_2$ <strong>dominates</strong> $h_1$. That is the whole definition: a statement about the two functions. $h_2$ is never smaller, and never too high.</p>
-
-<p><strong>What it usually means for A*.</strong> A larger admissible guess is closer to the real remaining cost, so it tends to steer A* more directly towards the goal and to expand fewer nodes.</p>
-
 <div class="callout note">
   <div class="callout-icon">i</div>
   <div class="callout-body">
-    <div class="callout-title">Further exploration: dominance guarantees and designing heuristics (not in the quiz)</div>
+    <div class="callout-title">Further exploration: dominance and designing heuristics (not in the quiz)</div>
+    <p><strong>Dominance: comparing two admissible heuristics.</strong> If both are admissible and $h_2(n) \\ge h_1(n)$ for every node, we say $h_2$ <strong>dominates</strong> $h_1$. That is the whole definition: a statement about the two functions. $h_2$ is never smaller, and never too high.</p>
+    <p><strong>What it usually means for A*.</strong> A larger admissible guess is closer to the real remaining cost, so it tends to steer A* more directly towards the goal and to expand fewer nodes.</p>
     <p><strong>When it becomes a guarantee.</strong> If both heuristics are also consistent &mdash; as $h_1$ and $h_2$ are &mdash; and A* runs the same way with each, every node that A* expands with $h_2$ is also expanded with $h_1$, except possibly some nodes whose $f$ equals the cost of the best solution, where the order of ties decides. So A* with $h_2$ expands no more nodes than with $h_1$, apart from ties. Even then it is a guarantee about nodes, not about seconds: $h_2$ may cost more to compute at each node.</p>
     <p>How large is the difference in practice? Russell &amp; Norvig (3rd edition) report averages over 100 random 8-puzzle problems that need 12 moves: iterative deepening, with no hint, created about 3.6 million nodes; A* with $h_1$ about 230; A* with $h_2$ about 70. Your own counts will differ with the implementation and the tie-breaking rule.</p>
     <p><strong>Where do heuristics come from?</strong> Three common ways:</p>
