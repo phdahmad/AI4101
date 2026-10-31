@@ -2320,7 +2320,7 @@ def a_star(problem, h):
     subtitle: "Finding Better Solutions",
     shortDesc: "Turn a real problem into one a computer can score, then search for better and better answers.",
     hours: 8,
-    story: "In the lecture you were delivery drivers, each with your own order for visiting the customers. This module turns that game into a method. First, model the problem: write a route as a list, and score it by its total distance. Then search for better routes in two ways: improve one route by small changes, or keep a whole population of routes and combine the best ones. Finally, the same ideas help to build better AI systems.",
+    story: "Many real-world problems have several possible solutions, but some are better than others. In this module, we use a delivery route problem to explore how computers represent, evaluate, and improve solutions. We begin with one route and learn how small changes can make it better. Then we explore how a genetic algorithm works with a population of solutions. Finally, we see how optimization is also used to improve AI systems.",
     objectives: [
       "Model a real-world problem as an optimization problem: candidate solution, solution representation, objective function, search space and constraints.",
       "Compute the objective value of a candidate solution, such as the length of a delivery route; say whether to minimize or maximize, whether the problem is discrete or continuous, and which wishes are constraints or soft preferences.",
@@ -2362,7 +2362,7 @@ def a_star(problem, h):
       { term: "Landscape", meaning: "A picture of a problem: each position is a candidate solution, and the height is its objective value." },
       { term: "Plateau", say: "pla-TOH", meaning: "A flat area where all neighbours have the same value, so the search has no direction to follow." },
       { term: "Ridge", meaning: "A narrow line along which the objective improves, but every single move the neighbourhood allows makes it worse, so the search stops early." },
-      { term: "Random-restart hill climbing", meaning: "Running hill climbing many times from new random starting solutions and keeping the best solution found so far. With success probability p per run, about 1/p runs are needed on average." },
+      { term: "Random-restart hill climbing", meaning: "Running hill climbing many times from new random starting solutions and keeping the best solution found so far." },
       { term: "Simulated annealing", say: "a-NEE-ling", meaning: "Optional reading. A variant of hill climbing that sometimes accepts a worse neighbour on purpose, often at first and rarely later, to escape a local optimum." },
       { term: "Nature-inspired optimization", meaning: "Optimization methods that take their main idea from a process in nature: biological evolution (genetic algorithms), swarms (particle swarm and ant colony optimization) or physical annealing (simulated annealing). Some keep a population and some keep one solution at a time; a natural origin does not make a method better." },
       { term: "Genetic algorithm", meaning: "Population-based search that repeats: population → evaluation → selection → crossover → mutation → new population." },
@@ -2489,13 +2489,13 @@ def a_star(problem, h):
 <div class="diagram">
   <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Minimizing a cost looks for the lowest point; maximizing a fitness looks for the highest point.">
     <text x="180" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">MINIMIZE A COST</text><text x="530" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">MAXIMIZE A FITNESS</text>
-    <line x1="50" y1="195" x2="310" y2="195" stroke="var(--rule)" stroke-width="2"/><line x1="50" y1="55" x2="50" y2="195" stroke="var(--rule)" stroke-width="2"/><text x="38" y="125" font-size="11" fill="var(--ink-mute)" text-anchor="middle" transform="rotate(-90 38 125)">cost (lower is better)</text><text x="180" y="215" font-size="11" fill="var(--ink-mute)" text-anchor="middle">candidate solution</text><line x1="400" y1="195" x2="660" y2="195" stroke="var(--rule)" stroke-width="2"/><line x1="400" y1="55" x2="400" y2="195" stroke="var(--rule)" stroke-width="2"/><text x="388" y="125" font-size="11" fill="var(--ink-mute)" text-anchor="middle" transform="rotate(-90 388 125)">fitness (higher is better)</text><text x="530" y="215" font-size="11" fill="var(--ink-mute)" text-anchor="middle">candidate solution</text>
-    <path d="M50 67.7 L53.3 73.4 L56.5 78.9 L59.8 84.3 L63 89.5 L66.3 94.6 L69.5 99.5 L72.8 104.3 L76 109 L79.3 113.5 L82.5 117.8 L85.8 122.1 L89 126.1 L92.3 130.1 L95.5 133.9 L98.8 137.5 L102 141 L105.3 144.4 L108.5 147.6 L111.8 150.7 L115 153.6 L118.3 156.4 L121.5 159.1 L124.8 161.6 L128 163.9 L131.3 166.2 L134.5 168.2 L137.8 170.2 L141 172 L144.3 173.6 L147.5 175.1 L150.8 176.5 L154 177.7 L157.3 178.8 L160.5 179.7 L163.8 180.5 L167 181.1 L170.3 181.6 L173.5 182 L176.8 182.2 L180 182.3 L183.3 182.2 L186.5 182 L189.8 181.6 L193 181.1 L196.3 180.5 L199.5 179.7 L202.8 178.8 L206 177.7 L209.2 176.5 L212.5 175.1 L215.8 173.6 L219 172 L222.3 170.2 L225.5 168.2 L228.8 166.2 L232 163.9 L235.3 161.6 L238.5 159.1 L241.7 156.4 L245 153.6 L248.3 150.7 L251.5 147.6 L254.8 144.4 L258 141 L261.3 137.5 L264.5 133.9 L267.8 130.1 L271 126.1 L274.3 122.1 L277.5 117.8 L280.8 113.5 L284 109 L287.3 104.3 L290.5 99.5 L293.8 94.6 L297 89.5 L300.3 84.3 L303.5 78.9 L306.8 73.4 L310 67.7" fill="none" stroke="var(--accent)" stroke-width="3"/>
-    <path d="M400 182.3 L403.3 176.6 L406.5 171.1 L409.8 165.7 L413 160.5 L416.3 155.4 L419.5 150.5 L422.8 145.7 L426 141 L429.3 136.5 L432.5 132.2 L435.8 127.9 L439 123.9 L442.3 119.9 L445.5 116.1 L448.8 112.5 L452 109 L455.3 105.6 L458.5 102.4 L461.8 99.3 L465 96.4 L468.3 93.6 L471.5 90.9 L474.8 88.4 L478 86.1 L481.3 83.8 L484.5 81.8 L487.8 79.8 L491 78 L494.3 76.4 L497.5 74.9 L500.8 73.5 L504 72.3 L507.3 71.2 L510.5 70.3 L513.8 69.5 L517 68.9 L520.3 68.4 L523.5 68 L526.8 67.8 L530 67.7 L533.3 67.8 L536.5 68 L539.8 68.4 L543 68.9 L546.3 69.5 L549.5 70.3 L552.8 71.2 L556 72.3 L559.3 73.5 L562.5 74.9 L565.8 76.4 L569 78 L572.3 79.8 L575.5 81.8 L578.8 83.8 L582 86.1 L585.3 88.4 L588.5 90.9 L591.8 93.6 L595 96.4 L598.3 99.3 L601.5 102.4 L604.8 105.6 L608 109 L611.3 112.5 L614.5 116.1 L617.8 119.9 L621 123.9 L624.3 127.9 L627.5 132.2 L630.8 136.5 L634 141 L637.3 145.7 L640.5 150.5 L643.8 155.4 L647 160.5 L650.3 165.7 L653.5 171.1 L656.8 176.6 L660 182.3" fill="none" stroke="var(--teal)" stroke-width="3"/>
-    <circle cx="180" cy="182.3" r="7" fill="var(--gold)"/>
-    <text x="180" y="168.3" text-anchor="middle" font-size="12" fill="var(--gold)" font-weight="700">minimum</text>
-    <circle cx="530" cy="67.7" r="7" fill="var(--gold)"/>
-    <text x="530" y="55.7" text-anchor="middle" font-size="12" fill="var(--gold)" font-weight="700">maximum</text>
+    <line x1="50" y1="195" x2="310" y2="195" stroke="var(--rule)" stroke-width="2"/><line x1="50" y1="62" x2="50" y2="195" stroke="var(--rule)" stroke-width="2"/><text x="46" y="40" font-size="11" fill="var(--ink-mute)">↑ cost (lower is better)</text><text x="180" y="215" font-size="11" fill="var(--ink-mute)" text-anchor="middle">candidate solution</text><line x1="400" y1="195" x2="660" y2="195" stroke="var(--rule)" stroke-width="2"/><line x1="400" y1="62" x2="400" y2="195" stroke="var(--rule)" stroke-width="2"/><text x="396" y="40" font-size="11" fill="var(--ink-mute)">↑ fitness (higher is better)</text><text x="530" y="215" font-size="11" fill="var(--ink-mute)" text-anchor="middle">candidate solution</text>
+    <path d="M50 74.1 L53.3 79.5 L56.5 84.7 L59.8 89.8 L63 94.8 L66.3 99.6 L69.5 104.3 L72.8 108.8 L76 113.3 L79.3 117.6 L82.5 121.7 L85.8 125.7 L89 129.6 L92.3 133.3 L95.5 136.9 L98.8 140.4 L102 143.7 L105.3 146.9 L108.5 150 L111.8 152.9 L115 155.7 L118.3 158.4 L121.5 160.9 L124.8 163.3 L128 165.5 L131.3 167.6 L134.5 169.6 L137.8 171.4 L141 173.1 L144.3 174.7 L147.5 176.1 L150.8 177.4 L154 178.6 L157.3 179.6 L160.5 180.5 L163.8 181.2 L167 181.8 L170.3 182.3 L173.5 182.6 L176.8 182.8 L180 182.9 L183.3 182.8 L186.5 182.6 L189.8 182.3 L193 181.8 L196.3 181.2 L199.5 180.5 L202.8 179.6 L206 178.6 L209.2 177.4 L212.5 176.1 L215.8 174.7 L219 173.1 L222.3 171.4 L225.5 169.6 L228.8 167.6 L232 165.5 L235.3 163.3 L238.5 160.9 L241.7 158.4 L245 155.7 L248.3 152.9 L251.5 150 L254.8 146.9 L258 143.7 L261.3 140.4 L264.5 136.9 L267.8 133.3 L271 129.6 L274.3 125.7 L277.5 121.7 L280.8 117.6 L284 113.3 L287.3 108.8 L290.5 104.3 L293.8 99.6 L297 94.8 L300.3 89.8 L303.5 84.7 L306.8 79.5 L310 74.1" fill="none" stroke="var(--accent)" stroke-width="3"/>
+    <path d="M400 182.9 L403.3 177.5 L406.5 172.3 L409.8 167.2 L413 162.2 L416.3 157.4 L419.5 152.7 L422.8 148.2 L426 143.7 L429.3 139.4 L432.5 135.3 L435.8 131.3 L439 127.4 L442.3 123.7 L445.5 120.1 L448.8 116.6 L452 113.3 L455.3 110.1 L458.5 107 L461.8 104.1 L465 101.3 L468.3 98.6 L471.5 96.1 L474.8 93.7 L478 91.5 L481.3 89.4 L484.5 87.4 L487.8 85.6 L491 83.9 L494.3 82.3 L497.5 80.9 L500.8 79.6 L504 78.4 L507.3 77.4 L510.5 76.5 L513.8 75.8 L517 75.2 L520.3 74.7 L523.5 74.4 L526.8 74.2 L530 74.1 L533.3 74.2 L536.5 74.4 L539.8 74.7 L543 75.2 L546.3 75.8 L549.5 76.5 L552.8 77.4 L556 78.4 L559.3 79.6 L562.5 80.9 L565.8 82.3 L569 83.9 L572.3 85.6 L575.5 87.4 L578.8 89.4 L582 91.5 L585.3 93.7 L588.5 96.1 L591.8 98.6 L595 101.3 L598.3 104.1 L601.5 107 L604.8 110.1 L608 113.3 L611.3 116.6 L614.5 120.1 L617.8 123.7 L621 127.4 L624.3 131.3 L627.5 135.3 L630.8 139.4 L634 143.7 L637.3 148.2 L640.5 152.7 L643.8 157.4 L647 162.2 L650.3 167.2 L653.5 172.3 L656.8 177.5 L660 182.9" fill="none" stroke="var(--teal)" stroke-width="3"/>
+    <circle cx="180" cy="182.9" r="7" fill="var(--gold)"/>
+    <text x="180" y="168.9" text-anchor="middle" font-size="12" fill="var(--gold)" font-weight="700">minimum</text>
+    <circle cx="530" cy="74.1" r="7" fill="var(--gold)"/>
+    <text x="530" y="62.1" text-anchor="middle" font-size="12" fill="var(--gold)" font-weight="700">maximum</text>
   </svg>
   <div class="diagram-caption">The same shape of question, seen from two sides. Which side you are on depends on how you defined the objective.</div>
 </div>
@@ -2610,11 +2610,11 @@ def a_star(problem, h):
     <text x="180" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">DISCRETE</text><text x="530" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">CONTINUOUS</text>
     <text x="180" y="44" text-anchor="middle" font-size="11" fill="var(--ink-soft)">separate choices, e.g. routes</text>
     <text x="530" y="44" text-anchor="middle" font-size="11" fill="var(--ink-soft)">any real value in a range, e.g. x</text>
-    <line x1="50" y1="210" x2="310" y2="210" stroke="var(--rule)" stroke-width="2"/><line x1="50" y1="60" x2="50" y2="210" stroke="var(--rule)" stroke-width="2"/><line x1="400" y1="210" x2="660" y2="210" stroke="var(--rule)" stroke-width="2"/><line x1="400" y1="60" x2="400" y2="210" stroke="var(--rule)" stroke-width="2"/>
-    <circle cx="63" cy="116.3" r="6" fill="var(--accent)"/><circle cx="89" cy="153.8" r="6" fill="var(--accent)"/><circle cx="115" cy="97.5" r="6" fill="var(--accent)"/><circle cx="141" cy="172.5" r="6" fill="var(--accent)"/><circle cx="167" cy="135" r="6" fill="var(--accent)"/><circle cx="193" cy="78.8" r="6" fill="var(--accent)"/><circle cx="219" cy="153.8" r="6" fill="var(--accent)"/><circle cx="245" cy="116.3" r="6" fill="var(--accent)"/><circle cx="271" cy="191.3" r="6" fill="var(--accent)"/><circle cx="297" cy="135" r="6" fill="var(--accent)"/>
-    <path d="M400 60 L403.3 67.4 L406.5 74.6 L409.8 81.7 L413 88.5 L416.3 95.2 L419.5 101.6 L422.8 107.9 L426 114 L429.3 119.9 L432.5 125.6 L435.8 131.2 L439 136.5 L442.3 141.7 L445.5 146.6 L448.8 151.4 L452 156 L455.3 160.4 L458.5 164.6 L461.8 168.7 L465 172.5 L468.3 176.2 L471.5 179.6 L474.8 182.9 L478 186 L481.3 188.9 L484.5 191.6 L487.8 194.2 L491 196.5 L494.3 198.7 L497.5 200.6 L500.8 202.4 L504 204 L507.3 205.4 L510.5 206.6 L513.8 207.7 L517 208.5 L520.3 209.2 L523.5 209.6 L526.8 209.9 L530 210 L533.3 209.9 L536.5 209.6 L539.8 209.2 L543 208.5 L546.3 207.7 L549.5 206.6 L552.8 205.4 L556 204 L559.3 202.4 L562.5 200.6 L565.8 198.7 L569 196.5 L572.3 194.2 L575.5 191.6 L578.8 188.9 L582 186 L585.3 182.9 L588.5 179.6 L591.8 176.2 L595 172.5 L598.3 168.7 L601.5 164.6 L604.8 160.4 L608 156 L611.3 151.4 L614.5 146.6 L617.8 141.7 L621 136.5 L624.3 131.2 L627.5 125.6 L630.8 119.9 L634 114 L637.3 107.9 L640.5 101.6 L643.8 95.2 L647 88.5 L650.3 81.7 L653.5 74.6 L656.8 67.4 L660 60" fill="none" stroke="var(--teal)" stroke-width="3"/>
-    <text x="38" y="135" font-size="11" fill="var(--ink-mute)" text-anchor="middle" transform="rotate(-90 38 135)">objective</text>
-    <text x="388" y="135" font-size="11" fill="var(--ink-mute)" text-anchor="middle" transform="rotate(-90 388 135)">objective</text>
+    <line x1="50" y1="210" x2="310" y2="210" stroke="var(--rule)" stroke-width="2"/><line x1="50" y1="68" x2="50" y2="210" stroke="var(--rule)" stroke-width="2"/><line x1="400" y1="210" x2="660" y2="210" stroke="var(--rule)" stroke-width="2"/><line x1="400" y1="68" x2="400" y2="210" stroke="var(--rule)" stroke-width="2"/>
+    <circle cx="63" cy="121.3" r="6" fill="var(--accent)"/><circle cx="89" cy="156.8" r="6" fill="var(--accent)"/><circle cx="115" cy="103.5" r="6" fill="var(--accent)"/><circle cx="141" cy="174.5" r="6" fill="var(--accent)"/><circle cx="167" cy="139" r="6" fill="var(--accent)"/><circle cx="193" cy="85.8" r="6" fill="var(--accent)"/><circle cx="219" cy="156.8" r="6" fill="var(--accent)"/><circle cx="245" cy="121.3" r="6" fill="var(--accent)"/><circle cx="271" cy="192.3" r="6" fill="var(--accent)"/><circle cx="297" cy="139" r="6" fill="var(--accent)"/>
+    <path d="M400 68 L403.3 75 L406.5 81.8 L409.8 88.5 L413 95 L416.3 101.3 L419.5 107.4 L422.8 113.4 L426 119.1 L429.3 124.7 L432.5 130.1 L435.8 135.4 L439 140.4 L442.3 145.3 L445.5 150 L448.8 154.5 L452 158.9 L455.3 163.1 L458.5 167 L461.8 170.9 L465 174.5 L468.3 178 L471.5 181.2 L474.8 184.4 L478 187.3 L481.3 190 L484.5 192.6 L487.8 195 L491 197.2 L494.3 199.3 L497.5 201.1 L500.8 202.8 L504 204.3 L507.3 205.7 L510.5 206.8 L513.8 207.8 L517 208.6 L520.3 209.2 L523.5 209.6 L526.8 209.9 L530 210 L533.3 209.9 L536.5 209.6 L539.8 209.2 L543 208.6 L546.3 207.8 L549.5 206.8 L552.8 205.7 L556 204.3 L559.3 202.8 L562.5 201.1 L565.8 199.3 L569 197.2 L572.3 195 L575.5 192.6 L578.8 190 L582 187.3 L585.3 184.4 L588.5 181.2 L591.8 178 L595 174.5 L598.3 170.9 L601.5 167 L604.8 163.1 L608 158.9 L611.3 154.5 L614.5 150 L617.8 145.3 L621 140.4 L624.3 135.4 L627.5 130.1 L630.8 124.7 L634 119.1 L637.3 113.4 L640.5 107.4 L643.8 101.3 L647 95 L650.3 88.5 L653.5 81.8 L656.8 75 L660 68" fill="none" stroke="var(--teal)" stroke-width="3"/>
+    <text x="46" y="62" font-size="11" fill="var(--ink-mute)">↑ objective</text>
+    <text x="396" y="62" font-size="11" fill="var(--ink-mute)">↑ objective</text>
     <text x="180" y="232" text-anchor="middle" font-size="11" fill="var(--ink-mute)">one dot = one candidate; nothing in between</text>
     <text x="530" y="232" text-anchor="middle" font-size="11" fill="var(--ink-mute)">every point on the line is a candidate</text>
   </svg>
@@ -2933,7 +2933,7 @@ def a_star(problem, h):
           fill="none" stroke="var(--accent)" stroke-width="2.5"/>
     <line x1="40" y1="245" x2="660" y2="245" stroke="var(--rule)"/>
     <text x="350" y="268" text-anchor="middle" font-size="11" fill="var(--ink-mute)">candidate solutions, neighbours side by side</text>
-    <text x="22" y="150" font-size="11" fill="var(--ink-mute)" text-anchor="middle" transform="rotate(-90 22 150)">objective value</text>
+    <text x="34" y="62" font-size="11" fill="var(--ink-mute)">↑ objective value</text>
     <circle cx="170" cy="160" r="6" fill="var(--gold)"/>
     <text x="170" y="134" text-anchor="middle" font-size="11" fill="var(--gold)" font-weight="700">local optimum</text>
     <text x="170" y="148" text-anchor="middle" font-size="10" fill="var(--gold)">(local maximum)</text>
@@ -2978,9 +2978,12 @@ def a_star(problem, h):
 
 <p>Run 2 ends at <code>[C, D, A, B]</code>. That is <code>[B, A, D, C]</code> driven backwards: the same route, with the same length, 19 km. If a third run ended at 23 km, the best found so far would stay at 19. The program returns the best found so far, not the result of the last run.</p>
 
-<div class="aha">
-  <div class="aha-label">How many restarts do you need?</div>
-  <p>Suppose one run finds the best solution with probability p, and the runs are independent. Then you need <strong>1/p runs on average</strong> until the first success. That is an average, not a promise. With p&nbsp;=&nbsp;0.1 you expect 10 runs, yet 10 runs succeed only about 65% of the time.</p>
+<div class="callout intuition">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">Further exploration (optional): how many restarts?</div>
+    <p>Suppose one run finds the best solution with probability p, and the runs are independent. Then you need <em>1/p runs on average</em> until the first success. That is an average, not a promise. With p&nbsp;=&nbsp;0.1 you expect 10 runs, yet 10 runs succeed only about 65% of the time. This box is extra reading and is not tested.</p>
+  </div>
 </div>
 
 <div class="checkpoint">
@@ -3015,69 +3018,11 @@ def a_star(problem, h):
       {
         title: "Population-Based Search: Genetic Algorithms",
         body: `
-<p><em>What if we keep several routes at once, instead of improving only one?</em> This is the population-based side of the comparison in section 4.1. We use the same delivery problem, so you can compare the two methods directly.</p>
+<p><em>What if we keep several routes at once, instead of improving only one?</em></p>
 
-<div class="analogy">
-  <span class="analogy-label">Breeding date palms</span>
-  <p>A farmer crosses a palm with excellent fruit and a palm that survives any heat, hoping for offspring with the good traits of both. Most offspring are ordinary. A few are better than either parent, and those become the parents of the next generation.</p>
-</div>
+<p>Remember where section 4.2 ended. From <code>[A, C, B, D]</code>, hill climbing stopped at <code>[A, D, B, C]</code>, 20 km, although <code>[B, A, D, C]</code> is only 19 km. One route can get stuck. Random restarts start again from a new route; a genetic algorithm takes another way.</p>
 
-<div class="callout note">
-  <div class="callout-icon">i</div>
-  <div class="callout-body">
-    <div class="callout-title">Nature-Inspired Optimization: Learning from Nature</div>
-    <p>The farmer's idea is not only an analogy. Some optimization methods take their main idea from a process in nature; this is called <strong>nature-inspired optimization</strong>. Three families, each from a different source:</p>
-    <ul>
-      <li><em>Evolutionary algorithms</em> copy biological evolution: fitter individuals pass on their parts more often. Example: the genetic algorithm (GA).</li>
-      <li><em>Swarm intelligence</em> copies simple members that share what they find, like birds in a flock or ants leaving trails. Examples: particle swarm optimization (PSO) and ant colony optimization (ACO).</li>
-      <li><em>Physics-inspired methods</em> copy physical processes. Example: simulated annealing (SA), from metal that settles well when cooled slowly (the optional box in 4.2).</li>
-    </ul>
-    <p>Nature-inspired does not mean population-based. GA, PSO and ACO keep a population of candidate solutions; simulated annealing improves one solution at a time. So two separate questions describe a method: <em>how many candidates does it hold</em> (section 4.1), and <em>where did its idea come from</em>? A natural origin does not make a method better or guarantee the global optimum; like any method, it is judged by how well it fits the problem.</p>
-  </div>
-</div>
-
-<div class="diagram">
-  <svg viewBox="0 0 700 232" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Three sources of inspiration: evolutionary (genetic algorithms, population-based, studied in this section), swarm (particle swarm and ant colony optimization, population-based), and physics-inspired (simulated annealing, single-solution).">
-    <text x="350" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">NATURE-INSPIRED OPTIMIZATION: THREE SOURCES</text>
-    <rect x="16" y="48" width="208" height="150" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/>
-    <text x="120" y="74" text-anchor="middle" font-size="12" fill="var(--ink-mute)" font-weight="700" letter-spacing="0.06em">EVOLUTIONARY</text>
-    <text x="120" y="96" text-anchor="middle" font-size="11" fill="var(--ink-soft)">inspired by biological evolution</text>
-    <text x="120" y="126" text-anchor="middle" font-size="13" fill="var(--accent)" font-weight="700">Genetic algorithm (GA)</text>
-    <rect x="60" y="164" width="120" height="22" rx="11" fill="none" stroke="var(--teal)" stroke-width="1.5"/>
-    <text x="120" y="179" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">population-based</text>
-    <text x="120" y="218" text-anchor="middle" font-size="11" fill="var(--accent)" font-weight="700">studied in this section</text>
-    <rect x="246" y="48" width="208" height="150" rx="10" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
-    <text x="350" y="74" text-anchor="middle" font-size="12" fill="var(--ink-mute)" font-weight="700" letter-spacing="0.06em">SWARM</text>
-    <text x="350" y="96" text-anchor="middle" font-size="11" fill="var(--ink-soft)">inspired by flocks and ant colonies</text>
-    <text x="350" y="126" text-anchor="middle" font-size="13" fill="var(--ink)" font-weight="700">Particle swarm (PSO)</text><text x="350" y="146" text-anchor="middle" font-size="13" fill="var(--ink)" font-weight="700">Ant colony (ACO)</text>
-    <rect x="290" y="164" width="120" height="22" rx="11" fill="none" stroke="var(--teal)" stroke-width="1.5"/>
-    <text x="350" y="179" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">population-based</text>
-    <text x="350" y="218" text-anchor="middle" font-size="11" fill="var(--ink-mute)" font-weight="400">not studied in detail</text>
-    <rect x="476" y="48" width="208" height="150" rx="10" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
-    <text x="580" y="74" text-anchor="middle" font-size="12" fill="var(--ink-mute)" font-weight="700" letter-spacing="0.06em">PHYSICS-INSPIRED</text>
-    <text x="580" y="96" text-anchor="middle" font-size="11" fill="var(--ink-soft)">inspired by metal cooling slowly</text>
-    <text x="580" y="126" text-anchor="middle" font-size="13" fill="var(--ink)" font-weight="700">Simulated annealing (SA)</text>
-    <rect x="520" y="164" width="120" height="22" rx="11" fill="none" stroke="var(--gold)" stroke-width="1.5"/>
-    <text x="580" y="179" text-anchor="middle" font-size="11" fill="var(--gold)" font-weight="700">single-solution</text>
-    <text x="580" y="218" text-anchor="middle" font-size="11" fill="var(--ink-mute)" font-weight="400">optional box in 4.2</text>
-  </svg>
-  <div class="diagram-caption">Each family takes its idea from a different part of nature. The label under each one answers the other question: how many candidates it holds.</div>
-</div>
-
-<p>This section studies one of these methods: the genetic algorithm.</p>
-
-<h3>The words you need</h3>
-
-<ol class="steps">
-  <li><strong>Population</strong><p>The group of candidate solutions the algorithm holds at one time. Here: a few routes.</p></li>
-  <li><strong>Chromosome (individual)</strong><p>How one candidate solution is written. For routes, the chromosome is the route list itself, such as <code>[A, C, B, D]</code>. For yes/no choices it is a bit string, such as <code>1010</code>. One member of the population is called an individual.</p></li>
-  <li><strong>Fitness function</strong><p>A score for each chromosome, where higher is better. Our objective is a distance to minimize, so the fitness must turn it around: a shorter route has a higher fitness. One common choice is fitness = 1 / distance. In this example we only need to know which of two routes is fitter: the shorter one.</p></li>
-  <li><strong>Selection</strong><p>Choosing the parents. It is random, but fitter chromosomes are more likely to be chosen.</p></li>
-  <li><strong>Crossover</strong><p>Making a child from parts of two parents.</p></li>
-  <li><strong>Mutation</strong><p>A small random change to a child. For routes: swap two customers, the same move that made a neighbour in section 4.2.</p></li>
-</ol>
-
-<p>The members of the population are candidate solutions, not agents. Nothing in the population perceives or acts, so this is not the multi-agent setting of section 2.4.</p>
+<p>Instead of improving one route, it keeps several routes and builds new ones from the better ones. A genetic algorithm explores several solutions at once, but it does not guarantee finding the best one.</p>
 
 <div class="definition">
   <p>A <strong>genetic algorithm</strong> repeats one cycle: <strong>Population → Evaluation → Selection → Crossover → Mutation → New population</strong>.</p>
@@ -3114,11 +3059,20 @@ def a_star(problem, h):
   <div class="diagram-caption">Selection keeps what works, crossover combines it, mutation keeps new options alive.</div>
 </div>
 
+<div class="analogy">
+  <span class="analogy-label">Breeding date palms</span>
+  <p>A farmer crosses a palm with excellent fruit and a palm that survives any heat, hoping for offspring with the good traits of both. Most offspring are ordinary. A few are better than either parent, and those become the parents of the next generation.</p>
+</div>
+
+<p>The cycle does the same with routes. Let us follow one generation on the delivery problem.</p>
+
 <h3>One generation on the delivery problem</h3>
 
 <h4>Population and evaluation</h4>
 
-<p>Generation 0 holds four routes. Route R1 is the starting route of section 4.2, and R3 is the route where hill climbing stopped.</p>
+<p>The <strong>population</strong> is the group of candidate solutions the algorithm holds at one time. Generation 0 holds four routes. Each one is written as a <strong>chromosome</strong>: for routes, the route list itself, such as <code>[A, C, B, D]</code>; for yes/no choices, a bit string such as <code>1010</code>. One member of the population is called an individual. The members are candidate solutions, not agents: nothing in the population perceives or acts, so this is not the multi-agent setting of section 2.4.</p>
+
+<p>Route R1 is the starting route of section 4.2, and R3 is the route where hill climbing stopped.</p>
 
 <div class="table-figure">
   <div class="table-scroll">
@@ -3136,15 +3090,17 @@ def a_star(problem, h):
   </div>
 </div>
 
+<p>Evaluation gives each chromosome a score with a <strong>fitness function</strong>, where higher is better. Our objective is a distance to minimize, so the fitness must turn it around: a shorter route has a higher fitness. One common choice is fitness = 1 / distance. In this example we only need to know which of two routes is fitter: the shorter one.</p>
+
 <p>The best route found so far is R3, 20 km.</p>
 
 <h4>Selection</h4>
 
-<p>One simple way to select a parent: pick two routes at random and keep the fitter one, here the shorter one. In this run, the first draw compared R1 (30) with R2 (21) and chose <strong>R2</strong>. The second draw compared R4 (28) with R3 (20) and chose <strong>R3</strong>. A weak route can still be drawn, but it rarely wins.</p>
+<p><strong>Selection</strong> chooses the parents. It is random, but fitter chromosomes are more likely to be chosen. One simple way: pick two routes at random and keep the fitter one, here the shorter one. In this run, the first draw compared R1 (30) with R2 (21) and chose <strong>R2</strong>. The second draw compared R4 (28) with R3 (20) and chose <strong>R3</strong>. A weak route can still be drawn, but it rarely wins.</p>
 
 <h4>Crossover</h4>
 
-<p>For bit strings, crossover can cut two parents at the same place and swap the tails. For routes this breaks the representation. Cut R2 and R3 after position 2 and join the parts: <code>[C, A]</code> + <code>[B, C]</code> = <code>[C, A, B, C]</code>. Customer C appears twice and D is missing, so this is not a route at all.</p>
+<p><strong>Crossover</strong> makes a child from parts of two parents. For bit strings, it can cut two parents at the same place and swap the tails. For routes this breaks the representation. Cut R2 and R3 after position 2 and join the parts: <code>[C, A]</code> + <code>[B, C]</code> = <code>[C, A, B, C]</code>. Customer C appears twice and D is missing, so this is not a route at all.</p>
 
 <p>A crossover for routes must keep a permutation. One simple way:</p>
 
@@ -3159,7 +3115,7 @@ def a_star(problem, h):
 
 <h4>Mutation</h4>
 
-<p>Mutation swaps two customers of a child, now and then. In this run it changed the second child: swapping D and A in <code>[C, D, B, A]</code> gives <code>[C, A, B, D]</code>, 26 km. The child is still a valid route, but it is longer: mutation is random, and its job is to keep variety in the population, not to improve every child.</p>
+<p><strong>Mutation</strong> is a small random change to a child. For routes it swaps two customers, the same move that made a neighbour in section 4.2. In this run it changed the second child: swapping D and A in <code>[C, D, B, A]</code> gives <code>[C, A, B, D]</code>, 26 km. The child is still a valid route, but it is longer: mutation is random, and its job is to keep variety in the population, not to improve every child.</p>
 
 <div class="diagram">
   <svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Cutting two routes and swapping the tails gives C, A, B, C: C twice and D missing. Keeping A and D from the first parent and filling B then C in the order of the second parent gives B, A, D, C, a valid route of 19 km. Mutation swaps D and A in C, D, B, A to give C, A, B, D.">
@@ -3259,6 +3215,48 @@ def a_star(problem, h):
 
 <p>Neither method is better in general. Hill climbing with random restarts also reached 19 km in section 4.2. The right choice depends on the problem, the representation and the computing time you have. The fair way to compare them is to run both on the same problem, with the same amount of work, several times, and compare the best routes they find.</p>
 
+<div class="callout note">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">Nature-Inspired Optimization: Learning from Nature</div>
+    <p>The farmer's idea is not only an analogy. Methods that take their main idea from a process in nature are called <strong>nature-inspired optimization</strong>. Three families:</p>
+    <ul>
+      <li><em>Evolutionary algorithms</em> copy biological evolution, like the genetic algorithm.</li>
+      <li><em>Swarm intelligence</em> copies flocks of birds or ants leaving trails, like particle swarm optimization (PSO) and ant colony optimization (ACO).</li>
+      <li><em>Physics-inspired methods</em> copy physical processes, like simulated annealing (the optional box in 4.2).</li>
+    </ul>
+    <p>Nature-inspired does not mean population-based: simulated annealing improves one solution at a time. A natural origin does not make a method better or guarantee the global optimum.</p>
+  </div>
+</div>
+
+<div class="diagram">
+  <svg viewBox="0 0 700 232" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Three sources of inspiration: evolutionary (genetic algorithms, population-based, studied in this section), swarm (particle swarm and ant colony optimization, population-based), and physics-inspired (simulated annealing, single-solution).">
+    <text x="350" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">NATURE-INSPIRED OPTIMIZATION: THREE SOURCES</text>
+    <rect x="16" y="48" width="208" height="150" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/>
+    <text x="120" y="74" text-anchor="middle" font-size="12" fill="var(--ink-mute)" font-weight="700" letter-spacing="0.06em">EVOLUTIONARY</text>
+    <text x="120" y="96" text-anchor="middle" font-size="11" fill="var(--ink-soft)">inspired by biological evolution</text>
+    <text x="120" y="126" text-anchor="middle" font-size="13" fill="var(--accent)" font-weight="700">Genetic algorithm (GA)</text>
+    <rect x="60" y="164" width="120" height="22" rx="11" fill="none" stroke="var(--teal)" stroke-width="1.5"/>
+    <text x="120" y="179" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">population-based</text>
+    <text x="120" y="218" text-anchor="middle" font-size="11" fill="var(--accent)" font-weight="700">studied in this section</text>
+    <rect x="246" y="48" width="208" height="150" rx="10" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+    <text x="350" y="74" text-anchor="middle" font-size="12" fill="var(--ink-mute)" font-weight="700" letter-spacing="0.06em">SWARM</text>
+    <text x="350" y="96" text-anchor="middle" font-size="11" fill="var(--ink-soft)">inspired by flocks and ant colonies</text>
+    <text x="350" y="126" text-anchor="middle" font-size="13" fill="var(--ink)" font-weight="700">Particle swarm (PSO)</text><text x="350" y="146" text-anchor="middle" font-size="13" fill="var(--ink)" font-weight="700">Ant colony (ACO)</text>
+    <rect x="290" y="164" width="120" height="22" rx="11" fill="none" stroke="var(--teal)" stroke-width="1.5"/>
+    <text x="350" y="179" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">population-based</text>
+    <text x="350" y="218" text-anchor="middle" font-size="11" fill="var(--ink-mute)" font-weight="400">not studied in detail</text>
+    <rect x="476" y="48" width="208" height="150" rx="10" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+    <text x="580" y="74" text-anchor="middle" font-size="12" fill="var(--ink-mute)" font-weight="700" letter-spacing="0.06em">PHYSICS-INSPIRED</text>
+    <text x="580" y="96" text-anchor="middle" font-size="11" fill="var(--ink-soft)">inspired by metal cooling slowly</text>
+    <text x="580" y="126" text-anchor="middle" font-size="13" fill="var(--ink)" font-weight="700">Simulated annealing (SA)</text>
+    <rect x="520" y="164" width="120" height="22" rx="11" fill="none" stroke="var(--gold)" stroke-width="1.5"/>
+    <text x="580" y="179" text-anchor="middle" font-size="11" fill="var(--gold)" font-weight="700">single-solution</text>
+    <text x="580" y="218" text-anchor="middle" font-size="11" fill="var(--ink-mute)" font-weight="400">optional box in 4.2</text>
+  </svg>
+  <div class="diagram-caption">Each family takes its idea from a different part of nature. The label under each one says how many candidates it holds.</div>
+</div>
+
 <div class="checkpoint">
   <span class="checkpoint-label">Check yourself</span>
   <p>Parents <code>[A, C, D, B]</code> (28 km) and <code>[C, B, A, D]</code> (21 km). (a) Cut both after position 2 and swap the tails: is the first child a valid route? (b) Use the crossover rule above, with <code>[A, C, D, B]</code> as parent 1. Write the child and its length. Is it better than both parents?</p>
@@ -3269,7 +3267,7 @@ def a_star(problem, h):
   </details>
 </div>
 
-<p class="reading-time">14 min read</p>
+<p class="reading-time">13 min read</p>
         `
       },
       {
@@ -3378,7 +3376,7 @@ def a_star(problem, h):
 
 <h3>Around the model: choosing how to build it</h3>
 
-<p>Before training starts, someone must choose how to build the model. Each choice is an optimization problem, and it follows the same steps as the delivery problem.</p>
+<p>Building an AI model involves choices about its settings, inputs, and architecture. Optimization methods can help us explore these choices and find better configurations. Each choice follows the same steps as the delivery problem.</p>
 
 <div class="applications">
   <div class="app-grid">
@@ -3460,7 +3458,7 @@ def a_star(problem, h):
           "Current solution → generate neighbours → evaluate → compare → update",
           "Neighbour = swap two customers: 6 neighbours for 4 customers",
           "<code>[A, C, B, D]</code> 30 → <code>[A, D, B, C]</code> 20 → stop: a <strong>local optimum</strong>, not the global optimum (19)",
-          "<strong>Random-restart hill climbing</strong> — keep the <strong>best solution found so far</strong>; about 1/p runs on average"
+          "<strong>Random restarts</strong>: run hill climbing from different starting solutions and keep the best result."
         ]
       },
       {
