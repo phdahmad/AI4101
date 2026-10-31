@@ -1207,12 +1207,21 @@ const COURSE_CONTENT = [
       {
         title: "Why AI Needs Search and Problem Formulation",
         body: `
-<p>You already do this every day. You just do not call it search.</p>
+<h3>What does it mean to search for a solution?</h3>
+
+<p>You have met search before. In a data structures course you search an array for a number, a file for a word, or a database for a student record. The thing you want is already stored, and the search finds it.</p>
+
+<p>In AI, search has the same purpose: find what we need. But what we look for is different. We usually look for a <em>way to reach a goal</em>: a sequence of actions, such as the roads that take a driver to a customer. Some problems keep all their possibilities in memory, like a small map. In others there are too many to store, so the next possibilities are worked out from a few rules, one step at a time. If you have met BFS and DFS on graphs, they are the same algorithms you will use in section 3.4.</p>
 
 <div class="analogy">
-  <span class="analogy-label">Driving from Makkah to Jeddah without a maps app</span>
-  <p>You reach a junction. Three roads leave it. You do not know which one is best, so you pick one. You drive to the next junction, and now you have new choices.</p>
-  <p>That is search. The <em>junctions</em> are states. The <em>roads</em> are actions. Jeddah is the goal. The kilometres you drive are the cost.</p>
+  <span class="analogy-label">The delivery driver's questions</span>
+  <p>Imagine you deliver for a pizza shop, or for DHL, SMSA or Aramex, and you have several orders to deliver this morning. Before you start the car, you have to answer three questions:</p>
+  <ul>
+    <li>Which customer do you visit first?</li>
+    <li>How do you compare two possible routes?</li>
+    <li>What information do you need before you decide?</li>
+  </ul>
+  <p>Different people answer in different ways. But every answer uses the same ingredients: places, the roads between them, distances, a rule for when the job is done, and a way to compare one route with another. That list is the start of a <em>search problem</em>.</p>
 </div>
 
 <h3>Why does artificial intelligence need search?</h3>
@@ -1242,11 +1251,17 @@ const COURSE_CONTENT = [
   <div class="diagram-caption">Steps 2 and 3 happen inside the agent, before it moves. Only the sequence found in step 4 is carried out in the world.</div>
 </div>
 
-<p>This module works in the setting described in section 2.4 &mdash; fully observable, deterministic, static, discrete, single-agent &mdash; and sequential, because a plan is a sequence of actions. So the agent can plan the whole route before it takes the first step.</p>
+<div class="analogy">
+  <span class="analogy-label">Driving from Makkah to Jeddah: without a map, and with one</span>
+  <p>Without a map, you reach a junction, pick a road, and find out by driving. You are exploring the real world, and every wrong turn costs real kilometres.</p>
+  <p>With a map, you try the roads on paper first, choose a route, and only then drive. This module is about the second way: the agent searches in its model of the world, and then acts.</p>
+</div>
+
+<p>This module works in the setting described in section 2.4 &mdash; fully observable, deterministic, static, discrete, single-agent &mdash; and sequential, because a plan is a sequence of actions. So the agent can plan the whole route before it takes the first step, and then follow it. If the world surprises it &mdash; a road is closed &mdash; it perceives the change and searches again, as maps apps do when traffic changes (section 3.7).</p>
 
 <h3>Five things define any search problem</h3>
 
-<p>We will use one small example for the rest of this module. A restaurant, <strong>S</strong>, must send an order to a customer, <strong>G</strong>. The driver can pass through four other places, A, B, C and D. The numbers on the roads are kilometres, and every road can be driven in both directions.</p>
+<p>To learn the ideas, we start with one order and one customer, and we use this small example for the rest of the module. A restaurant, <strong>S</strong>, must send an order to a customer, <strong>G</strong>. The driver can pass through four other places, A, B, C and D. The numbers on the roads are kilometres, and every road can be driven in both directions.</p>
 
 <div class="tracer tracer-static" data-tracer='{"viewBox":"0 0 480 310","label":"Delivery map: restaurant S, customer G, places A, B, C, D, roads in km","weighted":true,"start":"S","goal":"G","nodes":{"S":{"x":60,"y":150,"h":5,"hAt":[-30,36]},"A":{"x":185,"y":62,"h":4,"hAt":[0,-32]},"B":{"x":200,"y":178,"h":3,"hAt":[-36,34]},"C":{"x":330,"y":80,"h":3,"hAt":[0,-32]},"D":{"x":100,"y":262,"h":6,"hAt":[44,6]},"G":{"x":420,"y":170,"h":0,"hAt":[0,40]}},"edges":[["S","A",3,0,-12,-6],["S","B",2,0,0,-12],["S","D",3,0,-14,0],["A","C",2,0,0,-12],["B","C",4,0,12,4],["B","G",7,60,0,14],["C","G",3,0,12,-6]],"static":true,"showH":false}' data-caption="The delivery map. S is the restaurant and G is the customer. Six places, seven two-way roads, distances in km. Not drawn to scale."></div>
 
@@ -1254,9 +1269,11 @@ const COURSE_CONTENT = [
   <li><strong>Initial state</strong><p>Where the agent starts: <em>In(S)</em>, the driver is at the restaurant.</p></li>
   <li><strong>Actions</strong><p>What the agent can do in a state. In <em>In(S)</em>: drive to A, drive to B, or drive to D. The actions depend on the state: from D, the only road leads back to S.</p></li>
   <li><strong>Transition model</strong><p>Where each action leads: RESULT(<em>In(S)</em>, <em>Go(A)</em>) = <em>In(A)</em>.</p></li>
-  <li><strong>Goal test</strong><p>A check that answers "am I done?" Here it is one state, <em>In(G)</em>. Sometimes it is a condition instead, such as "no student has two exams at the same time".</p></li>
+  <li><strong>Goal test</strong><p>A check that answers "am I done?" Here it is one state, <em>In(G)</em>. Sometimes it is a condition instead, such as "every exam has a time slot, and no student has two exams at the same time".</p></li>
   <li><strong>Action cost</strong><p>What one step costs: here, the kilometres of the road. Add the costs along a path and you get the <strong>path cost</strong>. A <strong>solution</strong> is any path from the initial state to a goal; an <strong>optimal solution</strong> is a cheapest one. The action cost is where the performance measure from Module 2 enters a search problem.</p></li>
 </ol>
+
+<p>Not every problem asks for the cheapest solution. Sometimes any path to the goal is enough: in the 8-puzzle below, any sequence of moves that puts the tiles in order solves it. Sometimes we want a cheapest one, such as the shortest route to the customer. Sections 3.3 and 3.4 show which algorithms promise a cheapest solution.</p>
 
 <div class="definition">
   <p>The five parts are a <strong>description</strong> that you write. The <strong>state space</strong> is what that description produces: every state that can be reached from the initial state, joined by the actions that move between them. The delivery map is small enough to draw its state space: six places and seven roads. The 8-puzzle below has 181,440 reachable states, and nobody draws them &mdash; a search algorithm discovers them one at a time.</p>
@@ -1301,7 +1318,18 @@ const COURSE_CONTENT = [
         return 1
 </code></pre>
 
-<p class="reading-time">8 min read</p>
+<div class="checkpoint">
+  <span class="checkpoint-label">Check yourself</span>
+  <p>Back to the driver's morning: three customers, X, Y and Z, instead of one. The driver must visit all three, in any order. With one customer, a state was just the driver's place, such as <em>In(A)</em>. Is that enough now? If not, what else must a state record? And what is the goal test?</p>
+  <details>
+    <summary>Show answer</summary>
+    <p><strong>The place is not enough.</strong> Standing at Y after serving X is a different situation from standing at Y with nobody served yet. A state must record <strong>where the driver is</strong> and <strong>which customers have already been served</strong>, for example <em>In(Y), served {X, Y}</em>.</p>
+    <p><strong>Goal test:</strong> all three customers are served. The actions and costs stay the same: drive along a road and pay its kilometres.</p>
+    <p>With many customers, choosing the best order is close to a famous hard problem, the <em>travelling salesman problem</em> (TSP). Module 4 studies methods for problems like it, where the quality of the final answer matters more than the path the search took.</p>
+  </details>
+</div>
+
+<p class="reading-time">11 min read</p>
         `
       },
 
@@ -1317,8 +1345,95 @@ const COURSE_CONTENT = [
 </div>
 
 <div class="definition">
-  <p>A <strong>state</strong> is a situation in the world. A <strong>node</strong> is a record in the search tree: it holds a state, the node it came from, the action taken, and the cost so far. Many nodes can hold the same state.</p>
+  <p>A <strong>state</strong> is a situation in the world. A <strong>node</strong> is a record in the search tree: it holds a state, the node it came from, the action taken, and the cost so far. Some programs also store its depth: the number of steps from the start. Many nodes can hold the same state.</p>
 </div>
+
+<h3>Watching a search grow</h3>
+
+<p>Here is the start of a search on the delivery map. We expand three nodes: S, then A, then B. This order is only an illustration. It is not the result of any particular algorithm: choosing which node to expand next is exactly what the algorithms in section 3.4 do differently.</p>
+
+<div class="table-figure">
+  <div class="table-scroll">
+    <table class="env-table" style="white-space: normal;">
+      <thead>
+        <tr><th scope="col">Step</th><th scope="col">Expand</th><th scope="col">New nodes created</th><th scope="col">Frontier after the step</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">0</th><td>&mdash;</td><td>S (the start)</td><td>S</td></tr>
+        <tr><th scope="row">1</th><td>S</td><td>A, B, D</td><td>A, B, D</td></tr>
+        <tr><th scope="row">2</th><td>A</td><td>S, C</td><td>B, D, S, C</td></tr>
+        <tr><th scope="row">3</th><td>B</td><td>S, C, G</td><td>D, S, C, S, C, G</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="diagram-caption">Tree-like search, no reached table. Each expansion takes one node out of the frontier and adds its children.</div>
+</div>
+
+<div class="diagram">
+    <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Left: the delivery map with six places. Right: the search tree after expanding S, A and B, with nine nodes; S appears three times and C twice.">
+    <text x="165" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">STATE SPACE (the map)</text>
+    <text x="525" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">SEARCH TREE after S, A, B</text>
+    <line x1="340" y1="40" x2="340" y2="370" stroke="var(--rule)" stroke-width="1"/>
+    <line x1="55" y1="145" x2="133" y2="90" stroke="var(--ink-mute)" stroke-width="2"/>
+    <text x="84" y="112" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="600">3</text>
+    <line x1="55" y1="145" x2="142" y2="162" stroke="var(--ink-mute)" stroke-width="2"/>
+    <text x="100" y="144" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="600">2</text>
+    <line x1="55" y1="145" x2="80" y2="214" stroke="var(--ink-mute)" stroke-width="2"/>
+    <text x="54" y="182" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="600">3</text>
+    <line x1="133" y1="90" x2="223" y2="102" stroke="var(--ink-mute)" stroke-width="2"/>
+    <text x="178" y="86" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="600">2</text>
+    <line x1="142" y1="162" x2="223" y2="102" stroke="var(--ink-mute)" stroke-width="2"/>
+    <text x="192" y="138" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="600">4</text>
+    <line x1="142" y1="162" x2="278" y2="157" stroke="var(--ink-mute)" stroke-width="2"/>
+    <text x="212" y="178" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="600">7</text>
+    <line x1="223" y1="102" x2="278" y2="157" stroke="var(--ink-mute)" stroke-width="2"/>
+    <text x="262" y="128" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="600">3</text>
+    <circle cx="55" cy="145" r="17" fill="var(--bg-elev)" stroke="var(--accent)" stroke-width="2"/><text x="55" y="150" text-anchor="middle" font-size="15" fill="var(--ink)" font-weight="600">S</text>
+    <circle cx="133" cy="90" r="17" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/><text x="133" y="95" text-anchor="middle" font-size="15" fill="var(--ink)" font-weight="600">A</text>
+    <circle cx="142" cy="162" r="17" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/><text x="142" y="167" text-anchor="middle" font-size="15" fill="var(--ink)" font-weight="600">B</text>
+    <circle cx="223" cy="102" r="17" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/><text x="223" y="107" text-anchor="middle" font-size="15" fill="var(--ink)" font-weight="600">C</text>
+    <circle cx="80" cy="214" r="17" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/><text x="80" y="219" text-anchor="middle" font-size="15" fill="var(--ink)" font-weight="600">D</text>
+    <circle cx="278" cy="157" r="17" fill="var(--bg-elev)" stroke="var(--teal)" stroke-width="2"/><text x="278" y="162" text-anchor="middle" font-size="15" fill="var(--ink)" font-weight="600">G</text>
+    <text x="165" y="286" text-anchor="middle" font-size="13" fill="var(--ink-soft)">6 places, 7 two-way roads</text>
+    <text x="165" y="308" text-anchor="middle" font-size="13" fill="var(--ink-soft)">fixed before the search starts</text>
+    <line x1="525" y1="81" x2="425" y2="130" stroke="var(--ink-mute)" stroke-width="2"/>
+    <line x1="525" y1="81" x2="570" y2="130" stroke="var(--ink-mute)" stroke-width="2"/>
+    <line x1="525" y1="81" x2="668" y2="130" stroke="var(--ink-mute)" stroke-width="2"/>
+    <line x1="425" y1="164" x2="385" y2="223" stroke="var(--ink-mute)" stroke-width="2"/>
+    <line x1="425" y1="164" x2="465" y2="223" stroke="var(--ink-mute)" stroke-width="2"/>
+    <line x1="570" y1="164" x2="520" y2="223" stroke="var(--ink-mute)" stroke-width="2"/>
+    <line x1="570" y1="164" x2="578" y2="223" stroke="var(--ink-mute)" stroke-width="2"/>
+    <line x1="570" y1="164" x2="636" y2="223" stroke="var(--ink-mute)" stroke-width="2"/>
+    <circle cx="525" cy="64" r="17" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="525" y="69" text-anchor="middle" font-size="15" fill="var(--accent)" font-weight="700">S</text>
+    <circle cx="425" cy="147" r="17" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="425" y="152" text-anchor="middle" font-size="15" fill="var(--accent)" font-weight="700">A</text>
+    <circle cx="570" cy="147" r="17" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="570" y="152" text-anchor="middle" font-size="15" fill="var(--accent)" font-weight="700">B</text>
+    <circle cx="668" cy="147" r="17" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="4 3"/><text x="668" y="152" text-anchor="middle" font-size="15" fill="var(--ink)">D</text>
+    <circle cx="385" cy="240" r="17" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="4 3"/><text x="385" y="245" text-anchor="middle" font-size="15" fill="var(--ink)">S</text>
+    <circle cx="465" cy="240" r="17" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="4 3"/><text x="465" y="245" text-anchor="middle" font-size="15" fill="var(--ink)">C</text>
+    <circle cx="520" cy="240" r="17" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="4 3"/><text x="520" y="245" text-anchor="middle" font-size="15" fill="var(--ink)">S</text>
+    <circle cx="578" cy="240" r="17" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="4 3"/><text x="578" y="245" text-anchor="middle" font-size="15" fill="var(--ink)">C</text>
+    <circle cx="636" cy="240" r="17" fill="var(--bg-elev)" stroke="var(--teal)" stroke-width="2.5" stroke-dasharray="4 3"/><text x="636" y="245" text-anchor="middle" font-size="15" fill="var(--teal)" font-weight="700">G</text>
+    <text x="547" y="69" text-anchor="start" font-size="13" fill="var(--ink-soft)">g 0</text>
+    <text x="403" y="152" text-anchor="end" font-size="13" fill="var(--ink-soft)">g 3</text>
+    <text x="592" y="152" text-anchor="start" font-size="13" fill="var(--ink-soft)">g 2</text>
+    <text x="668" y="183" text-anchor="middle" font-size="13" fill="var(--ink-soft)">g 3</text>
+    <text x="385" y="276" text-anchor="middle" font-size="13" fill="var(--ink-soft)">g 6</text>
+    <text x="465" y="276" text-anchor="middle" font-size="13" fill="var(--ink-soft)">g 5</text>
+    <text x="520" y="276" text-anchor="middle" font-size="13" fill="var(--ink-soft)">g 4</text>
+    <text x="578" y="276" text-anchor="middle" font-size="13" fill="var(--ink-soft)">g 6</text>
+    <text x="636" y="276" text-anchor="middle" font-size="13" fill="var(--ink-soft)">g 9</text>
+    <circle cx="378" cy="312" r="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+    <text x="394" y="317" font-size="13" fill="var(--ink-soft)">expanded: 3 nodes</text>
+    <circle cx="378" cy="338" r="8" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="3 2"/>
+    <text x="394" y="343" font-size="13" fill="var(--ink-soft)">in the frontier: 6 nodes, created but not expanded</text>
+    <text x="525" y="368" text-anchor="middle" font-size="13" fill="var(--gold)" font-weight="600">9 nodes, 6 places: S appears 3 times, C twice</text>
+    </svg>
+  <div class="diagram-caption">The map does not change. The tree grows with every expansion, and the same place can appear in many nodes.</div>
+</div>
+
+<p>Two kinds of node are now in the tree. A node is <em>created</em> (textbooks also say <em>generated</em>) when its parent is expanded. A node in the <em>frontier</em> has been created but not expanded yet. After three expansions, 9 nodes have been created: the 3 we expanded, and 6 still waiting in the frontier.</p>
+
+<p>Now look at the states inside those nodes. S appears three times and C twice, although the map has only six places. Every path that reaches a place makes a new node. That is the repeated-state problem, and we return to it below.</p>
 
 <h3>One loop, many algorithms</h3>
 
@@ -1331,38 +1446,6 @@ const COURSE_CONTENT = [
   <li><strong>Expand it</strong><p>To <strong>expand</strong> a node means to make its children: apply every legal action, and add the new nodes to the frontier.</p></li>
   <li><strong>Repeat</strong><p>Until you find a goal, or the frontier is empty — which means there is no solution.</p></li>
 </ol>
-
-<div class="diagram">
-  <svg viewBox="0 0 700 330" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <text x="175" y="22" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">STATE SPACE (the map)</text>
-    <text x="525" y="22" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">SEARCH TREE (your notebook)</text>
-    <line x1="350" y1="35" x2="350" y2="315" stroke="var(--rule)" stroke-width="1"/>
-
-    <circle cx="175" cy="70" r="20" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="175" y="75" text-anchor="middle" font-size="12" fill="var(--accent)" font-weight="700">A</text>
-    <circle cx="105" cy="160" r="20" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/><text x="105" y="165" text-anchor="middle" font-size="12" fill="var(--ink)">B</text>
-    <circle cx="245" cy="160" r="20" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/><text x="245" y="165" text-anchor="middle" font-size="12" fill="var(--ink)">C</text>
-    <circle cx="175" cy="250" r="20" fill="var(--bg-elev)" stroke="var(--teal)" stroke-width="2.5"/><text x="175" y="255" text-anchor="middle" font-size="12" fill="var(--teal)" font-weight="700">D</text>
-    <line x1="160" y1="85" x2="120" y2="145" stroke="var(--ink-mute)" stroke-width="2"/>
-    <line x1="190" y1="85" x2="230" y2="145" stroke="var(--ink-mute)" stroke-width="2"/>
-    <line x1="120" y1="175" x2="160" y2="235" stroke="var(--ink-mute)" stroke-width="2"/>
-    <line x1="230" y1="175" x2="190" y2="235" stroke="var(--ink-mute)" stroke-width="2"/>
-    <text x="175" y="300" text-anchor="middle" font-size="11" fill="var(--ink-soft)">4 states — fixed before you start</text>
-
-    <circle cx="525" cy="60" r="18" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="525" y="65" text-anchor="middle" font-size="11" fill="var(--accent)" font-weight="700">A</text>
-    <circle cx="455" cy="140" r="18" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/><text x="455" y="145" text-anchor="middle" font-size="11" fill="var(--ink)">B</text>
-    <circle cx="595" cy="140" r="18" fill="var(--bg-elev)" stroke="var(--ink-mute)" stroke-width="2"/><text x="595" y="145" text-anchor="middle" font-size="11" fill="var(--ink)">C</text>
-    <circle cx="455" cy="225" r="18" fill="var(--bg-elev)" stroke="var(--teal)" stroke-width="2.5"/><text x="455" y="230" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">D</text>
-    <circle cx="595" cy="225" r="18" fill="var(--bg-elev)" stroke="var(--teal)" stroke-width="2.5"/><text x="595" y="230" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">D</text>
-    <line x1="512" y1="74" x2="468" y2="126" stroke="var(--ink-mute)" stroke-width="2"/>
-    <line x1="538" y1="74" x2="582" y2="126" stroke="var(--ink-mute)" stroke-width="2"/>
-    <line x1="455" y1="158" x2="455" y2="207" stroke="var(--ink-mute)" stroke-width="2"/>
-    <line x1="595" y1="158" x2="595" y2="207" stroke="var(--ink-mute)" stroke-width="2"/>
-    <text x="525" y="272" text-anchor="middle" font-size="11" fill="var(--gold)" font-weight="600">D appears twice — two paths, two nodes</text>
-    <text x="525" y="300" text-anchor="middle" font-size="11" fill="var(--ink-soft)">5 nodes — grows as you explore</text>
-  </svg>
-  <div class="diagram-caption">One state can live in many nodes. The state space has 4 states; this search tree already has 5 nodes, and it can keep growing.</div>
-</div>
-
 <div class="table-figure">
   <p class="table-hint">Swipe sideways to see the whole table &rarr;</p>
   <div class="table-scroll">
@@ -1385,7 +1468,7 @@ const COURSE_CONTENT = [
 
 <h3>The repeated-state problem</h3>
 
-<p>If the map has a cycle, the search tree can be <em>infinite</em> even when the map has only four places: A → B → A → B → ... forever. Two common ways to handle it:</p>
+<p>If the map has a cycle, the search tree can be <em>infinite</em> even though the map has only six places: S → A → S → A → ... forever. Two common ways to handle it:</p>
 
 <div class="before-after">
   <div class="ba-col before">
@@ -1393,7 +1476,7 @@ const COURSE_CONTENT = [
     <h4>Remember nothing</h4>
     <ul>
       <li>Needs no table of visited states</li>
-      <li>Can loop forever: a two-way road is already a cycle, A &rarr; B &rarr; A &rarr; B ...</li>
+      <li>Can loop forever: a two-way road is already a cycle, S &rarr; A &rarr; S &rarr; A ...</li>
       <li>Repeats the same work many times</li>
       <li>Fine only when no state can be reached in two ways</li>
     </ul>
@@ -1411,6 +1494,8 @@ const COURSE_CONTENT = [
 </div>
 
 <p>What happens when graph search reaches a state that is already in the reached table? It depends on the algorithm. <strong>BFS</strong> simply skips it: the first path BFS finds to a state has the fewest steps. <strong>UCS</strong> and <strong>A*</strong> compare costs: if the new path is cheaper, they replace the entry in the table and put the new node in the frontier (sections 3.4 and 3.5).</p>
+
+<p>On the delivery map, graph search makes the same three expansions much smaller. When A is expanded, S is already in the reached table with cost 0, so the new S (cost 6) is not added; C is new, so it is added with cost 5. When B is expanded, S (cost 4) is skipped again. C through B would cost 6, more than the 5 already recorded, so it is skipped too. G is new and is added with cost 9. The frontier holds D, C and G: three nodes instead of six.</p>
 
 <pre><code class="language-python">from collections import deque
 
@@ -1444,7 +1529,7 @@ def path(node):
   </details>
 </div>
 
-<p class="reading-time">8 min read</p>
+<p class="reading-time">10 min read</p>
         `
       },
 
@@ -2081,6 +2166,8 @@ def a_star(problem, h):
   </div>
 </div>
 
+<p>Search is also used to improve AI systems themselves. When we build a machine learning model, we choose settings such as its learning rate (you will meet it in Module 4) or how many layers it has. A simple way is to try several settings, train a model with each one, and keep the one that scores best on data the model did not train on. Here the path does not matter, only the best setting does &mdash; the kind of optimization that Module 4 studies.</p>
+
 <h3>Choosing a search algorithm</h3>
 
 <p>Three questions decide most choices in this module: do all steps cost the same, is memory tight, and do you have a good heuristic?</p>
@@ -2137,7 +2224,7 @@ def a_star(problem, h):
 
 <div class="aha">
   <div class="aha-label">Where this takes you next</div>
-  <p>What if we only care about the quality of the final solution, not the path used to construct it? That question opens Module 4, local search and optimization. Local search improves candidate solutions instead of finding paths to a goal, so it usually does not keep the path that led to an answer.</p>
+  <p>Sometimes we need a sequence of actions to reach a goal. Other times, we mainly care about finding a good solution, not the path used to discover it. That second case opens Module 4, local search and optimization. Local search improves candidate solutions instead of finding paths to a goal, so it usually does not keep the path that led to an answer.</p>
   <p>The later modules reuse this module too. Adversarial search (Module 5) searches a tree where an opponent chooses every second move, and constraint satisfaction (Module 6) searches partial assignments, like the timetable above.</p>
 </div>
 
@@ -2218,7 +2305,8 @@ def a_star(problem, h):
           "Confusing a state with a node: one state can appear in many nodes",
           "Giving O(bm) memory to a DFS that keeps a reached table of every state",
           "Adding g in kilometres to h in minutes — g and h must use the same unit",
-          "Forgetting the reached table and then wondering why the search never stops"
+          "Forgetting the reached table and then wondering why the search never stops",
+          "Thinking the agent moves while it searches — it searches its model first, and only then acts"
         ]
       }
     ],
