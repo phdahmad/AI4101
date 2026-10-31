@@ -303,15 +303,15 @@ const QUIZ_BANK = {
       explanation: "Equal action costs are what make the guarantee hold: then the path with the fewest actions is also a cheapest one (with b finite, so that BFS finds a solution). With different costs, BFS may still happen to find a cheapest path in a particular problem, but nothing guarantees it: on the delivery map it returns S → B → G, 9 km, while S → A → C → G is 8 km. UCS gives that guarantee when costs differ (section 3.4)."
     },
     {
-      q: "A tree has root P. P's children are Q and R; Q's children are S and T; R's only child is U. Children are considered left to right, and the first one goes on top of the stack. In which order does tree-like DFS take the nodes out of the frontier?",
+      q: "The frontier holds three nodes. P was added first and has g = 6. Q was added second and has g = 2. R was added last and has g = 4. Which node does each algorithm take out next?",
       choices: [
-        "P, Q, S, T, R, U",
-        "P, Q, R, S, T, U",
-        "P, R, U, Q, T, S",
-        "P, Q, S, R, T, U"
+        "BFS takes P, DFS takes R, and UCS takes Q.",
+        "BFS takes Q, DFS takes R, and UCS takes P.",
+        "BFS takes P, DFS takes Q, and UCS takes R.",
+        "All three take P, because it was added first."
       ],
       correct: 0,
-      explanation: "DFS always takes out the newest node, so it finishes Q's whole branch (S, then T) before it comes back to R and then U. P, Q, R, S, T, U is the BFS order, level by level. P, R, U, Q, T, S takes the right child first, which breaks the stated rule (section 3.4)."
+      explanation: "BFS uses a queue, so it takes out the oldest node: P. DFS uses a stack, so it takes out the newest node: R. UCS uses a priority queue ordered by path cost, so it takes out the node with the lowest g: Q, with g = 2. The three algorithms differ only in this choice (sections 3.2 and 3.4)."
     },
     {
       q: "Which statement about depth-first search is correct?",
@@ -336,15 +336,15 @@ const QUIZ_BANK = {
       explanation: "UCS always takes out the node with the lowest path cost g(n): D, with g = 3. Having G in the frontier only proves that a path exists; UCS returns G only when G itself comes out of the frontier, because a cheaper path to G may still be found through D or C (section 3.4)."
     },
     {
-      q: "Why is iterative deepening preferred over breadth-first search when memory is limited and the solution depth is unknown?",
+      q: "A warehouse robot moves on a grid, one square at a time: up, down, left or right, into any square that is not blocked. It starts at its charging point and must reach box B3. A student writes the five parts:<br>Initial state: the robot is at the charging point.<br>Actions: move up, down, left or right into a free square.<br>Transition model: the robot is now in the square it moved to.<br>Goal test: the robot has used the fewest possible moves.<br>Action cost: 1 for each move.<br>Which part is written wrongly?",
       choices: [
-        "It creates far fewer nodes in total than BFS does.",
-        "It returns the cheapest path even when action costs vary.",
-        "It has the same time, O(b^d), but needs only O(bd) memory.",
-        "It never expands the same state twice, unlike BFS."
+        "The initial state",
+        "The actions",
+        "The goal test",
+        "The action cost"
       ],
       correct: 2,
-      explanation: "IDS repeats the shallow levels, but the deepest level holds most of the nodes, so the extra work is small (about 11% when b = 10, d = 5). In exchange, memory falls from O(b^d) to O(bd) — and memory is what runs out first (section 3.4)."
+      explanation: "A goal test checks whether one state is a goal: here, \"the robot is at B3\". The fewest moves describes the best solution, which is measured by the path cost (1 per move, added along the path), not by the goal test. The other four parts are correct (section 3.1)."
     },
     {
       q: "The frontier holds two nodes. X has g = 2 and h = 6. Y has g = 7 and h = 2. Which node does A* take out next, and which does greedy best-first search take out?",
@@ -369,15 +369,15 @@ const QUIZ_BANK = {
       explanation: "Admissible means h never guesses higher than the real remaining cost, so h(K) must be at most 12. Equal is allowed, and 0 is admissible but gives no help. 14 guesses too high (section 3.6)."
     },
     {
-      q: "h₁ counts misplaced tiles in the 8-puzzle and h₂ sums their Manhattan distances. Both are admissible, and h₂(n) ≥ h₁(n) for every n. What follows from these facts alone?",
+      q: "A small map has four roads: S–A 2 km, S–B 5 km, A–G 9 km, and B–G 3 km. The heuristic values are h(S) = 3, h(A) = 1, h(B) = 3, and h(G) = 0, and none of them is too high. Starting at S, which route does each algorithm return?",
       choices: [
-        "h₁ is the better choice because it is cheaper to compute.",
-        "h₂ dominates h₁: it is never smaller, and it is still admissible.",
-        "h₂ may be inadmissible because it produces larger values.",
-        "The two heuristics will expand identical numbers of nodes."
+        "Both return S → B → G, 8 km.",
+        "Greedy returns S → A → G, 11 km; A* returns S → B → G, 8 km.",
+        "Greedy returns S → B → G, 8 km; A* returns S → A → G, 11 km.",
+        "Both return S → A → G, 11 km."
       ],
       correct: 1,
-      explanation: "The stem gives exactly the definition of dominance, so that is what follows. What dominance does for A* is a further claim that needs more facts: if both heuristics are also consistent (these two are, but the stem does not say so), A* with h₂ expands no more nodes than with h₁, apart from ties. Nothing here is about seconds, since h₂ costs more to compute. Option A describes a real trade-off, but it does not follow from these facts alone (section 3.6)."
+      explanation: "Greedy looks only at h. From S it takes A (h = 1) before B (h = 3), and from A it creates G, which it then takes out: S → A → G, 11 km. A* uses f = g + h. A has f = 2 + 1 = 3 and B has f = 5 + 3 = 8, so A comes first; G through A has f = 11 + 0 = 11. Then B (f = 8) comes out before that G, and G through B has f = 8 + 0 = 8, so A* returns S → B → G, 8 km. With h never too high, A* returns a cheapest route; greedy does not promise one (section 3.5)."
     },
     {
       q: "An ambulance service plans routes on a city road map. Roads have different travel times, there is plenty of memory, a heuristic is available that never overestimates the remaining time, and the fastest route is required. Which algorithm fits best?",

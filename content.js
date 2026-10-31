@@ -1158,15 +1158,15 @@ const COURSE_CONTENT = [
     subtitle: "Uninformed and Informed Search Algorithms",
     shortDesc: "The heart of the course. How an agent that does not know the answer can still find it — first blindly, then with a sense of direction.",
     hours: 16,
-    story: "This is the longest module in the course. Search is the first place where a computer does something that really looks like thinking. We start with a problem the agent cannot solve, and we end with A* (said out loud as A-star) — the idea behind route planning in maps apps, game characters, and warehouse robots. We study a few algorithms deeply rather than many on the surface. Take your time here. Every module after this one is search in a different costume.",
+    story: "Search is a fundamental concept in Computer Science. In Artificial Intelligence, we use search to explore possible actions and find solutions to problems. In this module, you will learn how to turn a real-world problem into a search problem, explore possible solutions, and compare different search strategies. We will focus on understanding the ideas through simple examples and practical activities, rather than memorizing many algorithms.",
     objectives: [
-      "Explain why a goal-based agent needs search, and turn a real problem into a search problem: initial state, actions, transition model, goal test, and action cost.",
-      "Explain the difference between a state and a node, and between the state space and the search tree.",
-      "Judge a search algorithm on completeness, optimality, time, and memory — without confusing search time with path cost.",
-      "Trace BFS, DFS, and UCS by hand, showing the frontier after each step, and explain how DLS and IDS limit the depth.",
-      "Trace A* on a small map: compute g, h, and f, keep the frontier in order, and explain why it returns a cheapest path.",
-      "Decide whether a heuristic is admissible, compare two heuristics, and design one by relaxing the problem.",
-      "Choose a search algorithm from the step costs, the memory available, and whether a good heuristic exists."
+      "Model the problem: explain why a goal-based agent needs search, and formulate a real-world problem as a search problem — initial state, actions, transition model, goal test, and action cost.",
+      "Model the problem: tell a state from a node and the state space from the search tree, and follow how the frontier grows as nodes are expanded.",
+      "Explain the strategy: judge a search strategy on completeness, optimality, time, and memory, without confusing search time with path cost.",
+      "Explain the strategy: explain how BFS, DFS, and UCS choose the next node, tell them apart, and say when each one is suitable.",
+      "Experiment and compare: trace greedy best-first search and A* on a small map, computing g, h, and f, and compare the paths they return.",
+      "Explain the strategy: decide whether a heuristic is admissible, and explain why that matters for A*.",
+      "Experiment and compare: test search strategies on the same problem, explain the results, and choose a strategy for a new problem."
     ],
     collapseTerms: true,
     terms: [
@@ -1189,8 +1189,8 @@ const COURSE_CONTENT = [
       { term: "BFS", say: "Breadth-First Search", meaning: "Expands the shallowest node first, using a queue. Finds the path with the fewest steps." },
       { term: "UCS", say: "Uniform-Cost Search", meaning: "Expands the node with the lowest path cost g(n) first, using a priority queue. The same idea as Dijkstra's algorithm, stopped when the goal is taken out." },
       { term: "DFS", say: "Depth-First Search", meaning: "Expands the deepest node first, using a stack. Tree-like DFS needs very little memory, but it guarantees neither a solution nor the cheapest one." },
-      { term: "DLS", say: "Depth-Limited Search", meaning: "DFS that refuses to go deeper than a fixed limit." },
-      { term: "IDS", say: "Iterative Deepening Search", meaning: "Runs DLS again and again with a limit of 0, 1, 2, 3... until the goal is found. Not the same as IDA*, which this course does not cover." },
+      { term: "DLS", say: "Depth-Limited Search", meaning: "Optional reading. DFS that refuses to go deeper than a fixed limit." },
+      { term: "IDS", say: "Iterative Deepening Search", meaning: "Optional reading. Runs DLS again and again with a limit of 0, 1, 2, 3... until the goal is found. Not the same as IDA*, which this course does not cover." },
       { term: "Informed search", meaning: "Search that uses a heuristic h(n) to decide which node to expand next." },
       { term: "Heuristic, h(n)", say: "hyoo-RIS-tik", meaning: "A cheap guess at the cost still remaining from node n to the goal. A hint, not a fact — and not one of the five parts of the problem." },
       { term: "Straight-line distance", meaning: "The distance between two places in a straight line. On a road map it is never longer than the real road, so it is an admissible heuristic when the cost is distance." },
@@ -1200,13 +1200,25 @@ const COURSE_CONTENT = [
       { term: "Consistent", meaning: "A stronger condition: one step can never improve the guess by more than that step costs, h(n) ≤ c + h(n'). Every consistent heuristic is also admissible." },
       { term: "Misplaced tiles, h₁", meaning: "An 8-puzzle heuristic: the number of tiles that are not in their correct square." },
       { term: "Manhattan distance, h₂", meaning: "An 8-puzzle heuristic: for every tile, its horizontal plus vertical distance from its correct square, added up." },
-      { term: "Dominance", meaning: "h₂ dominates h₁ if both are admissible and h₂(n) ≥ h₁(n) for every node. If both are also consistent, A* with h₂ expands no more nodes than A* with h₁, apart from ties." },
-      { term: "Relaxed problem", meaning: "The same problem with some rules removed, so it is easier to solve exactly. Its exact cost is an admissible heuristic for the real problem." }
+      { term: "Dominance", meaning: "h₂ dominates h₁ if both are admissible and h₂(n) ≥ h₁(n) for every node. A* with h₂ then usually expands fewer nodes; the exact guarantee is optional reading in section 3.6." },
+      { term: "Relaxed problem", meaning: "Optional reading. The same problem with some rules removed, so it is easier to solve exactly. Its exact cost is an admissible heuristic for the real problem." }
     ],
     sections: [
       {
         title: "Why AI Needs Search and Problem Formulation",
         body: `
+<div class="callout note">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">How this module is organized</div>
+    <ul>
+      <li><strong>Core</strong> &mdash; understand, trace, and apply: problem formulation; state, node, state space, search tree, and frontier (3.1&ndash;3.2); how to judge a strategy (3.3); greedy best-first search, A*, and admissible heuristics (3.5&ndash;3.6).</li>
+      <li><strong>Review</strong> &mdash; connect with what you know from Computer Science: BFS, DFS, and UCS (3.4).</li>
+      <li><strong>Further exploration</strong> &mdash; brief, and not in the quiz: DLS and IDS (3.4); dominance guarantees and how heuristics are designed (3.6).</li>
+    </ul>
+  </div>
+</div>
+
 <h3>What does it mean to search for a solution?</h3>
 
 <p>You have met search before. In a data structures course you search an array for a number, a file for a word, or a database for a student record. The thing you want is already stored, and the search finds it.</p>
@@ -1228,7 +1240,7 @@ const COURSE_CONTENT = [
 
 <p>In Module 2 we met the <strong>goal-based agent</strong>: it knows what it wants. Knowing the goal is not the same as knowing how to reach it. A delivery app knows the customer's address, but it does not know in advance which sequence of roads reaches that address at the lowest cost &mdash; and with a new order every few minutes, nobody can write those sequences for it beforehand. A simple reflex agent would need a condition&ndash;action rule for every situation it could meet.</p>
 
-<p>Search solves this differently. The agent tries possible action sequences <em>in a model of the world</em>, before it takes any of them in the real world. It is not learning, and it is not guessing. It is trying possibilities in a smart order, and remembering what it already tried.</p>
+<p>Search solves this differently. The agent tries possible action sequences <em>in a model of the world</em>, before it takes any of them in the real world. It explores possibilities in an order set by a strategy, and it remembers what it has already tried. Some strategies also use an estimate of the remaining cost to decide what to try next (section 3.5).</p>
 
 <div class="diagram compact">
   <svg viewBox="0 0 320 372" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="From a goal to an action sequence: goal, problem formulation, search, action sequence">
@@ -1270,7 +1282,7 @@ const COURSE_CONTENT = [
   <li><strong>Actions</strong><p>What the agent can do in a state. In <em>In(S)</em>: drive to A, drive to B, or drive to D. The actions depend on the state: from D, the only road leads back to S.</p></li>
   <li><strong>Transition model</strong><p>Where each action leads: RESULT(<em>In(S)</em>, <em>Go(A)</em>) = <em>In(A)</em>.</p></li>
   <li><strong>Goal test</strong><p>A check that answers "am I done?" Here it is one state, <em>In(G)</em>. Sometimes it is a condition instead, such as "every exam has a time slot, and no student has two exams at the same time".</p></li>
-  <li><strong>Action cost</strong><p>What one step costs: here, the kilometres of the road. Add the costs along a path and you get the <strong>path cost</strong>. A <strong>solution</strong> is any path from the initial state to a goal; an <strong>optimal solution</strong> is a cheapest one. The action cost is where the performance measure from Module 2 enters a search problem.</p></li>
+  <li><strong>Action cost</strong><p>What one step costs: here, the kilometres of the road. Add the costs along a path and you get the <strong>path cost</strong>. A <strong>solution</strong> is any path from the initial state to a goal; an <strong>optimal solution</strong> is a cheapest one. The action cost can reflect part of the performance measure from Module 2, such as distance or time, but it is not the whole measure.</p></li>
 </ol>
 
 <p>Not every problem asks for the cheapest solution. Sometimes any path to the goal is enough: in the 8-puzzle below, any sequence of moves that puts the tiles in order solves it. Sometimes we want a cheapest one, such as the shortest route to the customer. Sections 3.3 and 3.4 show which algorithms promise a cheapest solution.</p>
@@ -1293,7 +1305,7 @@ const COURSE_CONTENT = [
 
 <div class="aha">
   <div class="aha-label">Formulation is the hard part</div>
-  <p>The algorithms in this module are short. You can memorize them in one evening. The hard part is turning a messy real situation into those five parts, and that is the part the exams test. Later in this course, when you get stuck, check your formulation before you check your algorithm.</p>
+  <p>The algorithms in this module are short. The hard part is turning a messy real situation into those five parts, and that is the part the exams test. Later in this course, when you get stuck, check your formulation before you check your algorithm.</p>
 </div>
 
 <p>In code, all five parts fit in one small class. Every problem in this module plugs into it:</p>
@@ -1325,7 +1337,7 @@ const COURSE_CONTENT = [
     <summary>Show answer</summary>
     <p><strong>The place is not enough.</strong> Standing at Y after serving X is a different situation from standing at Y with nobody served yet. A state must record <strong>where the driver is</strong> and <strong>which customers have already been served</strong>, for example <em>In(Y), served {X, Y}</em>.</p>
     <p><strong>Goal test:</strong> all three customers are served. The actions and costs stay the same: drive along a road and pay its kilometres.</p>
-    <p>With many customers, choosing the best order is close to a famous hard problem, the <em>travelling salesman problem</em> (TSP). Module 4 studies methods for problems like it, where the quality of the final answer matters more than the path the search took.</p>
+    <p>With many customers, choosing the best order is close to a famous hard problem, the <em>travelling salesman problem</em> (TSP). Module 4 returns to this problem, where the quality of the final route matters more than the path the search took to find it.</p>
   </details>
 </div>
 
@@ -1437,11 +1449,11 @@ const COURSE_CONTENT = [
 
 <h3>One loop, many algorithms</h3>
 
-<p>Almost every algorithm in this module is the same loop with one line changed. Learn the loop once:</p>
+<p>Many search algorithms follow a similar process. They differ in how they select nodes and manage repeated states. Here is the shared process:</p>
 
 <ol class="steps">
   <li><strong>Start with a frontier</strong><p>The <strong>frontier</strong> holds nodes we have created but not expanded yet. It is the edge of what we know. At the start it holds only the first node.</p></li>
-  <li><strong>Take one node out of the frontier</strong><p><em>This is the only line that changes between algorithms.</em> Which node you take — the oldest, the newest, the cheapest, the most promising — decides whether you are running BFS, DFS, UCS, or A*.</p></li>
+  <li><strong>Take one node out of the frontier</strong><p><em>This is the main difference between algorithms.</em> Which node you take — the oldest, the newest, the cheapest, the most promising — decides whether you are running BFS, DFS, UCS, or A*.</p></li>
   <li><strong>Test it</strong><p>If it is a goal, follow the parent links back to the start and return the path. (BFS can safely test earlier, when a node is created &mdash; see its code in section 3.4.)</p></li>
   <li><strong>Expand it</strong><p>To <strong>expand</strong> a node means to make its children: apply every legal action, and add the new nodes to the frontier.</p></li>
   <li><strong>Repeat</strong><p>Until you find a goal, or the frontier is empty — which means there is no solution.</p></li>
@@ -1651,6 +1663,8 @@ def path(node):
         body: `
 <p><strong>Uninformed</strong> (also called blind) means the algorithm knows nothing except the five parts of the problem. It cannot tell which state looks closer to the goal. The only thing it chooses is <em>the order of exploring</em> — and that one choice gives us five different algorithms.</p>
 
+<p>BFS, DFS, and UCS are a <em>review</em>: you may already know BFS and DFS from graphs in data structures. For each one, learn how it chooses the next node, what it guarantees, and when to use it. Detailed tracing practice comes with greedy search and A* in section 3.5.</p>
+
 <div class="analogy">
   <span class="analogy-label">Looking for one office inside a large building</span>
   <p><strong>Breadth-first</strong>: check every office on floor 1, then every office on floor 2, then floor 3. You will find the nearest office first, but you must remember every door you have not opened yet.</p>
@@ -1716,44 +1730,16 @@ def breadth_first_search(problem):
 
 <div class="tracer" data-tracer='{"viewBox":"0 0 400 240","label":"A tree with root A; B and C below it; D, E under B; F, G under C. The goal is F.","directed":true,"weighted":false,"start":"A","goal":"F","algos":["bfs","dfs"],"nodes":{"A":{"x":200,"y":40},"B":{"x":110,"y":120},"C":{"x":290,"y":120},"D":{"x":60,"y":200},"E":{"x":160,"y":200},"F":{"x":240,"y":200},"G":{"x":340,"y":200}},"edges":[["A","B",1],["A","C",1],["B","D",1],["B","E",1],["C","F",1],["C","G",1]]}' data-caption="Same tree, same goal F. Only the rule for taking a node out changes. Switch between BFS and DFS, then step through each."></div>
 
-<h3>4. Depth-Limited Search (DLS)</h3>
-
-<p><strong>Rule:</strong> DFS with a hard limit: never go deeper than $\\ell$ levels. <strong>Frontier:</strong> a stack. This stops the endless branch, but creates a new problem — if the goal is deeper than the limit, you will never find it. Time $O(b^{\\ell})$, memory $O(b\\ell)$.</p>
-
-<p>Sometimes the problem gives you a good limit for free. On a map with 20 cities, no sensible route uses more than 19 roads.</p>
-
-<h3>5. Iterative Deepening Search (IDS)</h3>
-
-<p>The clever one. Run DLS with limit 0. Fail. Run it again with limit 1. Fail. Limit 2. Limit 3. Keep going until you find the goal.</p>
-
-<p>A natural objection: <em>"but you throw away all the work every time!"</em> Here are the real numbers, for $b = 10$ and a goal at depth 5, not counting the start node:</p>
-
-<div class="diagram">
-  <svg viewBox="0 0 700 190" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
-    <text x="350" y="20" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">IS ITERATIVE DEEPENING WASTEFUL?</text>
-    <text x="60" y="52" font-size="12" fill="var(--ink-soft)">Nodes made by BFS down to depth 5:</text>
-    <text x="470" y="52" font-size="13" fill="var(--ink)" font-weight="700">111,110</text>
-    <text x="60" y="82" font-size="12" fill="var(--ink-soft)">Nodes made by IDS down to depth 5:</text>
-    <text x="470" y="82" font-size="13" fill="var(--ink)" font-weight="700">123,450</text>
-    <line x1="60" y1="98" x2="640" y2="98" stroke="var(--rule)"/>
-    <text x="60" y="124" font-size="12" fill="var(--ink-soft)">Extra work:</text>
-    <text x="470" y="124" font-size="13" fill="var(--gold)" font-weight="700">about 11%</text>
-    <text x="60" y="154" font-size="12" fill="var(--ink-soft)">Memory needed by BFS:</text>
-    <text x="470" y="154" font-size="13" fill="var(--accent)" font-weight="700">100,000 nodes</text>
-    <text x="60" y="178" font-size="12" fill="var(--ink-soft)">Memory needed by IDS:</text>
-    <text x="470" y="178" font-size="13" fill="var(--teal)" font-weight="700">about 50 nodes</text>
-  </svg>
-  <div class="diagram-caption">Repeating the top levels is cheap, because the bottom level holds most of the nodes.</div>
+<div class="callout note">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">Further exploration: limiting the depth (not in the quiz)</div>
+    <p><strong>Depth-limited search (DLS)</strong> is DFS with a fixed limit: it never goes deeper than $\\ell$ levels. This stops an endless branch, but if the goal is deeper than the limit, DLS never finds it. Sometimes the problem gives a safe limit: on a map with 20 cities, no sensible route uses more than 19 roads.</p>
+    <p><strong>Iterative deepening search (IDS)</strong> runs DLS with limit 0, then 1, then 2, and so on, until it finds the goal. It repeats the top levels, but they are small. With $b = 10$ and the goal at depth 5, IDS creates about 11% more nodes than BFS (123,450 against 111,110), yet it keeps about 50 nodes in memory instead of 100,000. Like BFS, it is complete when $b$ is finite and optimal when all steps cost the same; like DFS, it needs only $O(bd)$ memory.</p>
+  </div>
 </div>
 
-<div class="aha">
-  <div class="aha-label">Why the repeated work does not matter</div>
-  <p>In a tree with branching factor 10, the deepest level holds about 90% of all nodes. Levels 1 to 4 are created again and again, and all that repetition costs about one eighth of a single pass over level 5. You pay about 11% more time and save about 99.9% of the memory. That is why IDS — not BFS — is the standard blind search when you do not know how deep the goal is.</p>
-</div>
-
-<p><strong>Result:</strong> complete when $b$ is finite. Optimal when all steps cost the same. Time $O(b^d)$, memory $O(bd)$. It has the memory of DFS and the guarantees of BFS.</p>
-
-<h3>The table to memorize</h3>
+<h3>Comparing the strategies</h3>
 
 <div class="table-figure">
   <p class="table-hint">Swipe sideways to see the whole table &rarr;</p>
@@ -1798,7 +1784,7 @@ def breadth_first_search(problem):
 </div>
 
 <div class="definition">
-  <p>A <strong>heuristic function</strong> $h(n)$ is a guess at the cost of the cheapest path from the state at node $n$ to a goal. At the goal itself, $h = 0$. It is only a guess: cheap to compute, allowed to be wrong, and useful as long as it is close to the truth.</p>
+  <p>A <strong>heuristic function</strong> $h(n)$ is a guess at the cost of the cheapest path from the state at node $n$ to a goal. At the goal itself, $h = 0$. It is only an estimate: cheap to compute and allowed to be wrong. It does not need to be exact to be useful &mdash; even a rough estimate can show which choices look more promising. Section 3.6 shows how to check whether an estimate is safe for A*.</p>
 </div>
 
 <p>The heuristic used in this section is the <strong>straight-line distance</strong>: for maps, the distance in a straight line to the destination. Roads curve, so the real drive is never shorter than this.</p>
@@ -1836,7 +1822,7 @@ def breadth_first_search(problem):
 <p>Before the formula, one number. In the delivery map, the node for B has $g = 2$: the driver has already driven 2 km. Its $h = 3$: the customer is 3 km away in a straight line. So $f = 2 + 3 = 5$: "a route through B will cost at least about 5 km." Both numbers are kilometres, so adding them makes sense. If $g$ were in kilometres and $h$ in minutes, the sum would mean nothing.</p>
 
 <div class="aha">
-  <div class="aha-label">A* is not really a new algorithm</div>
+  <div class="aha-label">A* connects UCS and Greedy Best-First Search</div>
   <p>Set $h(n) = 0$ and A* becomes uniform-cost search. Ignore $g(n)$ and it becomes greedy search. A* is just UCS that was given a hint. The whole idea is adding one guess to one running total — and the famous guarantee comes straight from that: if the guess is never too high, then $f$ is never too high either, so A* cannot settle for an expensive goal while a cheaper one is still reachable.</p>
 </div>
 
@@ -1901,7 +1887,7 @@ def breadth_first_search(problem):
     <ul>
       <li>Never guesses higher than the real cost</li>
       <li>With finite b and step costs of at least ε, A* returns a cheapest path</li>
-      <li>The closer the guess, the fewer nodes expanded</li>
+      <li>A higher admissible guess usually means fewer nodes expanded</li>
       <li>h(n) = 0 is admissible but gives no help — A* becomes UCS</li>
     </ul>
   </div>
@@ -2085,17 +2071,20 @@ def a_star(problem, h):
 
 <p><strong>What it usually means for A*.</strong> A larger admissible guess is closer to the real remaining cost, so it tends to steer A* more directly towards the goal and to expand fewer nodes.</p>
 
-<p><strong>When it becomes a guarantee.</strong> If both heuristics are also consistent &mdash; as $h_1$ and $h_2$ are &mdash; and A* runs the same way with each, every node that A* expands with $h_2$ is also expanded with $h_1$, except possibly some nodes whose $f$ equals the cost of the best solution, where the order of ties decides. So A* with $h_2$ expands no more nodes than with $h_1$, apart from ties. Even then it is a guarantee about nodes, not about seconds: $h_2$ may cost more to compute at each node.</p>
-
-<p>How large is the difference in practice? Russell &amp; Norvig (3rd edition) report averages over 100 random 8-puzzle problems that need 12 moves: iterative deepening, with no hint, created about 3.6 million nodes; A* with $h_1$ about 230; A* with $h_2$ about 70. Your own counts will differ with the implementation and the tie-breaking rule.</p>
-
-<h3>Where do heuristics come from?</h3>
-
-<ol class="steps">
-  <li><strong>Relax the problem: remove a rule</strong><p>A <strong>relaxed problem</strong> is the same problem with fewer rules, so it is easier to solve exactly. If a tile could jump anywhere, the exact cost is the number of misplaced tiles — that is $h_1$. If a tile could slide onto any neighbouring square, even a full one, the exact cost is the Manhattan distance — that is $h_2$. The exact cost of a relaxed problem is always an admissible heuristic for the real one, because every real solution is also a solution of the relaxed problem.</p></li>
-  <li><strong>Solve part of the problem exactly</strong><p>Compute in advance the exact cost of putting tiles 1 to 4 in place, ignoring the others, and save it in a table. Then just look it up during the search.</p></li>
-  <li><strong>Take the largest of several</strong><p>If $h_a$ and $h_b$ are both admissible, then $\\max(h_a, h_b)$ is admissible too, and it dominates both. You pay to compute both, so do this only when each one is cheap.</p></li>
-</ol>
+<div class="callout note">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">Further exploration: dominance guarantees and designing heuristics (not in the quiz)</div>
+    <p><strong>When it becomes a guarantee.</strong> If both heuristics are also consistent &mdash; as $h_1$ and $h_2$ are &mdash; and A* runs the same way with each, every node that A* expands with $h_2$ is also expanded with $h_1$, except possibly some nodes whose $f$ equals the cost of the best solution, where the order of ties decides. So A* with $h_2$ expands no more nodes than with $h_1$, apart from ties. Even then it is a guarantee about nodes, not about seconds: $h_2$ may cost more to compute at each node.</p>
+    <p>How large is the difference in practice? Russell &amp; Norvig (3rd edition) report averages over 100 random 8-puzzle problems that need 12 moves: iterative deepening, with no hint, created about 3.6 million nodes; A* with $h_1$ about 230; A* with $h_2$ about 70. Your own counts will differ with the implementation and the tie-breaking rule.</p>
+    <p><strong>Where do heuristics come from?</strong> Three common ways:</p>
+    <ol>
+      <li><strong>Relax the problem: remove a rule.</strong> A <strong>relaxed problem</strong> is the same problem with fewer rules, so it is easier to solve exactly. If a tile could jump anywhere, the exact cost is the number of misplaced tiles — that is $h_1$. If a tile could slide onto any neighbouring square, even a full one, the exact cost is the Manhattan distance — that is $h_2$. The exact cost of a relaxed problem is always an admissible heuristic for the real one, because every real solution is also a solution of the relaxed problem.</li>
+      <li><strong>Solve part of the problem exactly.</strong> Compute in advance the exact cost of putting tiles 1 to 4 in place, ignoring the others, and save it in a table. Then just look it up during the search.</li>
+      <li><strong>Take the largest of several.</strong> If $h_a$ and $h_b$ are both admissible, then $\\max(h_a, h_b)$ is admissible too, and it dominates both. You pay to compute both, so do this only when each one is cheap.</li>
+    </ol>
+  </div>
+</div>
 
 <div class="callout warning">
   <div class="callout-icon">!</div>
@@ -2166,7 +2155,7 @@ def a_star(problem, h):
   </div>
 </div>
 
-<p>Search is also used to improve AI systems themselves. When we build a machine learning model, we choose settings such as its learning rate (you will meet it in Module 4) or how many layers it has. A simple way is to try several settings, train a model with each one, and keep the one that scores best on data the model did not train on. Here the path does not matter, only the best setting does &mdash; the kind of optimization that Module 4 studies.</p>
+<p>Search is also used to improve AI systems themselves. When we build a machine learning model, we choose settings such as its learning rate (you will meet it in Module 4) or how many layers it has. A simple way is to try several settings, train a model with each one, and keep the one that scores best on data the model did not train on. Here the path does not matter, only the best setting does &mdash; the kind of optimization that Module 4 studies (section 4.4).</p>
 
 <h3>Choosing a search algorithm</h3>
 
@@ -2224,7 +2213,7 @@ def a_star(problem, h):
 
 <div class="aha">
   <div class="aha-label">Where this takes you next</div>
-  <p>Sometimes we need a sequence of actions to reach a goal. Other times, we mainly care about finding a good solution, not the path used to discover it. That second case opens Module 4, optimization. Local search improves candidate solutions instead of finding paths to a goal, so it usually does not keep the path that led to an answer.</p>
+  <p>Sometimes we need a sequence of actions to reach a goal. Other times, we mainly care about finding a good solution, not the path used to discover it. That second case opens Module 4, <em>Optimization &mdash; Finding Better Solutions</em>. Local search improves candidate solutions instead of finding paths to a goal, so it usually does not keep the path that led to an answer.</p>
   <p>The later modules reuse this module too. Adversarial search (Module 5) searches a tree where an opponent chooses every second move, and constraint satisfaction (Module 6) searches partial assignments, like the timetable above.</p>
 </div>
 
@@ -2254,7 +2243,7 @@ def a_star(problem, h):
         ]
       },
       {
-        group: "Formulas to memorize",
+        group: "Key formulas",
         items: [
           "<code>g(n)</code> = cost already paid from the start to n",
           "<code>h(n)</code> = guessed cost from n to the goal, in the same unit as g",
@@ -2263,7 +2252,7 @@ def a_star(problem, h):
           "ignore <code>g(n)</code> → A* becomes greedy search",
           "Admissible: <code>h(n) ≤ real remaining cost</code>",
           "Consistent: <code>h(n) ≤ c + h(n')</code>",
-          "Dominance: both admissible and <code>h₂(n) ≥ h₁(n)</code> for every n. If both are also consistent → A* with h₂ expands no more nodes, apart from ties"
+          "Dominance: both admissible and <code>h₂(n) ≥ h₁(n)</code> for every n → h₂ usually saves nodes"
         ]
       },
       {
@@ -2282,8 +2271,7 @@ def a_star(problem, h):
           "BFS — queue; complete if b is finite; optimal if equal costs; time and memory <code>O(b^d)</code>",
           "UCS — priority queue by g; complete and optimal if b is finite and every step costs at least ε &gt; 0",
           "DFS — stack; tree-like: not complete, not optimal; time <code>O(b^m)</code>, memory <code>O(bm)</code>",
-          "DLS — complete only if ℓ ≥ d; time <code>O(b^ℓ)</code>, memory <code>O(bℓ)</code>",
-          "IDS — complete if b is finite; optimal if equal costs; time <code>O(b^d)</code>, memory <code>O(bd)</code>"
+          "Further exploration: DLS — DFS with a depth limit ℓ · IDS — DLS with ℓ = 0, 1, 2, …; complete if b is finite, optimal if equal costs, memory <code>O(bd)</code>"
         ]
       },
       {
