@@ -2382,7 +2382,7 @@ def a_star(problem, h):
       { term: "Neighbourhood", meaning: "The candidate solutions reachable from the current one by one small, defined change, such as swapping two customers in a route. Each of them is a neighbouring solution (a neighbour). Not the same as the nearest neighbour method of Lab 2, where a neighbour is a place." },
       { term: "Neighbouring solution", meaning: "A candidate solution one small change away from the current one, such as a route with two customers swapped." },
       { term: "Current solution", meaning: "The candidate solution a single-solution method holds now and tries to improve." },
-      { term: "Best solution found so far", meaning: "The best candidate a method has seen since it started. The program stores it and returns it, because the current solution or the population can later get worse." },
+      { term: "Best solution found so far", meaning: "The best solution found during the search. Some methods need to store it separately because their current solution may become worse." },
       { term: "Hill climbing", meaning: "Single-solution local search: move to the best neighbour, and stop when no neighbour is better. Better means shorter for a route, higher for a fitness." },
       { term: "Stopping criterion", meaning: "The rule that ends a search loop: no neighbour is better (hill climbing), the step is tiny or a step limit is reached (gradient descent), or a fixed number of generations (genetic algorithm)." },
       { term: "Local optimum", meaning: "A solution that no neighbour improves. It may also be the global optimum, or a better solution may exist elsewhere. It is a local maximum or a local minimum, depending on the direction." },
@@ -2815,7 +2815,7 @@ def a_star(problem, h):
 
 <h3>Neighbouring routes</h3>
 
-<p>To make a small change to a route, swap the places of two customers. For example, swapping C and D in <code>[A, C, B, D]</code> gives <code>[A, D, B, C]</code>. Each route you can reach with one swap is a <strong>neighbouring solution</strong>, or neighbour. All of them together are the <strong>neighbourhood</strong> of the route.</p>
+<p>We already have a 30 km route. Can we improve it without starting from scratch? One simple idea is to change the order of just two customers and see whether the new route is shorter. For example, swapping C and D in <code>[A, C, B, D]</code> gives <code>[A, D, B, C]</code>. Each route you can reach with one swap is a <strong>neighbouring solution</strong>, or neighbour. All of them together are the <strong>neighbourhood</strong> of the route.</p>
 
 <p>Four customers give 6 pairs to swap (A–B, A–C, A–D, B–C, B–D, C–D), so every route has exactly 6 neighbours. Swapping keeps a permutation, so every neighbour is still a valid route.</p>
 
@@ -2878,20 +2878,6 @@ def a_star(problem, h):
 
 <p>The name comes from this maximization picture, where better means higher. For routes, better means shorter, so we climb "down" towards smaller distances. The idea is the same.</p>
 
-<pre><code class="language-python">def hill_climbing(problem):
-    current = problem.initial_solution()
-    while True:
-        neighbours = problem.neighbours(current)
-        if not neighbours:
-            return current          # no neighbours at all: stop
-        best = min(neighbours, key=problem.cost)
-        if problem.cost(best) &gt;= problem.cost(current):
-            return current          # no neighbour is better: stop
-        current = best
-</code></pre>
-
-<p>The code does not know anything about routes. To use it for a problem, you write two functions: <code>neighbours</code> (for routes: all swaps) and <code>cost</code> (for routes: the total distance). To maximize instead, use <code>max</code> and <code>&lt;=</code>.</p>
-
 <h3>Tracing it on the delivery problem</h3>
 
 <p><strong>Step 1.</strong> The current solution is <code>[A, C, B, D]</code>, 30 km. Its six neighbours:</p>
@@ -2938,19 +2924,35 @@ def a_star(problem, h):
 
 <p>No neighbour is shorter than 20 km, so hill climbing stops and returns <code>[A, D, B, C]</code>, 20 km.</p>
 
-<p>Is that the shortest route? There are only 12 different routes, so we can check them all. The shortest is <code>[B, A, D, C]</code>: 4 + 4 + 3 + 6 + 2 = <strong>19 km</strong>. Hill climbing stopped at a route that no single swap can improve, although a shorter route exists. It stopped because of the neighbourhood it was given, not because it found the best answer.</p>
+<p>Is that the shortest route? There are only 12 different routes, so we can check them all. The shortest is <code>[B, A, D, C]</code>: 4 + 4 + 3 + 6 + 2 = <strong>19 km</strong>. Why did hill climbing stop at 20 km when a 19 km route exists? Because no single swap of <code>[A, D, B, C]</code> gives a shorter route: in the step 2 table, every neighbour is 21 km or more. Hill climbing stopped because of the neighbourhood it was given, not because it found the best answer.</p>
+
+<h4>The loop as code</h4>
+
+<pre><code class="language-python">def hill_climbing(problem):
+    current = problem.initial_solution()
+    while True:
+        neighbours = problem.neighbours(current)
+        if not neighbours:
+            return current          # no neighbours at all: stop
+        best = min(neighbours, key=problem.cost)
+        if problem.cost(best) &gt;= problem.cost(current):
+            return current          # no neighbour is better: stop
+        current = best
+</code></pre>
+
+<p>The code does not know anything about routes. To use it for a problem, you write two functions: <code>neighbours</code> (for routes: all swaps) and <code>cost</code> (for routes: the total distance). To maximize instead, use <code>max</code> and <code>&lt;=</code>.</p>
 
 <h3>Five words to keep apart</h3>
 
 <ol class="steps">
   <li><strong>Current solution</strong><p>The route the search holds now. In step 2 above: <code>[A, D, B, C]</code>.</p></li>
   <li><strong>Neighbouring solution</strong><p>A route one swap away from the current solution, such as <code>[D, A, B, C]</code>.</p></li>
-  <li><strong>Best solution found so far</strong><p>The best route the method has seen since it started. The program must store it and return it at the end.</p></li>
+  <li><strong>Best solution found so far</strong><p>The best solution found during the search. Some methods need to store it separately because their current solution may become worse.</p></li>
   <li><strong>Local optimum</strong><p>A solution that no neighbour improves: <code>[A, D, B, C]</code>, 20 km. It may also be the best of all, or a better solution may exist elsewhere.</p></li>
   <li><strong>Global optimum</strong><p>The best solution of the whole problem: <code>[B, A, D, C]</code>, 19 km. It is always a local optimum too. When maximizing, the two are called a local maximum and a global maximum; when minimizing, a local minimum and a global minimum.</p></li>
 </ol>
 
-<p>In plain hill climbing the current solution is always the best found so far, because the search only moves to better routes. The two can differ in the methods below, which sometimes leave a good route. So a program should keep the best solution found so far in its own variable.</p>
+<p>In plain hill climbing the two are always the same, because the search only moves to better routes. They can differ in the methods below: random restarts start again from a new route, and simulated annealing sometimes accepts a worse one.</p>
 
 <h3>Where hill climbing gets stuck</h3>
 
@@ -3098,9 +3100,7 @@ def a_star(problem, h):
 
 <h4>Population and evaluation</h4>
 
-<p>The <strong>population</strong> is the group of candidate solutions the algorithm holds at one time. Generation 0 holds four routes. Each one is written as a <strong>chromosome</strong>: for routes, the route list itself, such as <code>[A, C, B, D]</code>; for yes/no choices, a bit string such as <code>1010</code>. One member of the population is called an individual. The members are candidate solutions, not agents: nothing in the population perceives or acts, so this is not the multi-agent setting of section 2.4.</p>
-
-<p>Route R1 is the starting route of section 4.2, and R3 is the route where hill climbing stopped.</p>
+<p>We start with four routes. R1 is the starting route of section 4.2, and R3 is the route where hill climbing stopped.</p>
 
 <div class="table-figure">
   <div class="table-scroll">
@@ -3118,6 +3118,8 @@ def a_star(problem, h):
   </div>
 </div>
 
+<p>These four routes form our first <strong>population</strong>: the group of candidate solutions the algorithm holds at one time. Each route is one individual, represented by a <strong>chromosome</strong>: for routes, the route list itself; for yes/no choices, a bit string such as <code>1010</code>. An individual here is a candidate solution, not an intelligent agent: nothing in the population perceives or acts, so this is not the multi-agent setting of section 2.4.</p>
+
 <p>Evaluation gives each chromosome a score with a <strong>fitness function</strong>, where higher is better. Our objective is a distance to minimize, so the fitness must turn it around: a shorter route has a higher fitness. One common choice is fitness = 1 / distance. In this example we only need to know which of two routes is fitter: the shorter one.</p>
 
 <p>The best route found so far is R3, 20 km.</p>
@@ -3128,9 +3130,9 @@ def a_star(problem, h):
 
 <h4>Crossover</h4>
 
-<p><strong>Crossover</strong> makes a child from parts of two parents. For bit strings, it can cut two parents at the same place and swap the tails. For routes this breaks the representation. Cut R2 and R3 after position 2 and join the parts: <code>[C, A]</code> + <code>[B, C]</code> = <code>[C, A, B, C]</code>. Customer C appears twice and D is missing, so this is not a route at all.</p>
+<p>We have selected two parent routes. How can we use them to create a new route? The simplest idea is to cut both parents at the same place and join the parts. Cut R2 and R3 after position 2: <code>[C, A]</code> + <code>[B, C]</code> = <code>[C, A, B, C]</code>. Customer C appears twice and D is missing, so this is not a route at all.</p>
 
-<p>A crossover for routes must keep a permutation. One simple way:</p>
+<p>Cutting works for bit strings, but it breaks a permutation. <strong>Crossover</strong> makes a child from parts of two parents, and for routes it must keep a permutation. One simple way:</p>
 
 <ol class="steps">
   <li><strong>Keep the middle of parent 1</strong><p>Copy positions 2 and 3 of R2 into the child: <code>[_, A, D, _]</code>.</p></li>
@@ -3211,15 +3213,18 @@ def a_star(problem, h):
   </div>
 </div>
 
-<h4>When a child breaks a constraint</h4>
-
-<p>With routes and a crossover that keeps a permutation, every child is feasible. Other representations can produce children that break a constraint. For example, if each bit says whether to fund one project, a child can cost more than the budget. A genetic algorithm then needs a rule:</p>
-
-<ul>
-  <li><strong>Penalize</strong> it: keep it, but give it a very low fitness.</li>
-  <li><strong>Reject</strong> it: throw it away and make a new child instead.</li>
-  <li><strong>Repair</strong> it: change it until it satisfies the constraint, for example drop projects until the cost fits.</li>
-</ul>
+<div class="callout note">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">When a child breaks a constraint</div>
+    <p>With routes and a crossover that keeps a permutation, every child is feasible. With other representations it may not be: if each bit says whether to fund one project, a child can cost more than the budget. Three common rules:</p>
+    <ul>
+      <li><strong>Penalize</strong> it: keep it, but give it a very low fitness.</li>
+      <li><strong>Reject</strong> it: throw it away and make a new child instead.</li>
+      <li><strong>Repair</strong> it: change it until it satisfies the constraint, for example drop projects until the cost fits.</li>
+    </ul>
+  </div>
+</div>
 
 <h3>One solution or a population?</h3>
 
