@@ -2382,76 +2382,11 @@ def a_star(problem, h):
       {
         title: "Optimization: From Problems to Solutions",
         body: `
-<p>In the lecture you were delivery drivers. Each of you chose an order for visiting the customers, and we compared the routes. That small game already holds every idea of this module. This section gives each idea its name. Sections 4.2 to 4.4 then show different ways to find better solutions.</p>
+<p>Many real-world problems have more than one possible solution. The challenge is to find a better one.</p>
 
-<h3>What is optimization?</h3>
+<p>Imagine you are a delivery driver. You start at the depot, visit four customers, A, B, C and D, and return to the depot. You must visit every customer exactly once. In which order should you visit them? Different people suggest different orders. (In the lecture, each of you suggested one.)</p>
 
-<div class="definition">
-  <p><strong>Optimization</strong> is the process of finding the best possible solution according to a defined objective, while satisfying any constraints that apply.</p>
-</div>
-
-<p>Three levels of success are easy to mix up. Take the delivery driver:</p>
-
-<ol class="steps">
-  <li><strong>An acceptable solution</strong><p>The route visits every customer once and returns to the depot. The driver can use it.</p></li>
-  <li><strong>A better solution</strong><p>It is acceptable, and it is shorter.</p></li>
-  <li><strong>An optimal solution</strong><p>No acceptable route is shorter. To be sure of this, you would have to rule out every other route.</p></li>
-</ol>
-
-<p>The methods in this module move from level 1 towards level 3. In general they cannot promise to reach level 3: they aim for a <em>good</em> solution, and they often cannot tell you whether it is the best one.</p>
-
-<div class="callout note">
-  <div class="callout-icon">i</div>
-  <div class="callout-body">
-    <div class="callout-title">You have already met optimization</div>
-    <p>In Module 3, uniform-cost search and A* (with an admissible heuristic) return a cheapest path. That is optimization over paths. The two modules ask their questions in different ways:</p>
-    <ul>
-      <li>Module 3: <em>How can we find a path, or a sequence of actions, that reaches a goal?</em></li>
-      <li>Module 4: <em>How can we represent, evaluate and improve candidate solutions?</em></li>
-    </ul>
-    <p>This is a difference of focus for teaching, not a strict line between search and optimization. The delivery problem fits both: Lab 2 builds a route one customer at a time, like a path; this module takes complete routes and improves them.</p>
-  </div>
-</div>
-
-<h3>From a real problem to a solution</h3>
-
-<p>We follow the same six steps for every problem in this module.</p>
-
-<div class="diagram">
-  <svg viewBox="0 0 700 275" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Six steps: real-world problem, problem modelling, solution representation, objective function, search strategy, evaluation; the last two repeat.">
-    <text x="350" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">FROM A REAL PROBLEM TO A BETTER SOLUTION</text>
-    <rect x="20" y="48" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
-      <text x="29" y="63" font-size="10" fill="var(--ink-mute)" font-weight="700">1</text>
-      <text x="118" y="81" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Real-world problem</text>
-      <text x="118" y="101" text-anchor="middle" font-size="12" fill="var(--ink-soft)">1 driver, 4 customers</text><rect x="252" y="48" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
-      <text x="261" y="63" font-size="10" fill="var(--ink-mute)" font-weight="700">2</text>
-      <text x="350" y="81" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Problem modelling</text>
-      <text x="350" y="101" text-anchor="middle" font-size="12" fill="var(--ink-soft)">depot, customers, distances</text><rect x="484" y="48" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
-      <text x="493" y="63" font-size="10" fill="var(--ink-mute)" font-weight="700">3</text>
-      <text x="582" y="81" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Solution representation</text>
-      <text x="582" y="101" text-anchor="middle" font-size="12" fill="var(--ink-soft)">[A, C, B, D]</text><rect x="20" y="162" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--accent)" stroke-width="2"/>
-      <text x="29" y="177" font-size="10" fill="var(--ink-mute)" font-weight="700">4</text>
-      <text x="118" y="195" text-anchor="middle" font-size="12.5" fill="var(--accent)" font-weight="700">Objective function</text>
-      <text x="118" y="215" text-anchor="middle" font-size="12" fill="var(--ink-soft)">total distance = 30 km</text><rect x="252" y="162" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--accent)" stroke-width="2"/>
-      <text x="261" y="177" font-size="10" fill="var(--ink-mute)" font-weight="700">5</text>
-      <text x="350" y="195" text-anchor="middle" font-size="12.5" fill="var(--accent)" font-weight="700">Search strategy</text>
-      <text x="350" y="215" text-anchor="middle" font-size="12" fill="var(--ink-soft)">swap two customers</text><rect x="484" y="162" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
-      <text x="493" y="177" font-size="10" fill="var(--ink-mute)" font-weight="700">6</text>
-      <text x="582" y="195" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Evaluation</text>
-      <text x="582" y="215" text-anchor="middle" font-size="12" fill="var(--ink-soft)">shorter? keep it</text><path d="M218 84 L248 84" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M450 84 L480 84" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M582 122 V 140 H 118 V 158" fill="none" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M218 198 L248 198" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M450 198 L480 198" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M680 198 H 690 V 250 H 352 V 236" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#pp2)"/>
-    <text x="520" y="266" text-anchor="middle" font-size="11" fill="var(--gold)" font-weight="700">not good enough? search again</text>
-    <defs><marker id="pp1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--ink-mute)"/></marker><marker id="pp2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--gold)"/></marker></defs>
-  </svg>
-  <div class="diagram-caption">The six steps, with the delivery problem under each one. Steps 5 and 6 repeat until the solution is good enough.</div>
-</div>
-
-<h3>The running example: one driver, four customers</h3>
-
-<p>A driver leaves the depot, visits four customers A, B, C and D, and returns to the depot. Each customer is visited exactly once. In which order should the driver visit them, so that the total distance is as short as possible?</p>
-
-<p>This is the <strong>Travelling Salesperson Problem (TSP)</strong>. Module 3 and Lab 2 call it the travelling salesman problem; it is the same problem. Our version is a simplified version of real delivery: we ignore traffic, delivery times and the size of the van.</p>
-
-<p>The distances below are <em>illustrative</em>: small whole numbers, in kilometres, chosen so that you can add them by hand. They are not real map distances. The distance from X to Y is the same as from Y to X.</p>
+<p>Here are the distances between the places. They are <em>illustrative</em>: small whole numbers, in kilometres, chosen so that you can add them by hand. They are not real map distances, and the distance from X to Y is the same as from Y to X.</p>
 
 <div class="table-figure">
   <div class="table-scroll">
@@ -2470,20 +2405,7 @@ def a_star(problem, h):
   </div>
 </div>
 
-<h3>Six ideas, one example</h3>
-
-<ol class="steps">
-  <li><strong>Problem modelling</strong><p>Turning a real situation into a precise problem that a computer can work on. We keep what matters (the places and the distances between them) and drop the rest (traffic, the colour of the van). Module 3 called this dropping of details abstraction.</p></li>
-  <li><strong>Candidate solution</strong><p>One complete answer, good or bad: one full route. In Module 3 a solution was a path built step by step. Here the route is the answer, and we judge it as a whole.</p></li>
-  <li><strong>Solution representation</strong><p>How a candidate solution is written so that an algorithm can store it and change it. A route is written as a list of the customers in visiting order, such as <code>[A, C, B, D]</code>. The depot is not written, because every route starts and ends there.</p></li>
-  <li><strong>Objective function</strong><p>A function that gives each candidate solution a number that measures its quality. Here: the total distance of the route, including the last leg back to the depot. We want to minimize it.</p></li>
-  <li><strong>Search space</strong><p>All the candidate solutions the representation allows. Here: every order of the four customers.</p></li>
-  <li><strong>Constraints</strong><p>Requirements that a solution must satisfy to be accepted at all. Here: every customer is visited exactly once, and the route starts and ends at the depot.</p></li>
-</ol>
-
-<p>A list such as <code>[A, C, B, D]</code>, which contains every customer exactly once, is called a <strong>permutation</strong>. Writing routes as permutations is called a <strong>permutation representation</strong>. The things we choose are sometimes called the <strong>decision variables</strong>: here, which customer comes first, second, third and fourth.</p>
-
-<h4>Scoring one route</h4>
+<p>Take two suggestions. The first visits A, then C, then B, then D:</p>
 
 <div class="diagram">
   <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="The route Depot, A, C, B, D, Depot with legs of 6, 7, 4, 5 and 8 km: 30 km in total. The map is not to scale.">
@@ -2501,31 +2423,80 @@ def a_star(problem, h):
 </div>
 
 <div class="formula">
+  <p><span>[A, C, B, D]</span> 6 + 7 + 4 + 5 + 8 = 30 km</p>
+  <p><span>[A, D, B, C]</span> 6 + 3 + 5 + 4 + 2 = 20 km</p>
+</div>
+
+<p>Both routes follow the rules of the job: every customer is visited exactly once, and the driver returns to the depot. But the second route is 10 km shorter, so it is better. That raises the real question of this module: <em>can we find an even shorter route?</em></p>
+
+<div class="definition">
+  <p><strong>Optimization</strong> is the process of finding the best possible solution according to a defined objective, while satisfying any constraints that apply.</p>
+</div>
+
+<p>Our two routes show three levels of success:</p>
+
+<ol class="steps">
+  <li><strong>An acceptable solution</strong><p>It follows all the rules: every customer once, and back to the depot. Both routes are acceptable.</p></li>
+  <li><strong>A better solution</strong><p>It is acceptable, and it is shorter. <code>[A, D, B, C]</code> is better than <code>[A, C, B, D]</code>.</p></li>
+  <li><strong>An optimal solution</strong><p>An optimal solution is a feasible solution for which no better feasible solution exists. (Feasible means that it follows all the rules.) We do not know yet whether <code>[A, D, B, C]</code> is optimal.</p></li>
+</ol>
+
+<p>The methods in this module move from level 1 towards level 3. They aim for a good solution. Finding a good solution does not prove that it is optimal: there may be a better one that the method has not tried.</p>
+
+<p>We have compared two routes by hand. But how can a computer represent and evaluate thousands of possible routes? We need to describe the problem precisely, one step at a time.</p>
+
+<h3>Problem modelling</h3>
+
+<p>The first step is <strong>problem modelling</strong>: turning a real situation into a precise problem that a computer can work on. We keep what matters: the places and the distances between them. We drop the rest: traffic, the size of the van. Module 3 called this dropping of details abstraction.</p>
+
+<p>Our model is the <strong>Travelling Salesperson Problem (TSP)</strong>. Module 3 and Lab 2 call it the travelling salesman problem; it is the same problem. It is a simplified version of real delivery.</p>
+
+<h3>Candidate solutions</h3>
+
+<p>Each route suggested for the driver is a <strong>candidate solution</strong>: one complete answer, good or bad. <code>[A, C, B, D]</code> is a candidate, and so is <code>[A, D, B, C]</code>. We judge each one as a whole.</p>
+
+<div class="callout note">
+  <div class="callout-icon">i</div>
+  <div class="callout-body">
+    <div class="callout-title">You have already met optimization</div>
+    <p>In Module 3, uniform-cost search and A* (with an admissible heuristic) return a cheapest path. That is optimization over paths. The two modules ask their questions in different ways:</p>
+    <ul>
+      <li>Module 3: <em>How can we find a path, or a sequence of actions, that reaches a goal?</em></li>
+      <li>Module 4: <em>How can we represent, evaluate and improve candidate solutions?</em></li>
+    </ul>
+    <p>This is a difference of focus for teaching, not a strict line between search and optimization. The delivery problem fits both: Lab 2 builds a route one customer at a time, like a path; this module takes complete routes and improves them.</p>
+  </div>
+</div>
+
+<h3>Solution representation</h3>
+
+<p>A computer needs a fixed way to write a candidate down, so that it can store it and change it. This is the <strong>solution representation</strong>. A route is written as a list of the customers in visiting order, such as <code>[A, C, B, D]</code>. The depot is not written, because every route starts and ends there.</p>
+
+<p>A list that contains every item exactly once, in some order, is a <strong>permutation</strong>. The things we choose are called the <strong>decision variables</strong>: here, which customer comes first, second, third and fourth. For yes/no choices, such as which projects to fund, a bit string such as <code>1010</code> is common.</p>
+
+<h3>Objective function</h3>
+
+<p>To compare routes, the computer needs a number for each one. An <strong>objective function</strong> gives each candidate solution a number that measures its quality. Here it is the total distance of the route, including the last leg back to the depot:</p>
+
+<div class="formula">
   <p><span>Route</span> Depot → A → C → B → D → Depot</p>
   <p><span>Objective</span> 6 + 7 + 4 + 5 + 8 = 30 km</p>
 </div>
 
-<p>Two routes can be compared only through their objective values: the shorter one is better. The objective function does not tell us which route to try next. That is a separate job.</p>
+<p>A shorter route is better, so we <em>minimize</em> the distance. Other problems <em>maximize</em> instead: a profit, a benefit or a fitness. Maximizing f is the same as minimizing −f. The genetic algorithm in section 4.3 talks about fitness, where higher is better; it simply turns "shorter" into "fitter".</p>
 
-<div class="before-after">
-  <div class="ba-col before">
-    <span class="ba-label">Do not mix up</span>
-    <h4>Objective function</h4>
-    <ul>
-      <li>Evaluates one candidate solution</li>
-      <li>Gives it a number: <code>[A, C, B, D]</code> → 30 km</li>
-      <li>Is part of the problem</li>
-    </ul>
-  </div>
-  <div class="ba-col after">
-    <span class="ba-label">Do not mix up</span>
-    <h4>Search strategy</h4>
-    <ul>
-      <li>Decides which candidate solutions to explore</li>
-      <li>For example: swap two customers and try the new route</li>
-      <li>Is part of the method (sections 4.2 and 4.3)</li>
-    </ul>
-  </div>
+<div class="diagram">
+  <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Minimizing a cost looks for the lowest point; maximizing a fitness looks for the highest point.">
+    <text x="180" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">MINIMIZE A COST</text><text x="530" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">MAXIMIZE A FITNESS</text>
+    <line x1="50" y1="195" x2="310" y2="195" stroke="var(--rule)" stroke-width="2"/><line x1="50" y1="55" x2="50" y2="195" stroke="var(--rule)" stroke-width="2"/><text x="38" y="125" font-size="11" fill="var(--ink-mute)" text-anchor="middle" transform="rotate(-90 38 125)">cost (lower is better)</text><text x="180" y="215" font-size="11" fill="var(--ink-mute)" text-anchor="middle">candidate solution</text><line x1="400" y1="195" x2="660" y2="195" stroke="var(--rule)" stroke-width="2"/><line x1="400" y1="55" x2="400" y2="195" stroke="var(--rule)" stroke-width="2"/><text x="388" y="125" font-size="11" fill="var(--ink-mute)" text-anchor="middle" transform="rotate(-90 388 125)">fitness (higher is better)</text><text x="530" y="215" font-size="11" fill="var(--ink-mute)" text-anchor="middle">candidate solution</text>
+    <path d="M50 67.7 L53.3 73.4 L56.5 78.9 L59.8 84.3 L63 89.5 L66.3 94.6 L69.5 99.5 L72.8 104.3 L76 109 L79.3 113.5 L82.5 117.8 L85.8 122.1 L89 126.1 L92.3 130.1 L95.5 133.9 L98.8 137.5 L102 141 L105.3 144.4 L108.5 147.6 L111.8 150.7 L115 153.6 L118.3 156.4 L121.5 159.1 L124.8 161.6 L128 163.9 L131.3 166.2 L134.5 168.2 L137.8 170.2 L141 172 L144.3 173.6 L147.5 175.1 L150.8 176.5 L154 177.7 L157.3 178.8 L160.5 179.7 L163.8 180.5 L167 181.1 L170.3 181.6 L173.5 182 L176.8 182.2 L180 182.3 L183.3 182.2 L186.5 182 L189.8 181.6 L193 181.1 L196.3 180.5 L199.5 179.7 L202.8 178.8 L206 177.7 L209.2 176.5 L212.5 175.1 L215.8 173.6 L219 172 L222.3 170.2 L225.5 168.2 L228.8 166.2 L232 163.9 L235.3 161.6 L238.5 159.1 L241.7 156.4 L245 153.6 L248.3 150.7 L251.5 147.6 L254.8 144.4 L258 141 L261.3 137.5 L264.5 133.9 L267.8 130.1 L271 126.1 L274.3 122.1 L277.5 117.8 L280.8 113.5 L284 109 L287.3 104.3 L290.5 99.5 L293.8 94.6 L297 89.5 L300.3 84.3 L303.5 78.9 L306.8 73.4 L310 67.7" fill="none" stroke="var(--accent)" stroke-width="3"/>
+    <path d="M400 182.3 L403.3 176.6 L406.5 171.1 L409.8 165.7 L413 160.5 L416.3 155.4 L419.5 150.5 L422.8 145.7 L426 141 L429.3 136.5 L432.5 132.2 L435.8 127.9 L439 123.9 L442.3 119.9 L445.5 116.1 L448.8 112.5 L452 109 L455.3 105.6 L458.5 102.4 L461.8 99.3 L465 96.4 L468.3 93.6 L471.5 90.9 L474.8 88.4 L478 86.1 L481.3 83.8 L484.5 81.8 L487.8 79.8 L491 78 L494.3 76.4 L497.5 74.9 L500.8 73.5 L504 72.3 L507.3 71.2 L510.5 70.3 L513.8 69.5 L517 68.9 L520.3 68.4 L523.5 68 L526.8 67.8 L530 67.7 L533.3 67.8 L536.5 68 L539.8 68.4 L543 68.9 L546.3 69.5 L549.5 70.3 L552.8 71.2 L556 72.3 L559.3 73.5 L562.5 74.9 L565.8 76.4 L569 78 L572.3 79.8 L575.5 81.8 L578.8 83.8 L582 86.1 L585.3 88.4 L588.5 90.9 L591.8 93.6 L595 96.4 L598.3 99.3 L601.5 102.4 L604.8 105.6 L608 109 L611.3 112.5 L614.5 116.1 L617.8 119.9 L621 123.9 L624.3 127.9 L627.5 132.2 L630.8 136.5 L634 141 L637.3 145.7 L640.5 150.5 L643.8 155.4 L647 160.5 L650.3 165.7 L653.5 171.1 L656.8 176.6 L660 182.3" fill="none" stroke="var(--teal)" stroke-width="3"/>
+    <circle cx="180" cy="182.3" r="7" fill="var(--gold)"/>
+    <text x="180" y="168.3" text-anchor="middle" font-size="12" fill="var(--gold)" font-weight="700">minimum</text>
+    <circle cx="530" cy="67.7" r="7" fill="var(--gold)"/>
+    <text x="530" y="55.7" text-anchor="middle" font-size="12" fill="var(--gold)" font-weight="700">maximum</text>
+  </svg>
+  <div class="diagram-caption">The same shape of question, seen from two sides. Which side you are on depends on how you defined the objective.</div>
 </div>
 
 <div class="callout note">
@@ -2536,17 +2507,29 @@ def a_star(problem, h):
   </div>
 </div>
 
-<h4>How big is the search space?</h4>
+<h3>Constraints</h3>
 
-<p>Four customers can be put in order in 4 × 3 × 2 × 1 = 24 ways. A route and the same route driven backwards have the same length, because the distances are the same in both directions. So there are only 12 different routes. We can check 12 routes by hand. With 10 customers there are 3,628,800 orders, and the number grows very fast: Lab 2 measures how fast. That is why we need methods that search for a good route without trying them all.</p>
+<p>At the start we said that both routes follow the rules of the job. Those rules are the constraints. A <strong>constraint</strong> is a requirement that a solution must satisfy to be accepted at all. For the driver: every customer is visited exactly once, and the route starts and ends at the depot. A candidate that satisfies every constraint is a <strong>feasible solution</strong>.</p>
 
-<h3>Constraints and soft preferences</h3>
+<p>Not every wish is a constraint. A <strong>soft preference</strong> is a desirable condition that is not required. Suppose customer C is a pharmacy, and we would like to visit it early. A route that visits C last can still be used; it is just worse. So the wish enters the objective function: for every customer visited before C, we add a <strong>penalty</strong>. (When we maximize, meeting a preference can add a reward instead.)</p>
 
-<p>Not every wish is a constraint. A <strong>soft preference</strong> is a desirable condition that is not required. "Few students with two exams on one day" is a soft preference for an exam timetable: a timetable that ignores it can still be used. It is just worse. "No student has two exams at the same time" is a constraint: a timetable that breaks it cannot be used.</p>
+<p>The same line appears in an exam timetable. "No student has two exams at the same time" is a constraint. "Few students with two exams on one day" is a soft preference. Section 2.3 drew this line with different words: hard requirements and things to improve. Module 6 calls the first kind hard constraints.</p>
 
-<p>A soft preference enters the objective function. When we minimize, each time the preference is not met adds a <strong>penalty</strong>. When we maximize, meeting it can add a reward instead. Section 2.3 drew the same line with different words: hard requirements and things to improve. Module 6 calls the first kind hard constraints.</p>
+<div class="callout warning">
+  <div class="callout-icon">!</div>
+  <div class="callout-body">
+    <div class="callout-title">A constraint is not just a large penalty</div>
+    <p>"No student has two exams at the same time" must always hold. If you write it only as a small penalty, the search may accept a clash to save a few points somewhere else. Keep what must hold as a constraint, and put only the preferences into the objective.</p>
+  </div>
+</div>
 
-<p>For the driver: "visit every customer exactly once" is a constraint. "Visit customer C early, because C is a pharmacy" could be a soft preference: we could add a penalty for every customer visited before C.</p>
+<h3>Search space</h3>
+
+<p>How many routes could the driver choose from? The <strong>search space</strong> is all the candidate solutions the representation allows. Four customers can be put in order in 4 × 3 × 2 × 1 = 24 ways. A route and the same route driven backwards have the same length, so there are only 12 different routes.</p>
+
+<p>Twelve routes can be checked by hand. With 10 customers there are 3,628,800 orders, and the number grows very fast; Lab 2 measures how fast. That is why we need methods that look for a good route without trying them all.</p>
+
+<p>Are all the candidates in the search space acceptable? Not always. The feasible solutions together form the feasible region, and it is only part of the search space.</p>
 
 <div class="diagram">
   <svg viewBox="0 0 700 310" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="The feasible region is part of the search space; the objective function scores a feasible candidate solution.">
@@ -2572,7 +2555,7 @@ def a_star(problem, h):
     <text x="573" y="282" text-anchor="middle" font-size="11" fill="var(--teal)" font-weight="700">compare numbers: keep the shorter one</text>
     <defs><marker id="an1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--gold)"/></marker><marker id="an2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--ink-mute)"/></marker></defs>
   </svg>
-  <div class="diagram-caption">A feasible solution satisfies every constraint. All feasible solutions together form the feasible region, which is part of the search space.</div>
+  <div class="diagram-caption">The feasible region sits inside the search space. The objective function scores one candidate at a time.</div>
 </div>
 
 <div class="before-after">
@@ -2596,19 +2579,9 @@ def a_star(problem, h):
   </div>
 </div>
 
-<p>A good representation can make a constraint impossible to break. Every permutation visits each customer exactly once, so every route we can write is feasible. A weaker representation, such as "any list of four letters", would also allow <code>[A, A, B, D]</code>, and the algorithm would have to reject or penalize it.</p>
+<p>For the driver, the two are the same. A permutation visits each customer exactly once, so every route we can write is feasible: the representation makes the constraint impossible to break. A weaker representation, such as "any list of four letters", would also allow <code>[A, A, B, D]</code>, and the method would have to reject or penalize it.</p>
 
-<div class="callout warning">
-  <div class="callout-icon">!</div>
-  <div class="callout-body">
-    <div class="callout-title">A constraint is not just a large penalty</div>
-    <p>"No student has two exams at the same time" must always hold. If you write it only as a small penalty, the search may accept a clash to save a few points somewhere else. Keep what must hold as a constraint, and put only the preferences into the objective.</p>
-  </div>
-</div>
-
-<h3>Discrete or continuous?</h3>
-
-<p>The type of an optimization problem depends on its decision variables, not on the algorithm you use.</p>
+<p>One more question about the search space: are its candidates separate, or is there something in between?</p>
 
 <div class="definition">
   <p><strong>Discrete optimization</strong>: the decision variables take separate values, such as whole numbers, yes/no choices, or orderings.</p>
@@ -2624,9 +2597,7 @@ def a_star(problem, h):
       </thead>
       <tbody>
         <tr><th scope="row">Order of visiting 4 customers</th><td>a permutation, such as [A, C, B, D]</td><td>Discrete</td></tr>
-        <tr><th scope="row">Which of 4 projects to fund within a budget</th><td>a bit string, one yes/no bit per project, such as 1010</td><td>Discrete</td></tr>
-        <tr><th scope="row">Exam timetable</th><td>a slot and a room for each exam</td><td>Discrete</td></tr>
-        <tr><th scope="row">Placing a warehouse on a simple map</th><td>its coordinates (x, y)</td><td>Continuous</td></tr>
+        <tr><th scope="row">Which of 4 projects to fund within a budget</th><td>a bit string, such as 1010</td><td>Discrete</td></tr>
         <tr><th scope="row">Minimize f(x) = (x − 3)²</th><td>a real number x</td><td>Continuous</td></tr>
       </tbody>
     </table>
@@ -2649,38 +2620,34 @@ def a_star(problem, h):
   <div class="diagram-caption">Discrete: separate candidates with nothing in between. Continuous: a smooth range of candidates.</div>
 </div>
 
-<p>Section 2.4 used the words <em>discrete</em> and <em>continuous</em> for the states and actions of an environment. Here they describe the decision variables. Discrete does not mean finite: a variable that can be any whole number is discrete, yet it has infinitely many values.</p>
+<p>The type depends on the decision variables, not on the method. Section 2.4 used the same words for the states and actions of an environment. Discrete does not mean finite: a variable that can be any whole number is discrete, yet it has infinitely many values.</p>
 
-<h3>Minimize or maximize?</h3>
+<h3>Search strategy</h3>
 
-<div class="formula">
-  <p><span>Minimize</span> f(x), subject to x in the feasible region</p>
-  <p><span>Maximize</span> f(x), subject to x in the feasible region</p>
+<p>We can now write a route, score it, and check the rules. One question is left: which route should the computer try next? That is the job of the <strong>search strategy</strong>: it decides which candidate solutions to explore. For example: swap two customers and try the new route.</p>
+
+<div class="before-after">
+  <div class="ba-col before">
+    <span class="ba-label">Do not mix up</span>
+    <h4>Objective function</h4>
+    <ul>
+      <li>Evaluates one candidate solution</li>
+      <li>Gives it a number: <code>[A, C, B, D]</code> → 30 km</li>
+      <li>Is part of the problem</li>
+    </ul>
+  </div>
+  <div class="ba-col after">
+    <span class="ba-label">Do not mix up</span>
+    <h4>Search strategy</h4>
+    <ul>
+      <li>Decides which candidate solutions to explore</li>
+      <li>For example: swap two customers and try the new route</li>
+      <li>Is part of the method (sections 4.2 and 4.3)</li>
+    </ul>
+  </div>
 </div>
 
-<div class="diagram">
-  <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Minimizing a cost looks for the lowest point; maximizing a fitness looks for the highest point.">
-    <text x="180" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">MINIMIZE A COST</text><text x="530" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">MAXIMIZE A FITNESS</text>
-    <line x1="50" y1="195" x2="310" y2="195" stroke="var(--rule)" stroke-width="2"/><line x1="50" y1="55" x2="50" y2="195" stroke="var(--rule)" stroke-width="2"/><text x="38" y="125" font-size="11" fill="var(--ink-mute)" text-anchor="middle" transform="rotate(-90 38 125)">cost (lower is better)</text><text x="180" y="215" font-size="11" fill="var(--ink-mute)" text-anchor="middle">candidate solution</text><line x1="400" y1="195" x2="660" y2="195" stroke="var(--rule)" stroke-width="2"/><line x1="400" y1="55" x2="400" y2="195" stroke="var(--rule)" stroke-width="2"/><text x="388" y="125" font-size="11" fill="var(--ink-mute)" text-anchor="middle" transform="rotate(-90 388 125)">fitness (higher is better)</text><text x="530" y="215" font-size="11" fill="var(--ink-mute)" text-anchor="middle">candidate solution</text>
-    <path d="M50 67.7 L53.3 73.4 L56.5 78.9 L59.8 84.3 L63 89.5 L66.3 94.6 L69.5 99.5 L72.8 104.3 L76 109 L79.3 113.5 L82.5 117.8 L85.8 122.1 L89 126.1 L92.3 130.1 L95.5 133.9 L98.8 137.5 L102 141 L105.3 144.4 L108.5 147.6 L111.8 150.7 L115 153.6 L118.3 156.4 L121.5 159.1 L124.8 161.6 L128 163.9 L131.3 166.2 L134.5 168.2 L137.8 170.2 L141 172 L144.3 173.6 L147.5 175.1 L150.8 176.5 L154 177.7 L157.3 178.8 L160.5 179.7 L163.8 180.5 L167 181.1 L170.3 181.6 L173.5 182 L176.8 182.2 L180 182.3 L183.3 182.2 L186.5 182 L189.8 181.6 L193 181.1 L196.3 180.5 L199.5 179.7 L202.8 178.8 L206 177.7 L209.2 176.5 L212.5 175.1 L215.8 173.6 L219 172 L222.3 170.2 L225.5 168.2 L228.8 166.2 L232 163.9 L235.3 161.6 L238.5 159.1 L241.7 156.4 L245 153.6 L248.3 150.7 L251.5 147.6 L254.8 144.4 L258 141 L261.3 137.5 L264.5 133.9 L267.8 130.1 L271 126.1 L274.3 122.1 L277.5 117.8 L280.8 113.5 L284 109 L287.3 104.3 L290.5 99.5 L293.8 94.6 L297 89.5 L300.3 84.3 L303.5 78.9 L306.8 73.4 L310 67.7" fill="none" stroke="var(--accent)" stroke-width="3"/>
-    <path d="M400 182.3 L403.3 176.6 L406.5 171.1 L409.8 165.7 L413 160.5 L416.3 155.4 L419.5 150.5 L422.8 145.7 L426 141 L429.3 136.5 L432.5 132.2 L435.8 127.9 L439 123.9 L442.3 119.9 L445.5 116.1 L448.8 112.5 L452 109 L455.3 105.6 L458.5 102.4 L461.8 99.3 L465 96.4 L468.3 93.6 L471.5 90.9 L474.8 88.4 L478 86.1 L481.3 83.8 L484.5 81.8 L487.8 79.8 L491 78 L494.3 76.4 L497.5 74.9 L500.8 73.5 L504 72.3 L507.3 71.2 L510.5 70.3 L513.8 69.5 L517 68.9 L520.3 68.4 L523.5 68 L526.8 67.8 L530 67.7 L533.3 67.8 L536.5 68 L539.8 68.4 L543 68.9 L546.3 69.5 L549.5 70.3 L552.8 71.2 L556 72.3 L559.3 73.5 L562.5 74.9 L565.8 76.4 L569 78 L572.3 79.8 L575.5 81.8 L578.8 83.8 L582 86.1 L585.3 88.4 L588.5 90.9 L591.8 93.6 L595 96.4 L598.3 99.3 L601.5 102.4 L604.8 105.6 L608 109 L611.3 112.5 L614.5 116.1 L617.8 119.9 L621 123.9 L624.3 127.9 L627.5 132.2 L630.8 136.5 L634 141 L637.3 145.7 L640.5 150.5 L643.8 155.4 L647 160.5 L650.3 165.7 L653.5 171.1 L656.8 176.6 L660 182.3" fill="none" stroke="var(--teal)" stroke-width="3"/>
-    <circle cx="180" cy="182.3" r="7" fill="var(--gold)"/>
-    <text x="180" y="168.3" text-anchor="middle" font-size="12" fill="var(--gold)" font-weight="700">minimum</text>
-    <circle cx="530" cy="67.7" r="7" fill="var(--gold)"/>
-    <text x="530" y="55.7" text-anchor="middle" font-size="12" fill="var(--gold)" font-weight="700">maximum</text>
-  </svg>
-  <div class="diagram-caption">The same shape of question, seen from two sides. Which side you are on depends on how you defined f.</div>
-</div>
-
-<p>We minimize a cost, an error or a distance. We maximize a profit, a benefit or a fitness. Maximizing f is the same as minimizing −f. The delivery problem minimizes the distance. The genetic algorithm in section 4.3 talks about fitness, where higher is better; it simply turns "shorter" into "fitter".</p>
-
-<h3>Two ways to search for better solutions</h3>
-
-<p>We can now model a problem and score any candidate. The next question is: <em>how do we find better candidates?</em></p>
-
-<div class="definition">
-  <p><strong>Local search</strong> is a family of methods that move between candidate solutions, using a neighbourhood or other small changes, to improve the objective. They care about the quality of the final solution, so they usually do not keep the path that led to it.</p>
-</div>
+<p>Many search strategies belong to <strong>local search</strong>: a family of methods that move between candidate solutions, using a neighbourhood or other small changes, to improve the objective. They care about the quality of the final solution, so they usually do not keep the path that led to it. This module compares two kinds:</p>
 
 <div class="before-after">
   <div class="ba-col before">
@@ -2728,7 +2695,39 @@ def a_star(problem, h):
   <div class="diagram-caption">Single-solution methods improve one candidate. Population-based methods improve a group.</div>
 </div>
 
-<p>These are two useful families, not a complete list. Some methods fit neither. The nearest neighbour method of Lab 2 does not improve complete routes at all: it builds one route, customer by customer. Strictly speaking, genetic algorithms belong to evolutionary optimization rather than to local search; this course places them here because they solve the same kind of problem.</p>
+<p>These are two useful families, not a complete list. The nearest neighbour method of Lab 2 does not improve complete routes at all: it builds one route, customer by customer. Strictly speaking, genetic algorithms belong to evolutionary optimization rather than to local search; this course places them here because they solve the same kind of problem.</p>
+
+<h3>Putting it together</h3>
+
+<div class="diagram">
+  <svg viewBox="0 0 700 275" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;" role="img" aria-label="Six steps: real-world problem, problem modelling, solution representation, objective function, search strategy, evaluation; the last two repeat.">
+    <text x="350" y="24" text-anchor="middle" font-size="13" fill="var(--ink-mute)" font-weight="600" letter-spacing="0.06em">FROM A REAL PROBLEM TO A BETTER SOLUTION</text>
+    <rect x="20" y="48" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+      <text x="29" y="63" font-size="10" fill="var(--ink-mute)" font-weight="700">1</text>
+      <text x="118" y="81" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Real-world problem</text>
+      <text x="118" y="101" text-anchor="middle" font-size="12" fill="var(--ink-soft)">1 driver, 4 customers</text><rect x="252" y="48" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+      <text x="261" y="63" font-size="10" fill="var(--ink-mute)" font-weight="700">2</text>
+      <text x="350" y="81" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Problem modelling</text>
+      <text x="350" y="101" text-anchor="middle" font-size="12" fill="var(--ink-soft)">depot, customers, distances</text><rect x="484" y="48" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+      <text x="493" y="63" font-size="10" fill="var(--ink-mute)" font-weight="700">3</text>
+      <text x="582" y="81" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Solution representation</text>
+      <text x="582" y="101" text-anchor="middle" font-size="12" fill="var(--ink-soft)">[A, C, B, D]</text><rect x="20" y="162" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="29" y="177" font-size="10" fill="var(--ink-mute)" font-weight="700">4</text>
+      <text x="118" y="195" text-anchor="middle" font-size="12.5" fill="var(--accent)" font-weight="700">Objective function</text>
+      <text x="118" y="215" text-anchor="middle" font-size="12" fill="var(--ink-soft)">total distance = 30 km</text><rect x="252" y="162" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="261" y="177" font-size="10" fill="var(--ink-mute)" font-weight="700">5</text>
+      <text x="350" y="195" text-anchor="middle" font-size="12.5" fill="var(--accent)" font-weight="700">Search strategy</text>
+      <text x="350" y="215" text-anchor="middle" font-size="12" fill="var(--ink-soft)">swap two customers</text><rect x="484" y="162" width="196" height="72" rx="9" fill="var(--bg-soft)" stroke="var(--rule)" stroke-width="1"/>
+      <text x="493" y="177" font-size="10" fill="var(--ink-mute)" font-weight="700">6</text>
+      <text x="582" y="195" text-anchor="middle" font-size="12.5" fill="var(--ink)" font-weight="700">Evaluation</text>
+      <text x="582" y="215" text-anchor="middle" font-size="12" fill="var(--ink-soft)">shorter? keep it</text><path d="M218 84 L248 84" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M450 84 L480 84" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M582 122 V 140 H 118 V 158" fill="none" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M218 198 L248 198" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M450 198 L480 198" stroke="var(--ink-mute)" stroke-width="2" marker-end="url(#pp1)"/><path d="M680 198 H 690 V 250 H 352 V 236" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#pp2)"/>
+    <text x="520" y="266" text-anchor="middle" font-size="11" fill="var(--gold)" font-weight="700">not good enough? search again</text>
+    <defs><marker id="pp1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--ink-mute)"/></marker><marker id="pp2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--gold)"/></marker></defs>
+  </svg>
+  <div class="diagram-caption">The steps of this section, with the delivery problem under each one. Steps 5 and 6 repeat until the solution is good enough.</div>
+</div>
+
+<p>Sections 4.2 and 4.3 now show two ways to do step 5.</p>
 
 <h3>Where you meet these problems</h3>
 
@@ -2783,7 +2782,7 @@ def a_star(problem, h):
       {
         title: "Single-Solution Local Search",
         body: `
-<p>This section studies one idea: improve <em>one</em> candidate solution by small changes. We use hill climbing, the simplest example, on the delivery problem of section 4.1.</p>
+<p>This section studies one idea: improve <em>one</em> candidate solution by small changes. We use hill climbing, the simplest example, on the delivery problem of section 4.1. Hill climbing will reach the 20 km route from section 4.1 by itself, and then we will see why it stops there.</p>
 
 <h3>Neighbouring routes</h3>
 
