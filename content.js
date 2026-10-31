@@ -1548,7 +1548,9 @@ def path(node):
       {
         title: "Evaluating Search Algorithms",
         body: `
-<p>Four questions. Always the same four. Ask them about every algorithm in the rest of this course.</p>
+<p>Two search algorithms may both find a route to the same destination &mdash; or one of them may find none at all. Even when both succeed, they may differ in the cost of the route, the work needed to find it, and the memory they use. How can we compare them?</p>
+
+<p>We ask the same four questions about every algorithm in the rest of this course:</p>
 
 <div class="applications">
   <div class="app-grid">
@@ -1597,13 +1599,15 @@ def path(node):
   <div class="diagram-caption">The driving distance says nothing about how long the dispatcher took to find it.</div>
 </div>
 
-<h3>Three letters you need</h3>
+<h3>Why does search become expensive so quickly?</h3>
+
+<p>Every state offers several actions, and every action leads to a new state that offers several more. So the number of possible paths is multiplied again at every level of the search tree. Three letters describe this growth:</p>
 
 <div class="definition">
   <p><strong>b</strong> — the <em>branching factor</em>: how many actions are available at a typical state. <strong>d</strong> — the <em>depth of the nearest goal</em>. <strong>m</strong> — the <em>deepest</em> the tree can go, which may be infinite. We write costs using these letters: $O(b^d)$, $O(b^m)$, $O(bd)$.</p>
 </div>
 
-<p>Why exponential growth is so painful, in real numbers. Take $b = 10$, one microsecond to make a node, and 100 bytes to store it:</p>
+<p>How fast is that growth in real numbers? Take $b = 10$, one microsecond to make a node, and 100 bytes to store it:</p>
 
 <div class="diagram">
   <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter', sans-serif;">
@@ -1643,7 +1647,7 @@ def path(node):
 
 <div class="aha">
   <div class="aha-label">Memory fails first</div>
-  <p>Look at depth 12 again. Waiting 12 days is painful but possible. Finding 100 terabytes of RAM is not. With these numbers, an algorithm that needs exponential <em>memory</em> fails long before one that needs exponential <em>time</em>. This one fact explains why iterative deepening (section 3.4) exists, and why repeating work can be a smart trade.</p>
+  <p>Look at depth 12 again. Waiting 12 days is painful but possible. Finding 100 terabytes of RAM is not. With these numbers, an algorithm that needs exponential <em>memory</em> fails long before one that needs exponential <em>time</em>. This is why the memory column matters as much as the time column when you compare algorithms.</p>
 </div>
 
 <div class="callout note">
@@ -1661,9 +1665,15 @@ def path(node):
       {
         title: "Uninformed Search Algorithms",
         body: `
-<p><strong>Uninformed</strong> (also called blind) means the algorithm knows nothing except the five parts of the problem. It cannot tell which state looks closer to the goal. The only thing it chooses is <em>the order of exploring</em> — and that one choice gives us five different algorithms.</p>
+<p>These algorithms explore the same problem differently. The main difference is how they choose the next node from the frontier:</p>
 
-<p>BFS, DFS, and UCS are a <em>review</em>: you may already know BFS and DFS from graphs in data structures. For each one, learn how it chooses the next node, what it guarantees, and when to use it. Detailed tracing practice comes with greedy search and A* in section 3.5.</p>
+<ul>
+  <li><strong>BFS</strong> &rarr; the shallowest node first</li>
+  <li><strong>DFS</strong> &rarr; the deepest node first</li>
+  <li><strong>UCS</strong> &rarr; the lowest path cost first</li>
+</ul>
+
+<p>All three are <strong>uninformed</strong> (also called blind): they know nothing except the five parts of the problem, so they cannot tell which state looks closer to the goal. They are a <em>review</em> &mdash; you may already know BFS and DFS from graphs in data structures. For each one, learn how it chooses the next node, what it guarantees, and when to use it. Detailed tracing practice comes with greedy search and A* in section 3.5.</p>
 
 <div class="analogy">
   <span class="analogy-label">Looking for one office inside a large building</span>
@@ -1675,6 +1685,10 @@ def path(node):
 
 <p><strong>Rule:</strong> take out the <strong>shallowest</strong> node — the one created earliest. <strong>Frontier:</strong> a queue, first in, first out.</p>
 
+<p>BFS can test a node for the goal as soon as it is <em>created</em>, because the first goal it creates is always a shallowest one. That gives a path with the <strong>fewest steps</strong>. The fewest steps is also the <strong>lowest path cost</strong> only when every step costs the same.</p>
+
+<details class="more">
+  <summary>Optional: BFS in Python</summary>
 <pre><code class="language-python">from collections import deque
 
 def breadth_first_search(problem):
@@ -1687,16 +1701,19 @@ def breadth_first_search(problem):
         node = frontier.popleft()
         for child in expand(problem, node):
             if problem.is_goal(child.state):
-                return child            # safe here: all steps cost the same
+                return child            # fewest steps (cheapest if costs are equal)
             if child.state not in reached:
                 reached.add(child.state)
                 frontier.append(child)
     return None                         # no solution
 </code></pre>
+</details>
 
 <p>On the delivery map, BFS returns S &rarr; B &rarr; G: two roads, the fewest possible, but 9 km.</p>
 
 <p><strong>Result:</strong> complete when the branching factor $b$ is finite. Guaranteed to be optimal <em>when every step costs the same</em> &mdash; on the delivery map S &rarr; A &rarr; C &rarr; G is only 8 km. Time and memory are both $O(b^d)$. The memory is what hurts most: BFS must hold a whole level of the tree at once.</p>
+
+<p><strong>Use it when</strong> all steps cost the same and there is enough memory.</p>
 
 <h3>2. Uniform-Cost Search (UCS)</h3>
 
@@ -1714,7 +1731,14 @@ def breadth_first_search(problem):
   </div>
 </div>
 
-<p><strong>Result:</strong> complete and optimal, provided $b$ is finite and every step costs at least some fixed amount $\\varepsilon > 0$. (If step costs can shrink towards zero, UCS can spend forever on ever-cheaper steps.) Its time and memory depend on $C^*/\\varepsilon$ &mdash; the cost of the best solution divided by the smallest step cost &mdash; and are written $O(b^{1+\\lfloor C^*/\\varepsilon \\rfloor})$. With many tiny steps it can be much slower than BFS.</p>
+<p><strong>Result:</strong> complete and optimal, provided $b$ is finite and every step costs at least some fixed amount $\\varepsilon > 0$.</p>
+
+<p><strong>Use it when</strong> steps have different costs, you need a cheapest path, and you have no heuristic.</p>
+
+<details class="more">
+  <summary>Optional: UCS with very small step costs</summary>
+  <p>If step costs can shrink towards zero, UCS can spend forever on ever-cheaper steps. Its time and memory depend on $C^*/\\varepsilon$ &mdash; the cost of the best solution divided by the smallest step cost &mdash; and are written $O(b^{1+\\lfloor C^*/\\varepsilon \\rfloor})$. With many tiny steps it can be much slower than BFS.</p>
+</details>
 
 <h3>3. Depth-First Search (DFS)</h3>
 
@@ -1723,6 +1747,8 @@ def breadth_first_search(problem):
 <p>The strong point of DFS is memory. In its tree-like form it remembers only the current path and the unexpanded siblings along it: $O(bm)$ instead of $O(b^d)$. If the deepest path has 12 steps ($m = 12$) and $b = 10$, that is about 120 nodes, where BFS at the same depth may need a trillion. The saving disappears if DFS keeps a reached table of every state it has reached: the table can grow to the size of the whole state space.</p>
 
 <p><strong>Result:</strong> not optimal. Tree-like DFS is not even complete: it can go around a cycle forever. If it checks the current path for repeated states, it is complete in a finite state space &mdash; but in an infinite one it can still follow an endless branch. Time $O(b^m)$; memory $O(bm)$ for tree-like DFS.</p>
+
+<p><strong>Use it when</strong> memory is tight, any solution will do, and the state space is finite and not too deep.</p>
 
 <h3>BFS and DFS on the same tree</h3>
 
@@ -1734,8 +1760,8 @@ def breadth_first_search(problem):
   <div class="callout-icon">i</div>
   <div class="callout-body">
     <div class="callout-title">Further exploration: limiting the depth (not in the quiz)</div>
-    <p><strong>Depth-limited search (DLS)</strong> is DFS with a fixed limit: it never goes deeper than $\\ell$ levels. This stops an endless branch, but if the goal is deeper than the limit, DLS never finds it. Sometimes the problem gives a safe limit: on a map with 20 cities, no sensible route uses more than 19 roads.</p>
-    <p><strong>Iterative deepening search (IDS)</strong> runs DLS with limit 0, then 1, then 2, and so on, until it finds the goal. It repeats the top levels, but they are small. With $b = 10$ and the goal at depth 5, IDS creates about 11% more nodes than BFS (123,450 against 111,110), yet it keeps about 50 nodes in memory instead of 100,000. Like BFS, it is complete when $b$ is finite and optimal when all steps cost the same; like DFS, it needs only $O(bd)$ memory.</p>
+    <p><strong>Depth-limited search (DLS)</strong> is DFS with a fixed limit: it never goes deeper than $\\ell$ levels. This stops an endless branch, but if the goal is deeper than the limit, DLS never finds it: it is complete only if $\\ell \\ge d$, and it is not optimal. Its time is $O(b^{\\ell})$ and its memory $O(b\\ell)$. Sometimes the problem gives a safe limit: on a map with 20 cities, no sensible route uses more than 19 roads.</p>
+    <p><strong>Iterative deepening search (IDS)</strong> runs DLS with limit 0, then 1, then 2, and so on, until it finds the goal. It repeats the top levels, but they are small. With $b = 10$ and the goal at depth 5, IDS creates about 11% more nodes than BFS (123,450 against 111,110), yet it keeps about 50 nodes in memory instead of 100,000. Like BFS, it is complete when $b$ is finite and optimal when all steps cost the same, and its time is $O(b^d)$; like DFS, it needs only $O(bd)$ memory. That makes it a good choice when steps cost the same, memory is tight, and the depth of the goal is unknown.</p>
   </div>
 </div>
 
@@ -1752,12 +1778,10 @@ def breadth_first_search(problem):
         <tr><th scope="row">BFS</th><td>shallowest</td><td>queue</td><td>Yes¹</td><td>If equal costs</td><td>O(b<sup>d</sup>)</td><td>O(b<sup>d</sup>)</td></tr>
         <tr><th scope="row">UCS</th><td>lowest g(n)</td><td>priority queue</td><td>Yes²</td><td>Yes²</td><td>O(b<sup>1+⌊C*/ε⌋</sup>)</td><td>O(b<sup>1+⌊C*/ε⌋</sup>)</td></tr>
         <tr><th scope="row">DFS, tree-like</th><td>deepest</td><td>stack</td><td>No³</td><td>No</td><td>O(b<sup>m</sup>)</td><td>O(bm)</td></tr>
-        <tr><th scope="row">DLS</th><td>deepest, down to ℓ</td><td>stack</td><td>If ℓ ≥ d</td><td>No</td><td>O(b<sup>ℓ</sup>)</td><td>O(bℓ)</td></tr>
-        <tr><th scope="row">IDS</th><td>DLS with ℓ = 0, 1, 2, …</td><td>stack</td><td>Yes¹</td><td>If equal costs</td><td>O(b<sup>d</sup>)</td><td>O(bd)</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="diagram-caption">¹ when b is finite · ² when b is finite and every step costs at least ε &gt; 0 · ³ yes in a finite state space if it checks the current path for repeated states. b = branching factor · d = depth of the shallowest goal · m = deepest level · ℓ = depth limit · C* = cost of the best solution.</div>
+  <div class="diagram-caption">¹ when b is finite · ² when b is finite and every step costs at least ε &gt; 0 · ³ yes in a finite state space if it checks the current path for repeated states. b = branching factor · d = depth of the shallowest goal · m = deepest level · C* = cost of the best solution. DLS and IDS are in the further exploration box above.</div>
 </div>
 
 <div class="checkpoint">
@@ -1823,7 +1847,7 @@ def breadth_first_search(problem):
 
 <div class="aha">
   <div class="aha-label">A* connects UCS and Greedy Best-First Search</div>
-  <p>Set $h(n) = 0$ and A* becomes uniform-cost search. Ignore $g(n)$ and it becomes greedy search. A* is just UCS that was given a hint. The whole idea is adding one guess to one running total — and the famous guarantee comes straight from that: if the guess is never too high, then $f$ is never too high either, so A* cannot settle for an expensive goal while a cheaper one is still reachable.</p>
+  <p>All three are best-first search. They use different evaluation functions to prioritize nodes in the frontier: uniform-cost search uses $f(n) = g(n)$, greedy best-first search uses $f(n) = h(n)$, and A* uses $f(n) = g(n) + h(n)$ &mdash; what has been paid plus what is guessed. So setting $h(n) = 0$ turns A* into UCS, and ignoring $g(n)$ turns it into greedy search. The famous guarantee comes from adding the two: if the guess is never too high, then $f$ is never too high either, so A* cannot settle for an expensive goal while a cheaper one is still reachable (the exact conditions are below).</p>
 </div>
 
 <h3>Worked example: A* on the delivery map</h3>
@@ -1947,12 +1971,12 @@ def a_star(problem, h):
     <div class="app-card">
       <span class="app-icon">🏆</span>
       <strong>Optimal</strong>
-      <p>Under the same conditions, with an admissible h. With a consistent h, it also never has to expand a state twice.</p>
+      <p>Under the same conditions, with an admissible h, as long as A* puts a state back in the frontier when it finds a cheaper path to it (the code above does). With a consistent h, it never has to expand a state twice.</p>
     </div>
     <div class="app-card">
       <span class="app-icon">💾</span>
       <strong>Hungry for memory</strong>
-      <p>A* keeps every node it creates. On hard problems it fills the memory before it runs out of time.</p>
+      <p>A* keeps the frontier and the reached table in memory &mdash; in the worst case, every state it has reached. A good heuristic reduces how many that is, but the number can still grow exponentially with depth, so on hard problems memory usually runs out before time.</p>
     </div>
   </div>
 </div>
@@ -2022,7 +2046,9 @@ def a_star(problem, h):
       {
         title: "Designing and Evaluating Heuristics",
         body: `
-<p>A* is only as good as its hint. This section is about the hints themselves: how to check one, how to compare two of them, and how to invent one for a new problem.</p>
+<p>The heuristic affects how efficiently A* searches. An admissible heuristic helps A* guarantee an optimal solution under the appropriate conditions. When $h(n) = 0$, A* behaves like UCS. A more informative admissible heuristic can often reduce the number of nodes explored.</p>
+
+<p>This section is about the heuristics themselves: how to check one, and how to compare two of them. How to design a new one is further exploration, at the end of the section.</p>
 
 <h3>Is this h too high? Check it against the real cost</h3>
 
@@ -2162,7 +2188,6 @@ def a_star(problem, h):
 <p>Three questions decide most choices in this module: do all steps cost the same, is memory tight, and do you have a good heuristic?</p>
 
 <div class="table-figure">
-  <p class="table-hint">Swipe sideways to see the whole table &rarr;</p>
   <div class="table-scroll">
     <table class="env-table" style="white-space: normal;">
       <thead>
@@ -2170,8 +2195,6 @@ def a_star(problem, h):
       </thead>
       <tbody>
         <tr><th scope="row">All steps cost the same, enough memory</th><td>BFS</td><td>Fewest steps is then the cheapest path.</td></tr>
-        <tr><th scope="row">All steps cost the same, memory is tight, depth unknown</th><td>IDS</td><td>The guarantees of BFS with the memory of DFS.</td></tr>
-        <tr><th scope="row">A safe depth limit is known in advance</th><td>DLS</td><td>The limit stops endless branches.</td></tr>
         <tr><th scope="row">Steps have different costs, no heuristic</th><td>UCS</td><td>Takes out the lowest path cost first.</td></tr>
         <tr><th scope="row">Steps have different costs, an admissible heuristic exists</th><td>A*</td><td>Still a cheapest path; with a consistent h it never expands more nodes than UCS, apart from ties.</td></tr>
         <tr><th scope="row">Any path will do, quickly, and a heuristic exists</th><td>Greedy best-first</td><td>Follows h only: fast, but with no guarantee of a cheapest path.</td></tr>
@@ -2181,9 +2204,15 @@ def a_star(problem, h):
   <div class="diagram-caption">There is no "best" search algorithm. There is only the best fit for the costs, the memory, and the knowledge you have.</div>
 </div>
 
-<h3>The whole module in one paragraph</h3>
+<p><em>Further exploration:</em> when all steps cost the same and memory is tight, iterative deepening (the box in section 3.4) offers the guarantees of BFS with the memory of DFS.</p>
 
-<p>Describe your problem with five parts. Explore it with a frontier, and remember the states you reached. Judge every algorithm on completeness, optimality, time, and memory — and expect memory to be the limit that stops you. With no hint, use BFS when all steps cost the same, UCS when they do not, and IDS when memory is tight. With a hint, add it to the cost you already paid, and you have A*, which returns a cheapest path whenever the hint is never too high and every step costs at least some ε &gt; 0.</p>
+<h3>The whole module in three steps</h3>
+
+<ol class="steps">
+  <li><strong>Model the problem</strong><p>Describe it with five parts: initial state, actions, transition model, goal test, and action cost. Keep only the details that change the answer. A clear formulation is most of the work.</p></li>
+  <li><strong>Explain the strategy</strong><p>A search algorithm grows a tree from a frontier and remembers the states it has reached. What makes each algorithm different is how it chooses the next node: BFS the shallowest, DFS the deepest, UCS the lowest $g$, greedy search the lowest $h$, and A* the lowest $g + h$. Judge each one on completeness, optimality, time, and memory &mdash; and expect memory to be the limit that stops you.</p></li>
+  <li><strong>Experiment and compare</strong><p>Trace the algorithms on a small problem, count the nodes they expand, and compare the paths they return. Then choose by what you have: equal or different step costs, enough memory or not, and a heuristic or none. With an admissible heuristic, a finite branching factor, and every step costing at least some &epsilon; &gt; 0, A* returns a cheapest path, usually after far fewer nodes than UCS.</p></li>
+</ol>
 
 <div class="checkpoint">
   <span class="checkpoint-label">Check yourself</span>
@@ -2259,7 +2288,6 @@ def a_star(problem, h):
         group: "Which algorithm, when",
         items: [
           "Equal step costs, enough memory → <strong>BFS</strong>",
-          "Equal step costs, memory is tight, depth unknown → <strong>IDS</strong>",
           "Different step costs, no hint → <strong>UCS</strong>",
           "Admissible hint, need a cheapest path → <strong>A*</strong>",
           "Any path, quickly, with a hint → <strong>greedy best-first</strong> (no guarantee)"
@@ -2271,7 +2299,7 @@ def a_star(problem, h):
           "BFS — queue; complete if b is finite; optimal if equal costs; time and memory <code>O(b^d)</code>",
           "UCS — priority queue by g; complete and optimal if b is finite and every step costs at least ε &gt; 0",
           "DFS — stack; tree-like: not complete, not optimal; time <code>O(b^m)</code>, memory <code>O(bm)</code>",
-          "Further exploration: DLS — DFS with a depth limit ℓ · IDS — DLS with ℓ = 0, 1, 2, …; complete if b is finite, optimal if equal costs, memory <code>O(bd)</code>"
+          "Further exploration: DLS — DFS with a depth limit ℓ · IDS — DLS with ℓ = 0, 1, 2, …; complete if b is finite, optimal if equal costs, memory <code>O(bd)</code>; use when steps cost the same and memory is tight"
         ]
       },
       {

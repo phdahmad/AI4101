@@ -114,6 +114,16 @@
     applyTheme(cur === 'light' ? 'dark' : 'light');
   });
   document.getElementById('printBtn').addEventListener('click', () => window.print());
+  // Print the optional details (details.more) open, then close the ones the reader had closed.
+  let openedForPrint = [];
+  window.addEventListener('beforeprint', () => {
+    openedForPrint = [...document.querySelectorAll('details.more:not([open])')];
+    openedForPrint.forEach(d => { d.open = true; });
+  });
+  window.addEventListener('afterprint', () => {
+    openedForPrint.forEach(d => { d.open = false; });
+    openedForPrint = [];
+  });
   document.getElementById('resetBtn').addEventListener('click', () => {
     if (confirm('This erases every "read" mark and quiz score saved in this browser. Continue?')) {
       try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
