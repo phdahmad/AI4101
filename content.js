@@ -2345,6 +2345,7 @@ def a_star(problem, h):
       { term: "Soft preference", meaning: "A desirable condition that is not required, such as few students with two exams on one day. It enters the objective function as a penalty or a reward." },
       { term: "Penalty", meaning: "An amount added to the objective each time a soft preference is not met, when the objective is minimized." },
       { term: "Feasible solution", meaning: "A candidate solution that satisfies every constraint. All feasible solutions together form the feasible region, which is part of the search space." },
+      { term: "Optimal solution", meaning: "An optimal solution is a feasible solution for which no better feasible solution exists, according to the objective function." },
       { term: "Discrete optimization", meaning: "Optimization where the decision variables take separate values: whole numbers, yes/no choices or orderings. Example: the order of visiting customers." },
       { term: "Continuous optimization", meaning: "Optimization where the decision variables take real values anywhere in a range. Example: choosing x to minimize (x − 3)², or the weights of a model." },
       { term: "Local search", meaning: "A family of methods that move between candidate solutions, using a neighbourhood or other small changes, to improve the objective. They usually do not keep the path that led to the answer." },
