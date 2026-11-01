@@ -2497,8 +2497,14 @@ a.lf-card:hover { transform: translateY(-2px); border-color: var(--accent); }
    the panel slides out, so nothing jumps. */
 @media (min-width: 1001px) {
   .layout { transition: grid-template-columns .3s cubic-bezier(.4,0,.2,1); }
+  /* The panel is sticky, so it must fit the window and scroll inside itself;
+     otherwise its lower links sit below the screen and never come into view. */
   .sidebar {
-    overflow: hidden;
+    max-height: calc(100vh - 108px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
     transition: opacity .2s ease, transform .3s cubic-bezier(.4,0,.2,1);
   }
   body.sidebar-collapsed .layout { grid-template-columns: 0 minmax(0, 1fr); }
