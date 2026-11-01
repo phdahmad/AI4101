@@ -572,6 +572,8 @@ pre code {
   color: inherit;
   font-size: inherit;
 }
+/* highlight.js theme adds its own box (padding, background, scroll); keep the site's single <pre> box */
+pre code.hljs { background: transparent; padding: 0; overflow-x: visible; }
 pre::before {
   content: "Python";
   position: absolute;
