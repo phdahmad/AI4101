@@ -1094,6 +1094,7 @@ pre::before {
   font-family: 'Inter', sans-serif;
 }
 .definition p { margin-bottom: 0; font-size: 1.02rem; }
+.definition p + p { margin-top: 0.75rem; }
 .definition strong { color: var(--accent); }
 
 /* Real-world analogy box */
@@ -2858,3 +2859,16 @@ body.is-landing .stats-strip { display: block; }
   .tracer-controls, .tracer-algos { display: none !important; }
   .tracer { break-inside: avoid; }
 }
+
+/* ---------- Module intro box and section subtitles (Module 3, 2026-11-07) ---------- */
+.module-intro-box { margin: -1.5rem 0 2.5rem; }
+.module-intro-box .callout { margin: 0; }
+.content-card > .section-subtitle {
+  margin: -0.6rem 0 1.4rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.02rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--ink-mute);
+}
+.definition + .ar-note { margin-block: -0.6rem 1.8rem; padding-block-start: 0.8rem; }

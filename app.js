@@ -374,6 +374,7 @@
         <section class="content-card${s.optional ? ' optional-card' : ''}" id="sec-${mod.id}-${i}" data-sec="${i}">
           <span class="section-label">Section ${mod.id}.${i + 1}${s.optional ? '<span class="opt-badge">optional reading</span>' : ''}</span>
           <h2>${s.title}</h2>
+          ${s.subtitle ? `<p class="section-subtitle">${s.subtitle}</p>` : ''}
           ${s.body}
           <button class="read-btn ${read.has(i) ? 'done' : ''}" data-read="${i}">
             <span class="tick">✓</span>
@@ -421,6 +422,7 @@
         ${hero}
         ${mod.story ? `<div class="module-story">${mod.story}</div>` : ''}
         ${objectives}
+        ${mod.introBox ? `<div class="module-intro-box">${mod.introBox}</div>` : ''}
         ${terms}
         <div class="module-body">${sections}</div>
         ${cheat}
