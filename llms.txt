@@ -1,0 +1,26 @@
+# Artificial Intelligence Principles (AI4101)
+
+> Seven modules that take you from the foundations of intelligent agents to search, optimization, adversarial reasoning, constraint satisfaction, and logical agents.
+
+An open course site for AI4101 at Umm Al-Qura University (BSc Computer Science · Level 5 · Required), curated and academically directed by Dr. Ahmad Alhindi. Licence: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Language: English. Each module page holds the full module text: learning objectives, sections, key terms, and the revision card. The self-check quiz questions are not published as text.
+
+## Modules
+
+- [Module 1: Introduction to Artificial Intelligence](https://phdahmad.github.io/AI4101/module/1/): What people mean by "intelligent", what this field actually builds, and the responsibility that comes with it.
+- [Module 2: Intelligent Agents and Their Environments](https://phdahmad.github.io/AI4101/module/2/): The one idea the whole course is built on: something that perceives, decides, and acts.
+- [Module 3: Problem Solving by Search](https://phdahmad.github.io/AI4101/module/3/): The heart of the course. How an agent that does not know the answer can still find it — first blindly, then with a sense of direction.
+- [Module 4: Optimization](https://phdahmad.github.io/AI4101/module/4/): Turn a real problem into one a computer can score, then search for better and better answers.
+- [Module 5: Adversarial Search](https://phdahmad.github.io/AI4101/module/5/): Search when somebody else chooses every second move — and they want you to lose.
+- [Module 6: Constraint Satisfaction Problems](https://phdahmad.github.io/AI4101/module/6/): Search that looks inside the problem instead of treating each state as a black box — and solves it far faster because of it.
+- [Module 7: Logical Agents](https://phdahmad.github.io/AI4101/module/7/): Agents that hold what they know as sentences, and work out what must follow from it.
+
+## Labs
+
+- [AI4101 Labs](https://phdahmad.github.io/AI4101/labs/): AI4101 labs: every lab of the course in one place, from Teachable Machine to Tafsir MCP.
+- [Lab 1 · Teaching a Computer to See](https://phdahmad.github.io/AI4101/labs/lab1/): AI4101 Lab 1: build and test your first image classifier with Teachable Machine. At home, in pairs.
+- [Lab 2 · From Search to Routes](https://phdahmad.github.io/AI4101/labs/lab2/): AI4101 Lab 2: Ekram as a Travelling Salesman Problem. Start here during the lab.
+
+## Optional
+
+- [Course home](https://phdahmad.github.io/AI4101/)
+- [PEAS Made Simple](https://phdahmad.github.io/AI4101/peas-made-simple.html)

@@ -1,0 +1,7 @@
+# AI4101 course site. Every crawler is welcome, AI crawlers included.
+# Note: crawlers read robots.txt from the host root (phdahmad.github.io/robots.txt);
+# this copy documents the intent and points to the sitemap.
+User-agent: *
+Allow: /
+
+Sitemap: https://phdahmad.github.io/AI4101/sitemap.xml

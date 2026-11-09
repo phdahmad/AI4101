@@ -1,6 +1,6 @@
 /* =========================================================
    App Logic — Artificial Intelligence Principles (AI4101)
-   Hash router + sidebar contents + per-section progress + quiz engine
+   Router (real module pages + old #hash links) + sidebar contents + per-section progress + quiz engine
    ========================================================= */
 
 (() => {
@@ -35,6 +35,23 @@
         </div>
       </section>`;
     return;
+  }
+
+  // ===== ADDRESSES =====
+  // Every module has a real page at module/N/ (written by tools/build-static.mjs), so links
+  // to modules are real links that crawlers can follow. Moving between them inside the site
+  // still happens without a reload (see the ROUTER below). Old links of the form #module/N,
+  // already sent to students, keep working: the module is shown and the address bar is
+  // switched to its real address. #progress and #about stay hash routes on the home page.
+  // index.html has <base href="./"> and every module page <base href="../../">, so relative
+  // links (styles.css, labs/, peas-made-simple.html) resolve against the site root on every page.
+  const ROOT = new URL('./', document.baseURI);
+  const ROUTES = ['home', 'module', 'progress', 'about'];
+  const SITE_TITLE = 'Artificial Intelligence Principles — AI4101 | UQU';
+  // Same format as moduleTitle() in tools/build-static.mjs
+  const pageTitle = mod => `Module ${mod.id}: ${mod.title} — AI4101 | UQU`;
+  function moduleHref(id, sec) {
+    return `module/${id}/` + (sec != null ? `#sec-${id}-${sec}` : '');
   }
 
   // ===== PROGRESS =====
@@ -193,7 +210,7 @@
         <ul class="toc-sections">
           ${m.sections.map((s, i) => `
             <li>
-              <a href="#module/${m.id}" data-jump="sec-${m.id}-${i}"
+              <a href="${moduleHref(m.id, i)}" data-jump="sec-${m.id}-${i}"
                  class="toc-sec ${activeSection === i ? 'current' : ''} ${readSet(m.id).has(i) ? 'read' : ''}">
                 <span class="toc-sec-num">${m.id}.${i + 1}</span>
                 <span class="toc-sec-title">${s.title}${s.optional ? ' <em class="toc-opt">optional</em>' : ''}</span>
@@ -202,7 +219,7 @@
         </ul>` : '';
       return `
         <li class="toc-item ${active ? 'active' : ''}">
-          <a href="#module/${m.id}" class="toc-link">
+          <a href="${moduleHref(m.id)}" class="toc-link">
             <span class="toc-num">${m.id}</span>
             <span class="toc-body">
               <span class="toc-title">${m.title}</span>
@@ -262,7 +279,7 @@
           Plain language, local examples, diagrams, and a self-check at the end of every module.
         </p>
         <div class="hero-cta">
-          <a href="#module/1" class="btn btn-primary">Start with Module 1
+          <a href="${moduleHref(1)}" class="btn btn-primary">Start with Module 1
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
           <a href="#about" class="btn btn-ghost">About this course</a>
@@ -288,7 +305,7 @@
         const pct = modulePct(m);
         const ready = m.sections.length > 0;
         return `
-        <a href="#module/${m.id}" class="module-card ${ready ? '' : 'pending'}">
+        <a href="${moduleHref(m.id)}" class="module-card ${ready ? '' : 'pending'}">
           <span class="module-num">${String(m.id).padStart(2, '0')}</span>
           <h3 class="module-title">${m.title}</h3>
           <span class="module-meta">${m.hours} contact hours · ${m.objectives.length} objectives</span>
@@ -388,7 +405,7 @@
               <div class="callout-title">This module is being written</div>
               <p>The objectives above are final and follow the approved course specification.
                  The full explanations, diagrams, examples, resources and self-check are in preparation.
-                 <a href="#module/3">Module 3 — Problem Solving by Search</a> is complete and shows the format
+                 <a href="${moduleHref(3)}">Module 3 — Problem Solving by Search</a> is complete and shows the format
                  every module will follow.</p>
             </div>
           </div>
@@ -429,9 +446,9 @@
         ${resources}
         ${renderQuiz(mod.id)}
         <nav class="module-nav-bottom">
-          ${prev ? `<a href="#module/${prev.id}" class="prev"><span class="nav-dir">← Previous</span><span class="nav-title">${prev.title}</span></a>`
+          ${prev ? `<a href="${moduleHref(prev.id)}" class="prev"><span class="nav-dir">← Previous</span><span class="nav-title">${prev.title}</span></a>`
                  : `<a class="prev disabled"><span class="nav-dir">— start of course —</span><span class="nav-title">&nbsp;</span></a>`}
-          ${next ? `<a href="#module/${next.id}" class="next"><span class="nav-dir">Next →</span><span class="nav-title">${next.title}</span></a>`
+          ${next ? `<a href="${moduleHref(next.id)}" class="next"><span class="nav-dir">Next →</span><span class="nav-title">${next.title}</span></a>`
                  : `<a href="#progress" class="next"><span class="nav-dir">Course finished →</span><span class="nav-title">See your progress</span></a>`}
         </nav>
       </article>`;
@@ -493,7 +510,7 @@
                    : pct > 0 ? '<span class="pl-status active">In progress</span>'
                    : '<span class="pl-status">Not started</span>';
       return `
-        <a href="#module/${m.id}" class="progress-list-item">
+        <a href="${moduleHref(m.id)}" class="progress-list-item">
           <li>
             <span class="pl-num">${String(m.id).padStart(2, '0')}</span>
             <span class="pl-title">${m.title}</span>
@@ -1143,14 +1160,48 @@
   }
 
   // ===== ROUTER =====
-  function parseRoute() {
-    const hash = window.location.hash.slice(1) || 'home';
+  // Which view does a URL show? Returns null for addresses the app does not draw
+  // (labs/, peas-made-simple.html, files), so those links load normally.
+  function routeOf(url) {
+    let hash = url.hash.slice(1);
+    try { hash = decodeURIComponent(hash); } catch (e) {}
+    const rel = url.pathname.startsWith(ROOT.pathname) ? url.pathname.slice(ROOT.pathname.length) : null;
+    if (rel === null) return null;
+    const onRoot = rel === '' || rel === 'index.html';
+    const mod = rel.match(/^module\/(\d+)\/(?:index\.html)?$/);
+    if (!onRoot && !mod) return null;
     const parts = hash.split('/');
-    return { name: parts[0], param: parts[1], sub: parts[2] };
+    if (onRoot && ROUTES.includes(parts[0])) {
+      // old hash address: #module/3, #module/3/s2, #about, #progress, #home
+      return { name: parts[0], param: parts[1], sub: parts[2], legacy: true };
+    }
+    if (mod) return { name: 'module', param: mod[1], anchor: hash || null };
+    return { name: 'home', anchor: hash || null };
   }
+  function parseRoute() {
+    return routeOf(new URL(window.location.href)) || { name: 'home' };
+  }
+  // The real address for an old hash address, or null if it keeps its hash
+  function realAddress(route) {
+    if (route.name === 'home') return ROOT.href;
+    if (route.name === 'module' && COURSE_CONTENT.some(m => m.id === Number(route.param))) {
+      const sec = route.sub && route.sub[0] === 's' ? Number(route.sub.slice(1)) : null;
+      return new URL(moduleHref(route.param, Number.isInteger(sec) ? sec : null), ROOT).href;
+    }
+    return null;
+  }
+  const routeKey = r => r.name === 'module' ? `module/${r.param}` : r.name;
+  let renderedKey = null;
 
   function render() {
-    const route = parseRoute();
+    let route = parseRoute();
+    if (route.legacy) {
+      const real = realAddress(route);
+      if (real) {
+        try { history.replaceState(history.state, '', real); route = parseRoute(); } catch (e) {}
+      }
+    }
+    renderedKey = routeKey(route);
     document.querySelectorAll('.side-link').forEach(l =>
       l.classList.toggle('active', l.dataset.route === route.name));
 
@@ -1165,16 +1216,20 @@
       default:        html = renderHome();
     }
     $app.innerHTML = html;
+    // landing.js still writes #module/N links; give them their real address too
+    $app.querySelectorAll('a[href^="#module/"]').forEach(a => {
+      const real = realAddress(routeOf(new URL(a.getAttribute('href'), ROOT)) || {});
+      if (real) a.setAttribute('href', real.slice(ROOT.href.length));
+    });
+
+    const mod = route.name === 'module' ? COURSE_CONTENT.find(m => m.id === Number(route.param)) : null;
+    document.title = mod ? pageTitle(mod) : SITE_TITLE;
 
     currentSection = 0;
     renderTOC(activeModule, 0);
     refreshGlobalProgress();
 
     if (route.name === 'module' && route.param) {
-      if (route.sub && route.sub[0] === 's') {
-        const target = document.getElementById(`sec-${route.param}-${route.sub.slice(1)}`);
-        if (target) setTimeout(() => target.scrollIntoView({ behavior: 'auto', block: 'start' }), 60);
-      }
       attachReadButtons(Number(route.param));
       attachQuizHandlers(Number(route.param));
       attachScrollSpy(Number(route.param));
@@ -1193,7 +1248,39 @@
       $app.querySelectorAll('pre code').forEach(b => { try { hljs.highlightElement(b); } catch (e) {} });
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
+
+    // module/3/#sec-3-2: open the module at that section
+    const target = route.anchor && document.getElementById(route.anchor);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'auto', block: 'start' }), 60);
   }
+
+  // Links inside the site change the view without a reload. A new tab, a modified
+  // click, and links outside the app (labs/, files, other sites) behave as usual.
+  document.addEventListener('click', (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest('a[href]');
+    if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
+    const url = new URL(a.href);
+    if (url.origin !== window.location.origin) return;
+    const route = routeOf(url);
+    if (!route) return;
+    const dest = (route.legacy && realAddress(route)) || url.href;
+    const destRoute = routeOf(new URL(dest));
+    // A jump to a section of the module already on screen: let the browser scroll
+    if (routeKey(destRoute) === renderedKey && destRoute.anchor) return;
+    e.preventDefault();
+    if (dest === window.location.href) return;
+    try { history.pushState(null, '', dest); } catch (err) { window.location.href = dest; return; }
+    render();
+  });
+
+  // Back / Forward, and an address typed by hand. A change of section anchor only
+  // (same view) does not redraw the page.
+  function onAddressChange() {
+    if (routeKey(parseRoute()) !== renderedKey || parseRoute().legacy) render();
+  }
+  window.addEventListener('popstate', onAddressChange);
+  window.addEventListener('hashchange', onAddressChange);
 
   // ===== INIT =====
   migrateModule3();
@@ -1201,7 +1288,6 @@
   const statEl = document.getElementById('statQuestions');
   if (statEl) statEl.textContent = totalQs || '—';
 
-  window.addEventListener('hashchange', render);
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', render);
   } else {
